@@ -1,9 +1,9 @@
-var mysql      = require('mysql');
+var mysql = require('mysql');
 
 var connection = mysql.createPool({
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'bd_projet'
+    database : 'nara_database'
 });
 module.exports=connection;
