@@ -112,14 +112,13 @@ INSERT INTO `t_missionCollab` (`id_mission`, `id_collab`) VALUES
 -- table t_conge
 
 CREATE TABLE `t_conge` (
-  `id_conge` int(11) NOT NULL AUTO_INCREMENT,
   `id_collab` int(11) NOT NULL,
   `rtt_restant` int(11) NOT NULL,
   `rtt_pris` int(11) NOT NULL,
   `cp_restant` int(11) NOT NULL,
   `cp_pris` int(11) NOT NULL,
   `css_pris` int(11) NOT NULL,
-  PRIMARY KEY (`id_conge`)
+  PRIMARY KEY (`id_collab`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `t_conge`
