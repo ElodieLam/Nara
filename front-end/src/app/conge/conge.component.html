@@ -1,0 +1,21 @@
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Congés payés pris</th>
+    <th>Congés payés restants</th>
+    <th>RTT pris</th> 
+    <th>RTT restants</th>
+    <th>Congés sans soldes pris</th> 
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor ="let test of infoConges">
+    <td>{{test.cp_pris}}</td>
+    <td>{{test.cp_restant}}</td>
+    <td>{{test.rtt_pris}}</td>
+    <td>{{test.rtt_restant}}</td>
+    <td>{{test.css_pris}}</td>
+    <td><button mat-button>Détails</button></td>
+  </tr>
+  </tbody>
+</table>

@@ -182,8 +182,11 @@ CREATE TABLE `t_note_de_frais` (
   `id_ndf` int(11) NOT NULL AUTO_INCREMENT,
   `id_collab` int(11) NOT NULL,
   `total` float(11) NOT NULL,
-  `mois` varchar(32) NOT NULL,
-  PRIMARY KEY (`id_ndf`)
+  `mois` int(2) NOT NULL,
+  `annee` int(4) NOT NULL,
+  PRIMARY KEY (`id_ndf`),
+  PRIMARY KEY (`mois`),
+  PRIMARY KEY (`annee`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `t_note_de_frais`

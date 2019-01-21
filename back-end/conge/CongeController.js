@@ -4,18 +4,16 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.json());
 var Conge = require('./Conge');
 
-router.get('/', function (req, res) 
+router.get('/congesid', function (req, res) 
 {
-    Conge.getConges(function(err, rows)
+    Conge.getConges(req.query, function(err, rows)
     {
         if(err) 
         {
             res.status(400).json(err);
-            console.log("t'es un malade bernard");
         }
         else
         {
-            console.log("comment tu vas ?");
             res.json(rows);
         }
     });

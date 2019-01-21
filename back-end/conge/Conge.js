@@ -2,9 +2,10 @@ var db = require('../db');
 
 var Conge = {
     
-    getConges: function(callback)
+    getConges: function(Conge, callback)
     {
-        return db.query('SELECT * from t_conge', callback);
+        console.log(Conge)
+        return db.query('SELECT * from t_conge WHERE id_collab = ?', [Conge.id_collab], callback);
     },
 
     /*
