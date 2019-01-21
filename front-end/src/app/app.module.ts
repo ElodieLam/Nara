@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
   MatToolbarModule,
   MatButtonModule,
@@ -58,6 +60,10 @@ const appRoutes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    })
   ],
   providers: [
     NotedefraisService,

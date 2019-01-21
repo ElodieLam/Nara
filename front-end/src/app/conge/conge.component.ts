@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {IConge} from './conge.interface'
 import { CongeService } from './conge.service';
 import {Router} from "@angular/router";
+import { CalendarEvent, DAYS_OF_WEEK } from 'angular-calendar';
 
 @Component({
   selector: 'app-conge',
@@ -10,6 +11,10 @@ import {Router} from "@angular/router";
 })
 export class CongeComponent implements OnInit 
 {
+  
+  viewDate: Date = new Date();
+  weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
+  events = [];
   infoConges : IConge[]
   test: IConge = {id_collab: 6, rtt_restant: null, rtt_pris: null, cp_pris: null, cp_restant: null, css_pris: null}
   constructor(private congeService: CongeService , private router: Router) { }
