@@ -1,11 +1,9 @@
 var db = require('../db');
 
 var Notedefrais = {
-    getNotesdefraisFromIdCollab: function(Notedefrais, callback)
+    getNotesdefraisFromIdCollab: function(data, callback)
     {
-        //console.log("ici")
-        //console.log(Notedefrais);
-        return db.query('SELECT * FROM t_note_de_frais WHERE id_collab = ?', [Notedefrais.id_collab], callback);
+        return db.query('SELECT * FROM t_note_de_frais WHERE id_collab = ?', [data[0]], callback);
     },
     createNotedefraisWithMonth: function (data, callback) 
     {

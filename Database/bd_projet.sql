@@ -184,16 +184,16 @@ CREATE TABLE `t_note_de_frais` (
   `total` float(11) NOT NULL,
   `mois` int(2) NOT NULL,
   `annee` int(4) NOT NULL,
-  PRIMARY KEY (`id_ndf`),
-  PRIMARY KEY (`mois`),
-  PRIMARY KEY (`annee`)
+  PRIMARY KEY (`id_ndf`, `mois`, `annee`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `t_note_de_frais`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
-INSERT INTO `t_note_de_frais` (`id_ndf`, `id_collab`, `total`, `mois`) VALUES
-(1, 6, 500.56 , 'janvier');
+INSERT INTO `t_note_de_frais` (`id_ndf`, `id_collab`, `total`, `mois`, `annee`) VALUES
+(1, 6, 145.67 , 11, 2018),
+(2, 6, 589.43 , 12, 2018),
+(3, 6, 500.56 , 01, 2019);
 
 -- table t_ligne_de_frais
 
@@ -270,5 +270,52 @@ ALTER TABLE `t_log`
   ADD FOREIGN KEY (`id_user`) REFERENCES t_collaborateur(`id_collab`);
 ALTER TABLE `t_log`
   ADD FOREIGN KEY (`id_admin`) REFERENCES t_admin(`id_admin`);
+
+-- table t_notif_dem_conge
+
+CREATE TABLE `t_notif_dem_conge` (
+  `id_demande_conge` int(11) NOT NULL,
+  `id_collab` int(11) NOT NULL,
+  PRIMARY KEY (`id_demande_conge`, `id_collab`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `t_notif_dem_conge`
+  ADD FOREIGN KEY (`id_demande_conge`) REFERENCES t_demande_conge(`id_demande_conge`);
+ALTER TABLE `t_notif_dem_conge`
+  ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
+
+INSERT INTO `t_notif_dem_conge` (`id_demande_conge`, `id_collab`) VALUES
+(1, 5),
+(2, 5);
+
+-- table t_notif_mod_conge
+
+CREATE TABLE `t_notif_mod_conge` (
+  `id_modif_conge` int(11) NOT NULL,
+  `id_collab` int(11) NOT NULL,
+  PRIMARY KEY (`id_modif_conge`, `id_collab`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `t_notif_mod_conge`
+  ADD FOREIGN KEY (`id_modif_conge`) REFERENCES t_modification_conge(`id_modif_conge`);
+ALTER TABLE `t_notif_mod_conge`
+  ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
+
+-- table t_notif_ndf
+
+CREATE TABLE `t_notif_ndf` (
+  `id_ndf` int(11) NOT NULL,
+  `id_collab` int(11) NOT NULL,
+  PRIMARY KEY (`id_ndf`, `id_collab`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `t_notif_ndf`
+  ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
+ALTER TABLE `t_notif_ndf`
+  ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
+
+INSERT INTO `t_notif_ndf` (`id_ndf`, `id_collab`) VALUES
+(1, 5),
+(2, 5);
 
 COMMIT;

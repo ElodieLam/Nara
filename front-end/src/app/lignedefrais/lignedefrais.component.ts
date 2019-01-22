@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-lignedefrais',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LignedefraisComponent implements OnInit {
 
-  constructor() { }
+  constructor(private route : ActivatedRoute) { }
 
+  id: number = 0;
+  private sub: any;
   ngOnInit() {
+    this.sub = this.route.params.subscribe(params => {
+      this.id = +params['id'];
+    });
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
 }

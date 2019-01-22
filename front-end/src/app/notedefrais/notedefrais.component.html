@@ -1,9 +1,23 @@
+<mat-grid-list cols="3" rowHeight="100px">
+  <mat-grid-tile (click)="goToNotedefrais(0)" [style.border]="'3px solid gray'">
+    <!-- <button mat-flat-button routerLink="/lignedefrais" color="warn">Un</button> -->
+    <div>{{ topthreeNdf[0] }}</div>
+  </mat-grid-tile>
+  <mat-grid-tile (click)="goToNotedefrais(1)" [style.border]="'3px solid gray'">
+    <div>{{ topthreeNdf[1] }}</div>
+  </mat-grid-tile>
+  <mat-grid-tile (click)="goToNotedefrais(2)" [style.border]="'3px solid gray'">
+    <div>{{ topthreeNdf[2] }}</div>
+  </mat-grid-tile>
+</mat-grid-list>
+
 
 <table class="table">
   <thead>
   <tr>
     <th>ID</th>
-    <th>mois</th>
+    <th>Mois</th>
+    <th>Année</th>
     <th>Total</th> 
     <th>Editer</th>
   </tr>
@@ -12,6 +26,7 @@
   <tr *ngFor="let notedefrais of lnotedefrais">
     <td>{{ notedefrais.id_ndf }}</td>
     <td>{{ notedefrais.mois }}</td>
+    <td>{{ notedefrais.annee }}</td>
     <td>{{ notedefrais.total }}</td>
     <td><button mat-button>Editer</button></td>
   </tr>

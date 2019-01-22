@@ -40,7 +40,8 @@ const appRoutes: Routes = [
     {path: 'login', component: LoginComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
     {path: 'conge', component: CongeComponent},
-    {path: 'notifications', component: NotifComponent}
+    {path: 'notifications', component: NotifComponent},
+    {path: 'lignedefrais/:id', component: LignedefraisComponent},
   
 ];
 

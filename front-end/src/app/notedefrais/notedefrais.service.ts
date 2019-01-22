@@ -10,12 +10,9 @@ export class NotedefraisService {
   
   
   getNotedefraisFromIdCollab(data){
-
-/*    var param = new HttpParams().set('id', id);
-    console.log(id);*/
     return this
       .http
-      .get(`${this.url}/notedefrais/notedefraisid`, { params : data});
+      .get(`${this.url}/notedefrais/notedefraisid`, { params : data });
   }
 
 
