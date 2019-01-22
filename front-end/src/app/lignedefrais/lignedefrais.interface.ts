@@ -1,4 +1,4 @@
-export interface Notedefrais {
+export interface ILignedefrais {
     id_ldf: Number;
     id_ndf: Number;
     id_mission: Number;

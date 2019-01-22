@@ -1,4 +1,4 @@
-export interface Notedefrais {
+export interface INotedefrais {
     id_ndf: Number;
     id_collab: Number;
     total: Number;

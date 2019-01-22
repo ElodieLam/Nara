@@ -16,6 +16,28 @@ router.get('/notedefraisid', function (req, res) {
     });
 });
 
+router.get('/lignesdefraisidndf', function (req, res) {
+    Notedefrais.getLignesdefraisFromIdNdf(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
+router.get('/nommission', function (req, res) {
+    Notedefrais.getMissionFromId(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
 router.post('/notedefraiscreate', function (req, res) {
     Notedefrais.createNotedefraisWithMonth(req.body, function (err, count) {
         if (err) {

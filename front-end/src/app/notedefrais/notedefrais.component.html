@@ -1,17 +1,49 @@
-<mat-grid-list cols="3" rowHeight="100px">
+<mat-grid-list cols="3" rowHeight="300px">
   <mat-grid-tile (click)="goToNotedefrais(0)" [style.border]="'3px solid gray'">
     <!-- <button mat-flat-button routerLink="/lignedefrais" color="warn">Un</button> -->
-    <div>{{ topthreeNdf[0] }}</div>
+    <div>{{ topthreeMonth[0] }}</div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Mission</th>
+        <th>Libelle</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lignedefrais of lunlignedefrais">
+        <td>{{ getNommission(lignedefrais.id_mission) }}</td>
+        <td>{{ lignedefrais.libelle }}</td>
+        <td>{{ lignedefrais.status_ligne }}</td>
+      </tr>
+      </tbody>
+    </table>
   </mat-grid-tile>
   <mat-grid-tile (click)="goToNotedefrais(1)" [style.border]="'3px solid gray'">
-    <div>{{ topthreeNdf[1] }}</div>
+    <div>{{ topthreeMonth[1] }}</div>
   </mat-grid-tile>
   <mat-grid-tile (click)="goToNotedefrais(2)" [style.border]="'3px solid gray'">
-    <div>{{ topthreeNdf[2] }}</div>
+    <div>{{ topthreeMonth[2] }}</div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Mission</th>
+        <th>Libelle</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lignedefrais of ltroislignedefrais">
+        <td>{{ getNommission(lignedefrais.id_mission) }}</td>
+        <td>{{ lignedefrais.libelle }}</td>
+        <td>{{ lignedefrais.status_ligne }}</td>
+      </tr>
+      </tbody>
+    </table>
   </mat-grid-tile>
 </mat-grid-list>
 
-
+<!-- 
 <table class="table">
   <thead>
   <tr>
@@ -32,4 +64,4 @@
   </tr>
   </tbody>
 </table>
-
+ -->

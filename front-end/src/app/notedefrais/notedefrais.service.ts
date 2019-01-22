@@ -15,6 +15,18 @@ export class NotedefraisService {
       .get(`${this.url}/notedefrais/notedefraisid`, { params : data });
   }
 
+  getLignesdefraisFromIdNdf(data){
+    return this
+      .http
+      .get(`${this.url}/notedefrais/lignesdefraisidndf`, { params : data });
+  }
+
+  getNommissionFromId(data){
+    return this
+      .http
+      .get(`${this.url}/notedefrais/nommission`, { params : data });
+  }
+
 
   getNotedefraisFromIdCollabAndMonth(id, mois){
     var param = new HttpParams().set('id', id);
