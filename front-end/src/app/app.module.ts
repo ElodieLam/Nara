@@ -28,12 +28,12 @@ import {CongeService} from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
 import { LignedefraisComponent } from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
-<<<<<<< HEAD
 
-=======
+
+
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';
->>>>>>> ca5cedcc05fc0bc8d36465aa1903148e313f6465
+import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'notifications', pathMatch: 'full'},
@@ -51,12 +51,10 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     CongeComponent,
-<<<<<<< HEAD
+    DemandecongeComponent,
 
-=======
     NotifComponent,
     LoginComponent,
->>>>>>> ca5cedcc05fc0bc8d36465aa1903148e313f6465
   ],
   imports: [
     BrowserModule,
