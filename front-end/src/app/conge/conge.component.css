@@ -1,8 +1,13 @@
-aside 
+aside
 {
     margin: 1.5%, 1.5%;
     float: right;
     width: 50%;
+}
+
+footer
+{
+    float: right;
 }
 
 section 

@@ -11,6 +11,10 @@ app.use('/notedefrais', NotedefraisController);
 var CongeController = require('./conge/CongeController');
 app.use('/conge', CongeController);
 
+var DemandecongeController = require('./demandeconge/DemandecongeController');
+app.use('/demandeconge', DemandecongeController);
+
+
 
 
 module.exports = app;

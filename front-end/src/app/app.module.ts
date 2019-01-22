@@ -28,6 +28,7 @@ import {CongeService} from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
 import { LignedefraisComponent } from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
+import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 
 const appRoutes: Routes = [
   {path: 'notedefrais', component: NotedefraisComponent},
@@ -41,6 +42,7 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     CongeComponent,
+    DemandecongeComponent,
   ],
   imports: [
     BrowserModule,

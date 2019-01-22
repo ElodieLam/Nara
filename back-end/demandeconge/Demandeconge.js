@@ -1,10 +1,12 @@
 var db = require('../db');
 
-var Conge = 
+var Demandeconge =
 {
-    getConges: function(Conge, callback)
+    
+    getDemandeconges: function(Demandeconge, callback)
     {
-        return db.query('SELECT * from t_conge WHERE id_collab = ?', [Conge.id_collab], callback);
+        console.log(Demandeconge);
+        return db.query('SELECT * from t_demande_conge WHERE id_collab = ?', [Demandeconge.id_collab], callback);
     },
 
     /*
@@ -16,4 +18,4 @@ var Conge =
 
 }
 
-module.exports = Conge;
+module.exports = Demandeconge;
