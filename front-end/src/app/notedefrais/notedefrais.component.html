@@ -1,68 +1,12 @@
 <mat-grid-list cols="3" rowHeight="500px">
-  <mat-grid-tile (click)="goToNotedefrais(0)" [style.border]="'3px solid gray'">
+  <mat-grid-tile [style.border]="'3px solid gray'">
     <!-- <button mat-flat-button routerLink="/lignedefrais" color="warn">Un</button> -->
     <app-notedefraisresume [id_notedefrais]=topthreeNdf[0] [moisAnnee]=topthreeMonth[0]></app-notedefraisresume>
-    <!-- <table class="table">
-      <thead>
-      <tr>
-        <th>Mission</th>
-        <th>Libelle</th>
-        <th>Status</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let lignedefrais of lunlignedefrais">
-        <td>{{ getNommission(lignedefrais.id_mission) }}</td>
-        <td>{{ lignedefrais.libelle }}</td>
-        <td>{{ lignedefrais.status_ligne }}</td>
-      </tr>
-      </tbody>
-    </table> -->
   </mat-grid-tile>
-  <mat-grid-tile (click)="goToNotedefrais(1)" [style.border]="'3px solid gray'">
-    <!-- <div>{{ topthreeMonth[1] }}</div> -->
+  <mat-grid-tile [style.border]="'3px solid gray'">
     <app-notedefraisresume [id_notedefrais]=topthreeNdf[1] [moisAnnee]=topthreeMonth[1]></app-notedefraisresume>
   </mat-grid-tile>
-  <mat-grid-tile (click)="goToNotedefrais(2)" [style.border]="'3px solid gray'">
+  <mat-grid-tile  [style.border]="'3px solid gray'">
     <app-notedefraisresume [id_notedefrais]=topthreeNdf[2] [moisAnnee]=topthreeMonth[2]></app-notedefraisresume>
-    <!-- <table class="table">
-      <thead>
-      <tr>
-        <th>Mission</th>
-        <th>Libelle</th>
-        <th>Status</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let lignedefrais of ltroislignedefrais">
-        <td>{{ getNommission(lignedefrais.id_mission) }}</td>
-        <td>{{ lignedefrais.libelle }}</td>
-        <td>{{ lignedefrais.status_ligne }}</td>
-      </tr>
-      </tbody>
-    </table> -->
   </mat-grid-tile>
 </mat-grid-list>
-
-<!-- 
-<table class="table">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Mois</th>
-    <th>Année</th>
-    <th>Total</th> 
-    <th>Editer</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let notedefrais of lnotedefrais">
-    <td>{{ notedefrais.id_ndf }}</td>
-    <td>{{ notedefrais.mois }}</td>
-    <td>{{ notedefrais.annee }}</td>
-    <td>{{ notedefrais.total }}</td>
-    <td><button mat-button>Editer</button></td>
-  </tr>
-  </tbody>
-</table>
- -->
