@@ -216,7 +216,7 @@ ALTER TABLE `t_ligne_de_frais`
 ALTER TABLE `t_ligne_de_frais`
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
 
-INSERT INTO `t_ligne_de_frais` (`id_ldf`, `id_ndf`, `id_mission`, `libelle`, `montant_ligne`, `date_ldf`,`status_ligne`, `commentaire_ligne`,`motif_refus`, `justif_ligne`) VALUES
+INSERT INTO `t_ligne_de_frais` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ligne`, `libelle`, `date_ldf`,`status_ligne`, `commentaire_ligne`,`motif_refus`, `justif_ligne`) VALUES
 (1, 1, 1, 14.55, 'taxi', '2019-01-15', 'notSent', '', '', NULL),
 (2, 1, 1, 22.00, 'restaurant', '2019-01-15', 'notSent', 'midi', '', NULL),
 (3, 1, 1, 35.99, 'restaurant', '2019-01-15', 'notSent', 'soir', '', NULL),

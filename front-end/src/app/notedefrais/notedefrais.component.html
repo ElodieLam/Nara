@@ -1,8 +1,8 @@
-<mat-grid-list cols="3" rowHeight="300px">
+<mat-grid-list cols="3" rowHeight="500px">
   <mat-grid-tile (click)="goToNotedefrais(0)" [style.border]="'3px solid gray'">
     <!-- <button mat-flat-button routerLink="/lignedefrais" color="warn">Un</button> -->
-    <div>{{ topthreeMonth[0] }}</div>
-    <table class="table">
+    <app-notedefraisresume [id_notedefrais]=topthreeNdf[0] [moisAnnee]=topthreeMonth[0]></app-notedefraisresume>
+    <!-- <table class="table">
       <thead>
       <tr>
         <th>Mission</th>
@@ -17,14 +17,15 @@
         <td>{{ lignedefrais.status_ligne }}</td>
       </tr>
       </tbody>
-    </table>
+    </table> -->
   </mat-grid-tile>
   <mat-grid-tile (click)="goToNotedefrais(1)" [style.border]="'3px solid gray'">
-    <div>{{ topthreeMonth[1] }}</div>
+    <!-- <div>{{ topthreeMonth[1] }}</div> -->
+    <app-notedefraisresume [id_notedefrais]=topthreeNdf[1] [moisAnnee]=topthreeMonth[1]></app-notedefraisresume>
   </mat-grid-tile>
   <mat-grid-tile (click)="goToNotedefrais(2)" [style.border]="'3px solid gray'">
-    <div>{{ topthreeMonth[2] }}</div>
-    <table class="table">
+    <app-notedefraisresume [id_notedefrais]=topthreeNdf[2] [moisAnnee]=topthreeMonth[2]></app-notedefraisresume>
+    <!-- <table class="table">
       <thead>
       <tr>
         <th>Mission</th>
@@ -39,7 +40,7 @@
         <td>{{ lignedefrais.status_ligne }}</td>
       </tr>
       </tbody>
-    </table>
+    </table> -->
   </mat-grid-tile>
 </mat-grid-list>
 

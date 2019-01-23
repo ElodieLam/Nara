@@ -9,8 +9,14 @@ var Notedefrais = {
     {
         return db.query('SELECT * from t_ligne_de_frais WHERE id_ndf = ?', [data[0]], callback);
     },
+    getLignesdefraisresumeFromIdNdf:function(data, callback)
+    {
+        console.log(data);
+        return db.query('SELECT miss.nom_mission, ldf.libelle, ldf.status_ligne from t_ligne_de_frais as ldf, t_mission as miss WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission', [data[0]], callback);
+    },
     getMissionFromId: function(data, callback)
     {
+        console.log(data);
         return db.query('SELECT nom_mission FROM t_mission WHERE id_mission = ?', [data[0]], callback);
     },
 

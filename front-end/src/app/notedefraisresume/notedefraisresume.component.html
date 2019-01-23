@@ -1,0 +1,31 @@
+<p>
+  notedefraisresume works!<br>
+  Note de frais de {{ moisAnnee }}<br>
+  id = {{ id_notedefrais }}<br>
+</p>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Mission</th>
+    <th>Libellé</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let lignedefrais of listLignedefrais">
+    <td>{{ lignedefrais.nom_mission }}</td>
+    <td>{{ lignedefrais.libelle }}</td>
+    <td>{{ lignedefrais.status_ligne }}</td>
+  </tr>
+  </tbody>
+  <!-- <tfoot class="grey lighten-5 w-100">
+
+    <tr>
+      <td colspan="4">
+        <mdb-table-pagination (nextPageClick)="onNextPageClick($event)" (previousPageClick)="onPreviousPageClick($event)">
+        </mdb-table-pagination>
+      </td>
+    </tr>
+
+  </tfoot> -->
+</table>

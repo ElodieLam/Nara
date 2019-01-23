@@ -34,6 +34,7 @@ import { CongeComponent } from './conge/conge.component';
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
+import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'notifications', pathMatch: 'full'},
@@ -56,6 +57,7 @@ const appRoutes: Routes = [
 
     NotifComponent,
     LoginComponent,
+    NotedefraisresumeComponent,
   ],
   imports: [
     BrowserModule,

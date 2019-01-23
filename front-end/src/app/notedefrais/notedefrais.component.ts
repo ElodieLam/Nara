@@ -19,9 +19,7 @@ export class NotedefraisComponent implements OnInit {
   topthreeNdf: string[] = ['null', 'null','null'];
   topthreeMonth: string[] = ['null', 'null','null'];
   constructor(private notedefraisService: NotedefraisService , private router: Router) { }
-  lunlignedefrais: ILignedefrais[];
-  ldeuxlignedefrais: ILignedefrais[];
-  ltroislignedefrais: ILignedefrais[];
+  
   private sub: any;
 
   ngOnInit() {
@@ -41,38 +39,10 @@ export class NotedefraisComponent implements OnInit {
           this.topthreeMonth[1] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
           this.topthreeNdf[2] = this.lnotedefrais[2].id_ndf.toString();
           this.topthreeMonth[2] = this.lnotedefrais[2].mois + "-" + this.lnotedefrais[2].annee;
-     /*     if(this.topthreeNdf[0] != 'null')
-    {
-      this.sub  = this.notedefraisService
-      .getLignesdefraisFromIdNdf(this.lnotedefrais[0].id_ndf)
-      .subscribe( (data : ILignedefrais[]) => {
-        this.lunlignedefrais = data;
-        console.log()
-      });
-      this.sub.unsubscribe();
-    }*/
-
-    /*
-          this.notedefraisService
-            .getLignesdefraisFromIdNdf(this.lnotedefrais[1].id_ndf)
-              .subscribe( (data : ILignedefrais[]) => {
-                this.ldeuxlignedefrais = data;
-          });
-          */
-    if(this.topthreeNdf[2] != 'null')
-    {
-      
-      this.notedefraisService
-      .getLignesdefraisFromIdNdf(this.lnotedefrais[2].id_ndf.toString())
-      .subscribe( (data : ILignedefrais[]) => {
-        this.ltroislignedefrais = data;
-        console.log(data);
-      });
-      
-    }
+     
         }
     }); 
-  
+    
 
     
   }
@@ -85,13 +55,7 @@ export class NotedefraisComponent implements OnInit {
       return "mm-aaaa";
   }
 
-  getNommission(id : number) {
-    this.notedefraisService
-      .getNommissionFromId(id)
-        .subscribe( (data : string) => {
-          return data;
-        });
-  }
+  
 
   goToNotedefrais (index : number) {
     this.router.navigate(['/lignedefrais', this.topthreeNdf[index]]);
