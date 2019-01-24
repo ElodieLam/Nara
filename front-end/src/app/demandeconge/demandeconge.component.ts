@@ -2,8 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DemandecongeService } from './demandeconge.service';
 import {Router} from "@angular/router";
 import { IDemandeconge } from './demandeconge.interface';
-import { CalendarEvent, DAYS_OF_WEEK } from 'angular-calendar';
+import { CalendarEvent, CalendarDateFormatter, DAYS_OF_WEEK } from 'angular-calendar';
 import {MatSort, MatTableDataSource} from '@angular/material';
+
+import { CustomDateFormatter } from './custom-date-formatter.provider';
 
 import {
   startOfDay,
@@ -28,13 +30,23 @@ const colors: any = {
   yellow: {
     primary: '#e3bc08',
     secondary: '#FDF1BA'
+  },
+  green: {
+    primary: '#50b63b',
+    secondary: '#B0E6A6'
   }
 };
 
 @Component({
   selector: 'app-demandeconge',
   templateUrl: './demandeconge.component.html',
-  styleUrls: ['./demandeconge.component.css']
+  styleUrls: ['./demandeconge.component.css'],
+  providers: [
+    {
+      provide: CalendarDateFormatter,
+      useClass: CustomDateFormatter
+    }
+  ]
 })
 export class DemandecongeComponent implements OnInit 
 {
@@ -83,7 +95,7 @@ export class DemandecongeComponent implements OnInit
 
     for(var demande of this.listeDemande)
     {
-      switch(demande.type_demande_conge)
+      switch(demande.status_conge)
       {
         case "attCds":
         case "attRh" : 
@@ -93,15 +105,15 @@ export class DemandecongeComponent implements OnInit
         }
 
         case "noCds":
-        case "noRH":
+        case "noRh":
         {
           couleur = colors.red;
           break;
         }
 
-        case "css":
+        case "validee":
         {
-          typedem = "Congé sans Solde";
+          couleur = colors.green;
           break;
         }
 
@@ -135,7 +147,7 @@ export class DemandecongeComponent implements OnInit
         start: new Date(demande.date_debut),
         end: new Date(demande.date_fin),
         title: typedem,
-        color: colors.yellow ,
+        color: couleur ,
 
       })
       
