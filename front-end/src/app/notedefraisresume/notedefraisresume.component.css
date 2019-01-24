@@ -2,3 +2,9 @@ mat-paginator {
     display: flex;
     align-content: center;
   }
+
+
+h1 {
+  text-align: center;
+  position: relative;
+}

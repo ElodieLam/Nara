@@ -2,6 +2,7 @@ import { Component, OnInit, Input, SimpleChange, SimpleChanges, OnChanges, ViewC
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import { NotedefraisService } from '../notedefrais/notedefrais.service';
 import { INotedefraisresume } from './notedefraisresume.interface';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,14 +18,15 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   // pour la liste des données
   private _id_ndf: number;
   listLignedefrais: INotedefraisresume[];
-
+  mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  dateVerbose : string;
   // pour la pagination
   displayedColumns: string[] = ['nom_mission', 'libelle', 'status_ligne'];
   //dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
   dataSource;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private notedefraisService : NotedefraisService) {
+  constructor(private notedefraisService : NotedefraisService, private router : Router) {
   }
 
   ngOnInit() {
@@ -40,11 +42,18 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
       .subscribe( (data : INotedefraisresume[]) => {
         console.log(data);
         this.listLignedefrais = data;
+        var temp = this.moisAnnee.split("-",2);
+
+        this.dateVerbose = this.mois[temp[0]] + " " + temp[1];
         this.dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
     });
-}
+  }
+
+  goToNotedefrais () {
+    this.router.navigate(['/lignedefrais', this.id_notedefrais]);
+  }
 
 
 

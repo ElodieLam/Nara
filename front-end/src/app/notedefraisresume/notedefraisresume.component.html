@@ -1,6 +1,7 @@
+<h1>
+  {{ dateVerbose }}<br>
+</h1>
 <p>
-  notedefraisresume works!<br>
-  Note de frais de {{ moisAnnee }}<br>
   id = {{ id_notedefrais }}<br>
 </p>
 <div class="mat-elevation-z8">
@@ -31,4 +32,4 @@
   <!-- <mat-paginator showFirstLastButtons></mat-paginator> -->
   <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
 </div>
-
+<button mat-flat-button (click)="goToNotedefrais()" color="warn">Editer</button>
