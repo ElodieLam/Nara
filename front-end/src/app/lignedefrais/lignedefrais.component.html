@@ -1,3 +1,78 @@
 <p>
-  lignedefrais works!
+  Id ndf = {{ id_ndf }}
 </p>
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  
+      <ng-container matColumnDef="id_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> id ldf </th>
+        <td mat-cell *matCellDef="let element"> {{element.id_ldf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="id_ndf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> id ndf </th>
+        <td mat-cell *matCellDef="let element"> {{element.id_ndf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="id_mission">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> id mission </th>
+        <td mat-cell *matCellDef="let element"> {{element.id_mission}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="libelle_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> libellé </th>
+        <td mat-cell *matCellDef="let element"> {{element.libelle_ldf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="montant_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> montant </th>
+        <td mat-cell *matCellDef="let element"> {{element.montant_ldf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="date_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> date </th>
+        <td mat-cell *matCellDef="let element"> {{element.date_ldf | date : 'dd/MM/yyyy'}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="status_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> statut </th>
+        <td mat-cell *matCellDef="let element"> {{element.status_ldf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="commentaire_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> commentaire </th>
+        <td mat-cell *matCellDef="let element"> {{element.commentaire_ldf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="motif_refus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> motif refus </th>
+        <td mat-cell *matCellDef="let element"> {{element.motif_refus}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="justif_ldf">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> justif </th>
+        <td mat-cell *matCellDef="let element"> {{element.justif_ldf}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="mission_passe">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> passé </th>
+        <td mat-cell *matCellDef="let element"> {{element.mission_passe}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="montant_estime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> estimé </th>
+        <td mat-cell *matCellDef="let element"> {{element.montant_estime}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="montant_avance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> avancé </th>
+        <td mat-cell *matCellDef="let element"> {{element.montant_avance}} </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  
+    <!-- <mat-paginator showFirstLastButtons></mat-paginator> -->
+    <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+  </div>

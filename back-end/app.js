@@ -14,7 +14,8 @@ app.use('/conge', CongeController);
 var DemandecongeController = require('./demandeconge/DemandecongeController');
 app.use('/demandeconge', DemandecongeController);
 
-
+var LignedefraisController = require('./lignedefrais/LignedefraisController');
+app.use('/lignedefrais', LignedefraisController);
 
 
 module.exports = app;
