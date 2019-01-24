@@ -1,4 +1,4 @@
-<!-- <aside><table class="table table-striped">
+ <aside><table class="table table-striped">
   <thead>
   <tr>
     <th>Congés payés pris</th>
@@ -15,78 +15,33 @@
     <td>{{test.rtt_pris}}</td>
     <td>{{test.rtt_restant}}</td>
     <td>{{test.css_pris}}</td>
-    <td><button mat-button>Historique</button></td>
   </tr>
   </tbody>
 </table>
-</aside> -->
-<aside><table class="table table-striped">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Type Congé</th>
-      <th>Date début</th> 
-      <th>Date fin</th>
-      <th>Statut</th> 
-      <th>Durée (demi-journées)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor ="let test of listeDemande">
-      <td>{{test.id_demande_conge}}</td>
-      <td>{{test.type_demande_conge}}</td>
-      <td>{{test.date_debut | date : 'dd/MM/yyyy'}}</td>
-      <td>{{test.date_fin | date : 'dd/MM/yyyy'}}</td>
-      <td>{{test.status_conge}}</td>
-      <td>{{test.duree}}</td>
-    </tr>
-    </tbody>
-  </table>
-</aside>
+<a routerLink = "../historiqueconge"><button class= "button button1" mat-button >Historique</button></a>
+</aside> 
+<!--<aside><table class="table table-striped">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Type Congé</th>
+    <th>Date début</th> 
+    <th>Date fin</th>
+    <th>Statut</th> 
+    <th>Durée (demi-journées)</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor ="let test of listeDemande">
+    <td>{{test.id_demande_conge}}</td>
+    <td>{{test.type_demande_conge}}</td>
+    <td>{{test.date_debut | date : 'dd/MM/yyyy'}}</td>
+    <td>{{test.date_fin | date : 'dd/MM/yyyy'}}</td>
+    <td>{{test.status_conge}}</td>
+    <td>{{test.duree}}</td>
+  </tr>
+  </tbody>
+</table>
+</aside>-->
 
-<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-    <!-- Position Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-      <td mat-cell *matCellDef="let element"> {{element.id_demande_conge}} </td>
-    </ng-container>
-  
-    <!-- Name Column -->
-    <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Type Congé </th>
-      <td mat-cell *matCellDef="let element"> {{element.type_demande_conge}} </td>
-    </ng-container>
-  
-    <!-- Weight Column -->
-    <ng-container matColumnDef="datedebut">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date début </th>
-      <td mat-cell *matCellDef="let element"> {{element.date_debut | date : 'dd/MM/yyyy'}} </td>
-    </ng-container>
-  
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="datefin">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date fin </th>
-      <td mat-cell *matCellDef="let element"> {{element.date_fin | date : 'dd/MM/yyyy'}} </td>
-    </ng-container>
-
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="statut">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
-      <td mat-cell *matCellDef="let element"> {{element.status_conge}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="duree">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Durée </th>
-        <td mat-cell *matCellDef="let element"> {{element.duree}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
-  </table>
-
-<section><h3>{{viewDate | date : 'MMMM yyyy'}}</h3>
-  <mwl-calendar-month-view
-[viewDate]="viewDate"
-[events]="events"
-[weekStartsOn]="weekStartsOn">
-</mwl-calendar-month-view></section>
+<app-demandeconge></app-demandeconge>
