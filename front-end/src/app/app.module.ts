@@ -34,13 +34,15 @@ import { CongeComponent } from './conge/conge.component';
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
+import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'notifications', pathMatch: 'full'},
     {path: 'login', component: LoginComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
     {path: 'conge', component: CongeComponent},
-    {path: 'notifications', component: NotifComponent}
+    {path: 'notifications', component: NotifComponent},
+    {path: 'historiqueconge', component: HistoriquecongeComponent}
   
 ];
 
@@ -55,6 +57,7 @@ const appRoutes: Routes = [
 
     NotifComponent,
     LoginComponent,
+    HistoriquecongeComponent,
   ],
   imports: [
     BrowserModule,
