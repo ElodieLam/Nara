@@ -16,17 +16,6 @@ router.get('/notedefraisid', function (req, res) {
     });
 });
 
-router.get('/lignesdefraisidndf', function (req, res) {
-    Notedefrais.getLignesdefraisFromIdNdf(req.query, function (err, rows) {
-        if (err) {
-            res.status(400).json(err);
-        }
-        else {
-            res.json(rows);
-        }
-    });
-});
-
 router.get('/lignesdefraisresumeidndf', function (req, res) {
     Notedefrais.getLignesdefraisresumeFromIdNdf(req.query, function (err, rows) {
         if (err) {

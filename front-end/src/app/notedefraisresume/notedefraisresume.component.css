@@ -8,3 +8,8 @@ h1 {
   text-align: center;
   position: relative;
 }
+
+.mat-cell {
+  padding: 10px 10px 10px 0;
+  text-align: center;
+}

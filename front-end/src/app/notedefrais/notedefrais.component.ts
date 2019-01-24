@@ -14,6 +14,7 @@ import { isoStringToDate } from '@angular/common/src/i18n/format_date';
 })
 export class NotedefraisComponent implements OnInit {
 
+  private sub : any;
   lnotedefrais: INotedefrais[];
   //data: Notedefrais = { id_ndf:null, id_collab:6, mois:null, annee:null, total:null, };
   dataS: String = '6';
@@ -27,7 +28,7 @@ export class NotedefraisComponent implements OnInit {
     private datePipe: DatePipe) { }
   
   ngOnInit() {
-    this.notedefraisService
+    this.sub = this.notedefraisService
       .getNotedefraisFromIdCollab(this.dataS)
         .subscribe( (data : INotedefrais[]) => {
           // récupération des données de la query
@@ -39,6 +40,7 @@ export class NotedefraisComponent implements OnInit {
             });
             // enlève les ndf validées
             // TODO
+
 
             // vérifie s'il existe une ndf pour le mois courrant
             this.dataS = this.datePipe.transform(this.date, 'yyyy-MM-dd');
@@ -91,29 +93,17 @@ export class NotedefraisComponent implements OnInit {
               this.topthreeMonth[2] = this.lnotedefrais[2].mois + "-" + this.lnotedefrais[2].annee;
               this.count = 3;
             }
-            console.log("here");
-         
-     
         }
     }); 
-    
-
-    
   }
   
-  moisNotedefrais(index : number) {
-    console.log("mois ?");
-    if(this.lnotedefrais != null)
-      return this.lnotedefrais[index].mois + "-" + this.lnotedefrais[index].annee;
-    else
-      return "mm-aaaa";
-  }
-
-  
-
   goToNotedefrais () {
     this.router.navigate(['/lignedefrais', 0]);
   }
   
+  ngOnDestroy() {
+    console.log("destroy ndf ")
+    this.sub.unsubscribe();
+  }
 }
 

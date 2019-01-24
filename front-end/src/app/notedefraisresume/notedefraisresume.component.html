@@ -14,15 +14,15 @@
     </ng-container>
 
     <!-- Libelle Column -->
-    <ng-container matColumnDef="libelle">
+    <ng-container matColumnDef="libelle_ldf">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Libellé </th>
-      <td mat-cell *matCellDef="let element"> {{element.libelle}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.libelle_ldf}} </td>
     </ng-container>
 
     <!-- Status Column -->
-    <ng-container matColumnDef="status_ligne">
+    <ng-container matColumnDef="status_ldf">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-      <td mat-cell *matCellDef="let element"> {{element.status_ligne}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.status_ldf}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

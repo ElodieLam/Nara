@@ -24,7 +24,8 @@ import { NotedefraisComponent } from './notedefrais/notedefrais.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from "@angular/common/http";
 import { NotedefraisService } from "./notedefrais/notedefrais.service";
-import {CongeService} from "./conge/conge.service";
+import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
+import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
 import { LignedefraisComponent } from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
@@ -84,6 +85,7 @@ const appRoutes: Routes = [
   ],
   providers: [
     NotedefraisService,
+    LignedefraisService,
     CongeService
   ],
   bootstrap: [AppComponent]

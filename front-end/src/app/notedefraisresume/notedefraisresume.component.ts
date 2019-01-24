@@ -14,14 +14,15 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   // input du component
   @Input() id_notedefrais = 0;
   @Input() moisAnnee = "mm-aaaa";
-
+  
   // pour la liste des données
   private _id_ndf: number;
+  private sub: any;
   listLignedefrais: INotedefraisresume[];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
   dateVerbose : string;
   // pour la pagination
-  displayedColumns: string[] = ['nom_mission', 'libelle', 'status_ligne'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'status_ldf'];
   //dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
   dataSource;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -34,10 +35,8 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   
   ngOnChanges(changes: SimpleChanges) {
     const id: SimpleChange = changes.id_notedefrais;
-    //console.log('prev value: ', id.previousValue);
-    //console.log('got id: ', id.currentValue);
     this._id_ndf = id.currentValue.toUpperCase();
-    this.notedefraisService
+    this.sub = this.notedefraisService
       .getNotedefraisresumeFromIdNdf(this.id_notedefrais)
       .subscribe( (data : INotedefraisresume[]) => {
         console.log(data);
@@ -56,6 +55,10 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   }
 
 
+  ngOnDestroy() {
+    console.log("destroy ndf res")
+    this.sub.unsubscribe();
+  }
 
 
 }

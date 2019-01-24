@@ -2,10 +2,14 @@ export interface ILignedefrais {
     id_ldf: Number;
     id_ndf: Number;
     id_mission: Number;
-    libelle: String;
-    montant_ligne: Number;
+    libelle_ldf: String;
+    montant_ldf: Number;
     date_ldf: Date;
-    status_ligne: String;
-    commentaire_ligne: String;
+    status_ldf: String;
+    commentaire_ldf: String;
     motif_refus: String;
-    }
+    justif_ldf: Blob;
+    mission_passe: boolean;
+    montant_estime: Number;
+    montant_avance: Number;
+}
