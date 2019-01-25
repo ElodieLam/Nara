@@ -10,21 +10,15 @@ export class NotedefraisService {
   
   
   getNotedefraisFromIdCollab(data){
-
-/*    var param = new HttpParams().set('id', id);
-    console.log(id);*/
     return this
       .http
-      .get(`${this.url}/notedefrais/notedefraisid`, { params : data});
+      .get(`${this.url}/notedefrais/notedefraisid`, { params : data });
   }
 
-
-  getNotedefraisFromIdCollabAndMonth(id, mois){
-    var param = new HttpParams().set('id', id);
-    param.set('mois', mois);
+  getNotedefraisresumeFromIdNdf(data){
     return this
       .http
-      .get(`${this.url}/notedefrais/notedefraisid`, { params : param});
+      .get(`${this.url}/notedefrais/lignesdefraisresumeidndf`, { params : data });
   }
 
   createNotedefraisWithMonth(id, month) {

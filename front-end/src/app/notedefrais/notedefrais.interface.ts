@@ -1,6 +1,7 @@
-export interface Notedefrais {
+export interface INotedefrais {
     id_ndf: Number;
     id_collab: Number;
     total: Number;
-    mois: String;
+    mois: Number;
+    annee: Number;
   }
