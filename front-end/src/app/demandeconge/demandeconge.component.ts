@@ -61,8 +61,6 @@ export class DemandecongeComponent implements OnInit
   listeDemande : IDemandeconge[];
   test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null}
   
-
-  displayedColumn = ['id', 'type', 'datedebut', 'datefin', 'statut', 'duree'];
   dataSource;
 
   @ViewChild(MatSort) sort: MatSort;
