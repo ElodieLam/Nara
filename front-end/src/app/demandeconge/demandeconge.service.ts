@@ -21,4 +21,23 @@ export class DemandecongeService
       .http
       .get(`${this.url}/demandeconge/demandecongesid`, { params : data});
   }
+
+  createDemandeconges(data)
+  {
+    console.log("oh bosetti");
+    return this
+      .http
+      .post(`${this.url}/demandeconge/demandecongescreate`, data)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastr.success('Demande créée.', 'Success');
+          this.router.navigateByUrl('/conge');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
 }

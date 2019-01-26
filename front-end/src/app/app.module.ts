@@ -1,9 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { FormsModule } from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
   MatToolbarModule,
@@ -37,6 +39,7 @@ import { LoginComponent } from './login/login.component';
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
+import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'notifications', pathMatch: 'full'},
@@ -45,7 +48,8 @@ const appRoutes: Routes = [
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
-    {path: 'historiqueconge', component: HistoriquecongeComponent}
+    {path: 'historiqueconge', component: HistoriquecongeComponent},
+    {path: 'create-demandeconge', component: CreateDemandecongeComponent}
   
 ];
 
@@ -62,6 +66,7 @@ const appRoutes: Routes = [
     LoginComponent,
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
+    CreateDemandecongeComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +84,8 @@ const appRoutes: Routes = [
     MatCardModule,
     MatMenuModule,
     HttpClientModule,
+    MatSelectModule,
+    [FormsModule, FlatpickrModule.forRoot()],
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
     CalendarModule.forRoot({

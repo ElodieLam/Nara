@@ -1,0 +1,67 @@
+<table class="table table-bordered">
+
+  <thead>
+    <tr>
+      <th>Type de congé</th>
+      <th>Date début</th>
+      <th>Heure début</th>
+      <th>Date fin</th>
+      <th>Heure fin</th>
+      <th>Durée</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        <mat-form-field>
+          <mat-select [(value)]="newDemande.type_demande_conge">
+            <mat-option value="rtt">RTT</mat-option>
+            <mat-option value="cpp">Congé Payé</mat-option>
+            <mat-option value="css">Congé sans Solde</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+      <td>
+        <input
+          class="form-control"
+          type="text"
+          mwlFlatpickr
+          [(ngModel)]="newDemande.date_debut">
+      </td>
+      <td>
+          <mat-form-field>
+              <mat-select [(value)]="newDemande.debut_matin">
+                <mat-option value="true">Matin</mat-option>
+                <mat-option value="false">Après-Midi</mat-option>
+              </mat-select>
+            </mat-form-field>
+      </td>
+      <td>
+        <input
+          class="form-control"
+          type="date"
+          mwlFlatpickr
+          [(ngModel)]="newDemande.date_fin">
+      </td>
+      <td>
+          <mat-form-field>
+              <mat-select [(value)]="newDemande.fin_aprem">
+                <mat-option value="false">Matin</mat-option>
+                <mat-option value="true">Après-Midi</mat-option>
+              </mat-select>
+            </mat-form-field>
+      </td>
+      <td>{{calculDuree(newDemande)}} demi-journées</td>
+
+      <td>
+        <button
+          class="btn btn-success"
+          (click) = "createDemande(newDemande)">
+          Valider
+        </button>
+      </td>
+    </tr>
+  </tbody>
+
+</table>
