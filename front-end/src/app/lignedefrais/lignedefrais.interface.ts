@@ -28,3 +28,9 @@ export interface ILignedefrais {
     //button modifier
     //button supprimer 
 }
+
+export interface ILignedefraisShort {
+    mission: string;
+    libelle: string;
+    montant: number;
+}

@@ -3,14 +3,17 @@
 </p>
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      
       <ng-container matColumnDef="avance">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> avance </th>
-        <td mat-cell *matCellDef="let element"> {{element.avance}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="montant_avance">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> montant avancé </th>
-        <td mat-cell *matCellDef="let element"> {{element.montant_avance}} </td>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="isAvance(element); else elseBlock">
+            {{element.montant_avance}}
+          </div>
+          <ng-template #elseBlock>
+            <mat-checkbox (change)="onCheck(element)"></mat-checkbox>
+          </ng-template>
+        </td>
       </ng-container>
   
       <ng-container matColumnDef="status">
@@ -70,3 +73,9 @@
     <!-- <mat-paginator showFirstLastButtons></mat-paginator> -->
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>
+  <button mat-raised-button (click)="openDialog()">Ajouter une ligne</button>
+  <br>
+  <button mat-flat-button (click)="temp()" color="warn">Annuler</button>
+  <button mat-flat-button (click)="temp()" color="warn">Enregistrer</button>
+  <button mat-flat-button (click)="temp()" color="warn">Envoyer les avances</button>
+  <button mat-flat-button (click)="temp()" color="warn">Envoyer</button>

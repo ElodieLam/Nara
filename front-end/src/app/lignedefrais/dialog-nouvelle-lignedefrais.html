@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>Nouvelle ligne de frais</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-select placeholder="Mission" [(ngModel)]="data.comp.mission">
+      <mat-option *ngFor="let miss of data.comp.missions" [value]="miss.viewValue">
+        {{miss.viewValue}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="missionControl.hasError('required')">Sélectionner une mission</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select placeholder="Libellé" [(ngModel)]="data.comp.libelle">
+      <mat-option *ngFor="let lib of data.comp.libelles" [value]="lib.viewValue">
+        {{lib.viewValue}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="libelleControl.hasError('required')">Sélectionner un libellé</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <!-- <input matInput type="number" placeholder="Montant" [(ngModel)]="data.comp.montant"> -->
+    <input matInput placeholder="Montant" [formControl]="montantControl">
+    <mat-error *ngIf="montantControl.hasError('pattern') && !montantControl.hasError('required')">
+      Montant invalide
+    </mat-error>
+    <mat-error *ngIf="montantControl.hasError('required')">
+      Montant manquant
+    </mat-error>
+  </mat-form-field>
+  
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ajouter</button>
+</div>

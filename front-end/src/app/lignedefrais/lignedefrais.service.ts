@@ -9,8 +9,8 @@ export class LignedefraisService {
   url = 'http://localhost:3000';
 
   getLignesdefraisFromIdNdf(data){
-    console.log("service");
-    console.log(data);
+    //console.log("service");
+    //console.log(data);
     return this
       .http
       .get(`${this.url}/lignedefrais/lignesdefraisidndf`, { params : data });
