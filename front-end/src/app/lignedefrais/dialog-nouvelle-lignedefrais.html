@@ -18,17 +18,22 @@
   </mat-form-field>
   <mat-form-field>
     <!-- <input matInput type="number" placeholder="Montant" [(ngModel)]="data.comp.montant"> -->
-    <input matInput placeholder="Montant" [formControl]="montantControl">
-    <mat-error *ngIf="montantControl.hasError('pattern') && !montantControl.hasError('required')">
-      Montant invalide
-    </mat-error>
-    <mat-error *ngIf="montantControl.hasError('required')">
-      Montant manquant
-    </mat-error>
+    <div [formGroup]="myGroup">
+      <input matInput placeholder="Montant" formControlName="montantControl">
+      <mat-error *ngIf="myGroup.get('montantControl').hasError('pattern') && !myGroup.get('montantControl').hasError('required')">
+        Montant invalide
+      </mat-error>
+      <mat-error *ngIf="myGroup.get('montantControl').hasError('required')">
+        Montant manquant
+      </mat-error>
+    </div>
+  </mat-form-field>
+  <mat-form-field>
+      <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire">
   </mat-form-field>
   
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Annuler</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ajouter</button>
+  <button mat-button (click)="onClick()" [mat-dialog-close]="data" cdkFocusInitial>Ajouter</button>
 </div>

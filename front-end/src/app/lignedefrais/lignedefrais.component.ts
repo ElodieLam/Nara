@@ -3,7 +3,7 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
 import { ILignedefraisFull, ILignedefrais, ILignedefraisShort } from './lignedefrais.interface';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 export interface Mission {
   value: string;
@@ -38,7 +38,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     libelles : this.lib,
     mission : '',
     libelle : '',
-    montant : ''
+    montant : '',
+    commentaire : '' 
   }
   ldf : ILignedefraisShort;
   id_ndf: number = 0;
@@ -103,7 +104,12 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   openDialog() {
     console.log("here")
+    this.componentData.mission = '';
+    this.componentData.libelle = '';
+    this.componentData.montant = '';
+    this.componentData.commentaire = '';
     const dialogRef = this.dialog.open(DialogNouvelleLignedefrais, {
+      
       data: { comp : this.componentData }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -129,19 +135,25 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 })
 export class DialogNouvelleLignedefrais {
 
-  montantControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  ]);
+  myGroup = new FormGroup({
+    montantControl : new FormControl('', [
+      Validators.required,
+      Validators.pattern('^\\d+(\.\\d{1,2})?$')
+    ])
+ });
   missionControl = new FormControl('', [Validators.required]);
   libelleControl = new FormControl('', [Validators.required]);
 
-  setValue() { this.montantControl.setValue('new value'); }
+  //setValue() { this.montantControl.setValue('new value'); }
 
   constructor(
     public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
     
+  onClick(): void {
+    console.log("onclick");
+    this.data.comp.montant =  this.myGroup.get('montantControl').value;
+  }
   onNoClick(): void {
     console.log(this.data);
     this.dialogRef.close();
