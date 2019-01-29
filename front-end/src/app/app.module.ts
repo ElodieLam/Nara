@@ -6,6 +6,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { FormsModule } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
   MatToolbarModule,
@@ -18,7 +19,11 @@ import {
   MatSortModule,
   MatGridListModule,
   MatCardModule,
-  MatMenuModule
+  MatMenuModule,
+  MatNativeDateModule,
+  MatFormField,
+  MatInputModule,
+  MAT_DATE_LOCALE
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -77,6 +82,7 @@ const appRoutes: Routes = [
     MatIconModule,
     MatListModule,
     BrowserAnimationsModule,
+    MatInputModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
@@ -85,6 +91,8 @@ const appRoutes: Routes = [
     MatMenuModule,
     HttpClientModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     [FormsModule, FlatpickrModule.forRoot()],
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
@@ -96,7 +104,8 @@ const appRoutes: Routes = [
   providers: [
     NotedefraisService,
     LignedefraisService,
-    CongeService
+    CongeService,
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
   ],
   bootstrap: [AppComponent]
 })
