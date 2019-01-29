@@ -16,4 +16,27 @@ router.get('/lignesdefraisidndf', function (req, res) {
     });
 });
 
+router.get('/missionsidcollab', function (req, res) {
+    Lignedefrais.getMissionsCollabFormIdCollab(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
+router.post('/ajoutlignedefrais', function (req, res) {
+    Lignedefrais.createLignedefrais(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
 module.exports = router;

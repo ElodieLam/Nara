@@ -29,8 +29,18 @@ export interface ILignedefrais {
     //button supprimer 
 }
 
-export interface ILignedefraisShort {
-    mission: string;
+export interface ILignedefraisDialog {
+    id_collab: number;
+    id_mission: number;
     libelle: string;
     montant: number;
+    commentaire: string;
+}
+
+export interface ILignedefraisToSend {
+    id_ndf: number;
+    id_mission: number;
+    libelle: string;
+    montant: number;
+    commentaire: string;
 }

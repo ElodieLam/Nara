@@ -15,7 +15,20 @@ var Lignedefrais = {
             Null as mission_passee, Null as montant_estime, Null as montant_avance \
             FROM t_ligne_de_frais as ldf, t_mission as miss \
             WHERE ldf.id_ndf = ? AND ldf.id_mission = miss.id_mission', 
-            [data[0], data[0]], callback);
+            [data.id, data.id], callback);
+    },
+    getMissionsCollabFormIdCollab:function(data,callback)
+    {
+        return db.query('SELECT miss.id_mission, miss.nom_mission FROM t_mission as miss, t_missionCollab as missC \
+            WHERE missC.id_collab = ? AND missC.id_mission = miss.id_mission AND miss.ouverte = TRUE',
+            [data.id], callback);
+    },
+    createLignedefrais: function (data, callback) {
+        date = new Date();
+        return db.query('INSERT INTO t_ligne_de_frais(id_ndf, id_mission, libelle_ldf, montant_ldf, \
+            commentaire_ldf, date_ldf, status_ldf, motif_refus, justif_ldf) \
+            VALUES(?, ?, ?, ?, ?, ?, ?, \'\', NULL)', 
+            [data.id_ndf, data.id_mission, data.libelle, data.montant, data.commentaire, date, 'noSent'], callback);
     },
 }
 

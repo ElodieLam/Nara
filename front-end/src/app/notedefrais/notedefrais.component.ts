@@ -28,7 +28,7 @@ export class NotedefraisComponent implements OnInit {
   
   ngOnInit() {
     this.sub = this.notedefraisService
-      .getNotedefraisFromIdCollab(this.dataS)
+      .getNotedefraisFromIdCollab({id : this.dataS})
         .subscribe( (data : INotedefrais[]) => {
           // récupération des données de la query
           this.lnotedefrais = data;
