@@ -36,6 +36,7 @@ import { CongeComponent } from './conge/conge.component';
 
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';
+import { LoginService } from "./login/login.service";
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
@@ -96,7 +97,8 @@ const appRoutes: Routes = [
   providers: [
     NotedefraisService,
     LignedefraisService,
-    CongeService
+    CongeService,
+    LoginService
   ],
   bootstrap: [AppComponent]
 })
