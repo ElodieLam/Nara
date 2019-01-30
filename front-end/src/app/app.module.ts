@@ -21,7 +21,8 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatDialogModule,
-  MatSelectModule
+  MatSelectModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -33,9 +34,13 @@ import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { LignedefraisComponent } from './lignedefrais/lignedefrais.component';
+import { 
+  LignedefraisComponent,
+  DialogNouvelleLignedefrais,
+  LignedefraisAjoutComponent 
+} from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
-import { DialogNouvelleLignedefrais } from './lignedefrais/lignedefrais.component'
+
 
 
 
@@ -63,6 +68,7 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     DialogNouvelleLignedefrais,
+    LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
 
@@ -91,6 +97,7 @@ const appRoutes: Routes = [
     MatDialogModule,
     MatInputModule,
     MatSelectModule,
+    MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
@@ -102,7 +109,8 @@ const appRoutes: Routes = [
     })
   ],
   entryComponents: [ 
-    DialogNouvelleLignedefrais
+    DialogNouvelleLignedefrais,
+    LignedefraisAjoutComponent
   ],
   providers: [
     NotedefraisService,

@@ -1,10 +1,9 @@
 import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
 import { ILignedefraisFull, ILignedefrais, ILignedefraisDialog, ILignedefraisToSend } from './lignedefrais.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-
 
 export interface Libelle {
   value: string;
@@ -34,17 +33,19 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   ];
 
+  ldf : ILignedefraisDialog;
+  id_ndf: number = 0;
+  id_collab: number = 6;
+  
   componentData : any = {
+    id_ndf : 0,
     id_collab : 6,
     id_mission : '',
     libelle : '',
     montant : '',
     commentaire : '' 
   }
-  ldf : ILignedefraisDialog;
-  id_ndf: number = 0;
-  id_collab: number = 6;
-  
+
   private _id_ndf: number;
   private sub: any;
   listlignedefraisfull : ILignedefraisFull[];
@@ -58,12 +59,13 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private lignedefraisService : LignedefraisService, private route : ActivatedRoute,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog, private snackBar: MatSnackBar) { }
   
   ngOnInit() {
     console.log('init')
     this.sub = this.route.params.subscribe(params => {
       this.id_ndf = +params['id'];
+      this.componentData.id_ndf = this.id_ndf;
     });
     this.refreshLignesdefrais();
   }
@@ -114,17 +116,21 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.ldf = result;
-      if(this.ldf != undefined){
-        var lignedefrais = {
-          id_ndf : this.id_ndf,
-          id_mission : this.componentData.id_mission,
-          libelle : this.componentData.libelle,
-          montant : this.componentData.montant,
-          commentaire : this.componentData.commentaire
-        }
-        this.lignedefraisService.createLignedefrais(lignedefrais);
-        //this.refreshLignesdefrais();
-      }
+      // if(this.ldf != undefined){
+      //   var lignedefrais = {
+      //     id_ndf : this.id_ndf,
+      //     id_mission : this.componentData.id_mission,
+      //     libelle : this.componentData.libelle,
+      //     montant : this.componentData.montant,
+      //     commentaire : this.componentData.commentaire
+      //   }
+        //this.lignedefraisService.createLignedefrais(lignedefrais);
+        console.log('refresh');
+        this.delay(1500).then(any => {
+          this.refreshLignesdefrais();
+          this.openSnackBar()
+        });
+      // }
     });
   }
 
@@ -135,6 +141,10 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     this.sub.unsubscribe();
   }
 
+  async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+}
+
   transformStatus(status : String) : String {
     for(var i = 0; i < this.status.length ; i ++){
       if(this.status[i].key == status)
@@ -143,6 +153,11 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return 'statut undefined'
   }
 
+  openSnackBar() {
+    this.snackBar.openFromComponent(LignedefraisAjoutComponent, {
+      duration: 500,
+    });
+  }
 }
 
 export interface IMission { 
@@ -196,6 +211,15 @@ export class DialogNouvelleLignedefrais implements OnInit{
   onClick(): void {
     console.log("onclick");
     this.data.comp.montant =  this.myGroup.get('montantControl').value;
+    console.log('ajout ldf')
+    this.lignedefraisService.createLignedefrais({
+      id_ndf : this.data.comp.id_ndf,
+      id_mission : this.data.comp.id_mission,
+      libelle : this.data.comp.libelle,
+      montant : this.data.comp.montant,
+      commentaire : this.data.comp.commentaire
+    });
+    console.log('fin ajout ldf')
   }
   onNoClick(): void {
     console.log(this.data);
@@ -203,3 +227,13 @@ export class DialogNouvelleLignedefrais implements OnInit{
   }
 }
 
+@Component({
+  selector: 'snack-bar-component-ajout',
+  templateUrl: 'snack-bar-component-ajout.html',
+  styles: [`
+    .ajout-ligne-de-frais {
+      color: hotpink;
+    }
+  `],
+})
+export class LignedefraisAjoutComponent {}

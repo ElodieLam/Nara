@@ -11,6 +11,7 @@ export class LignedefraisService {
   getLignesdefraisFromIdNdf(data){
     //console.log("service");
     //console.log(data);
+    console.log('service refresh')
     return this
       .http
       .get(`${this.url}/lignedefrais/lignesdefraisidndf`, { params : data });
@@ -29,6 +30,7 @@ export class LignedefraisService {
       .subscribe(
         res => {
           //this.ldf.refreshLignesdefrais();
+          console.log('service ajout');
           console.log(res);
           this.toastr.success('Ligne de frais ajoutée.', 'Success');
 
