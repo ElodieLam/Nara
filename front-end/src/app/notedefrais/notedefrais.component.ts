@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NotedefraisService } from './notedefrais.service';
 import { INotedefrais } from './notedefrais.interface';
-import { ILignedefrais } from '../lignedefrais/lignedefrais.interface';
 import { Router } from "@angular/router";
 import { DatePipe } from '@angular/common';
 import { isoStringToDate } from '@angular/common/src/i18n/format_date';
@@ -29,7 +28,7 @@ export class NotedefraisComponent implements OnInit {
   
   ngOnInit() {
     this.sub = this.notedefraisService
-      .getNotedefraisFromIdCollab(this.dataS)
+      .getNotedefraisFromIdCollab({id : this.dataS})
         .subscribe( (data : INotedefrais[]) => {
           // récupération des données de la query
           this.lnotedefrais = data;

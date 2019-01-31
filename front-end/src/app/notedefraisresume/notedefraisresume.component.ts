@@ -29,7 +29,7 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   @ViewChild(MatSort) sort: MatSort;
   constructor(private notedefraisService : NotedefraisService, private router : Router) {
   }
-
+  
   ngOnInit() {
   }
   
@@ -37,7 +37,7 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
     const id: SimpleChange = changes.id_notedefrais;
     this._id_ndf = id.currentValue.toUpperCase();
     this.sub = this.notedefraisService
-      .getNotedefraisresumeFromIdNdf(this.id_notedefrais)
+      .getNotedefraisresumeFromIdNdf({id : this.id_notedefrais})
       .subscribe( (data : INotedefraisresume[]) => {
         console.log(data);
         this.listLignedefrais = data;

@@ -20,11 +20,18 @@ import {
   MatGridListModule,
   MatCardModule,
   MatMenuModule,
+  MatCheckboxModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatDialogModule,
+  MatSelectModule,
+  MatSnackBarModule,
   MatNativeDateModule,
   MatFormField,
   MatInputModule,
   MAT_DATE_LOCALE
 } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotedefraisComponent } from './notedefrais/notedefrais.component';
@@ -34,8 +41,13 @@ import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { LignedefraisComponent } from './lignedefrais/lignedefrais.component';
+import { 
+  LignedefraisComponent,
+  DialogNouvelleLignedefrais,
+  LignedefraisAjoutComponent 
+} from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
+
 
 
 
@@ -64,6 +76,8 @@ const appRoutes: Routes = [
     DashboardComponent,
     NotedefraisComponent,
     LignedefraisComponent,
+    DialogNouvelleLignedefrais,
+    LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
 
@@ -89,6 +103,14 @@ const appRoutes: Routes = [
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     MatSelectModule,
     MatDatepickerModule,
@@ -100,6 +122,10 @@ const appRoutes: Routes = [
       provide: DateAdapter,
       useFactory: adapterFactory
     })
+  ],
+  entryComponents: [ 
+    DialogNouvelleLignedefrais,
+    LignedefraisAjoutComponent
   ],
   providers: [
     NotedefraisService,
