@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { LoginService } from './login.service';
 import { Router } from "@angular/router";
 import {Collaborateur} from './login.interface';
-import { getMatInputUnsupportedTypeError } from '@angular/material';
-import * as sha256 from 'sha256';
+
 import * as CryptoJS from 'crypto-js'; 
 
 @Component({
@@ -15,6 +14,11 @@ export class LoginComponent implements OnInit {
 
   user : Collaborateur = {id_collab: null, id_serviceCollab: null, nom_collab: null, prenom_collab: null, password: null} ;
   correct : boolean =  true;
+  isOn : boolean = false;
+
+  username: string;
+  param: string;
+  
 
   //Variable pour encrypt/decrypt
   keySize: number = 256;
@@ -79,11 +83,15 @@ export class LoginComponent implements OnInit {
     var encrypted = this.encrypt(hiddenParam, this.key);
     console.log("Param encrypted: " + encrypted);
     var decrypted = this.decrypt(encrypted, this.key);
-    var param = encrypted;
     console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
 
-    //Create URL and route
-    this.router.navigate(['/notifications/:id'], { queryParams: { user: this.user.nom_collab, param} });
+    //Hide login component and show dashboard
+    this.isOn = true; 
+
+    //Create URL params and route to notifications
+    this.username = this.user.nom_collab;
+    this.param = encrypted;
+    this.router.navigate(['/notifications/:id'], { queryParams: { user: this.username, param: this.param} } ); 
   }
 
 

@@ -43,12 +43,13 @@ import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.comp
 import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
 
 const appRoutes: Routes = [
-    { path: '', redirectTo: 'notifications', pathMatch: 'full'},
-    {path: 'login', component: LoginComponent},
-    {path: 'notedefrais', component: NotedefraisComponent},
-    {path: 'conge', component: CongeComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  {path: 'login', component: LoginComponent},
+    {path: 'dashboard', component: DashboardComponent},
+    {path: 'notedefrais/:id', component: NotedefraisComponent},
+    {path: 'conge/:id', component: CongeComponent},
     {path: 'notifications/:id', component: NotifComponent},
-    {path: 'lignedefrais/:id', component: LignedefraisComponent},
+    {path: 'lignedefrais', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
   

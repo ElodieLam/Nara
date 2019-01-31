@@ -1,5 +1,4 @@
-<div class="container">
-
+<div class="container" *ngIf="!isOn">
   <form (submit)="loginUser($event)" class="form-signin" name="registerForm">
     <h2 class="form-signin-heading">Bienvenue</h2>
     <label for="inputUsername" class="sr-only">id </label>
@@ -18,3 +17,4 @@
   </form>
 </div>
 <!-- /container -->
+<app-dashboard *ngIf="isOn"></app-dashboard>

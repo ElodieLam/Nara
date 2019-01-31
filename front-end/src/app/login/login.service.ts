@@ -3,8 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
 
-import {environment} from "../../environments/environment";
-import {map} from "rxjs/internal/operators";
 
 @Injectable({
   providedIn: 'root'
