@@ -19,10 +19,10 @@ router.get('/demandecongesid', function (req, res)
     });
 });
 
-/*
-router.post('/', function (req, res) 
+
+router.post('/demandecongescreate', function (req, res) 
 {
-    Conge.createConge(req.body, function(err, count){
+    Demandeconge.createDemandeconges(req.body, function(err, count){
         if(err)
         {
             res.status(400).json(err);
@@ -32,6 +32,6 @@ router.post('/', function (req, res)
             res.json(req.body);
         }
     });
-});*/
+});
 
 module.exports = router;

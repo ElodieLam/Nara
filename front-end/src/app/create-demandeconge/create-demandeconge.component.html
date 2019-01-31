@@ -1,0 +1,70 @@
+<table class="table table-bordered">
+
+  <thead>
+    <tr>
+      <th>Type de congé</th>
+      <th>Date début</th>
+      <th>Heure début</th>
+      <th>Date fin</th>
+      <th>Heure fin</th>
+      <th>Durée</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        <mat-form-field>
+          <mat-select [(value)]="newDemande.type_demande_conge">
+            <mat-option value="rtt">RTT</mat-option>
+            <mat-option value="cpp">Congé Payé</mat-option>
+            <mat-option value="css">Congé sans Solde</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+      <td>
+          <mat-form-field>
+              <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker3" placeholder="Date début congé" [(ngModel)]="newDemande.date_debut" [min] = "dateMin" disabled>
+              <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+              <mat-datepicker #picker3 disabled="false"></mat-datepicker>
+            </mat-form-field>
+      
+      </td>
+      <td>
+          <mat-form-field>
+              <mat-select [(value)]="newDemande.debut_matin">
+                <mat-option value=1>Matin</mat-option>
+                <mat-option value=0>Après-Midi</mat-option>
+              </mat-select>
+            </mat-form-field>
+      </td>
+      <td>
+          <mat-form-field>
+              <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker2" placeholder="Date fin congé" 
+              [(ngModel)]="newDemande.date_fin" [min] = "newDemande.date_debut" disabled>
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+            </mat-form-field>
+
+      </td>
+      <td>
+          <mat-form-field>
+              <mat-select [(value)]="newDemande.fin_aprem">
+                <mat-option value=0>Matin</mat-option>
+                <mat-option value=1>Après-Midi</mat-option>
+              </mat-select>
+            </mat-form-field>
+      </td>
+      <td>{{calculDuree(newDemande)}} demi-journées</td>
+
+      <td>
+        <button
+          class="btn btn-success"
+          (click) = "createDemande(newDemande)">
+          Valider
+        </button>
+      </td>
+    </tr>
+  </tbody>
+
+</table>
