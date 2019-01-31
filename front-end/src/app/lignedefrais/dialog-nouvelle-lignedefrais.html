@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Nouvelle ligne de frais</h1>
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-select placeholder="Mission" [(ngModel)]="data.comp.id_mission">
+    <mat-select placeholder="Mission" [(ngModel)]="data.comp.id_mission" (ngModelChange)="onChange()" required>
       <mat-option *ngFor="let miss of missions" [value]="miss.id_mission">
         {{miss.nom_mission}}
       </mat-option>
@@ -9,7 +9,7 @@
     <mat-error *ngIf="missionControl.hasError('required')">Sélectionner une mission</mat-error>
   </mat-form-field>
   <mat-form-field>
-    <mat-select placeholder="Libellé" [(ngModel)]="data.comp.libelle">
+    <mat-select placeholder="Libellé " [(ngModel)]="data.comp.libelle" (ngModelChange)="onChange()" required>
       <mat-option *ngFor="let lib of libelles" [value]="lib.viewValue">
         {{lib.viewValue}}
       </mat-option>
@@ -17,15 +17,21 @@
     <mat-error *ngIf="libelleControl.hasError('required')">Sélectionner un libellé</mat-error>
   </mat-form-field>
   <mat-form-field>
-    <div [formGroup]="myGroup">
-      <input matInput placeholder="Montant" formControlName="montantControl">
+    <!-- <div [formGroup]="myGroup">
+      <input matInput placeholder="Montant " formControlName="montantControl" (change)="onChange()" required>
       <mat-error *ngIf="myGroup.get('montantControl').hasError('pattern') && !myGroup.get('montantControl').hasError('required')">
         Montant invalide
       </mat-error>
       <mat-error *ngIf="myGroup.get('montantControl').hasError('required')">
         Montant manquant
       </mat-error>
-    </div>
+    </div> -->
+    <!-- <input matInput placeholder="Montant" [(ngModel)]="data.comp.montant" (ngModelChange)="onChange()" [formControl]="montantControl" required> -->
+    <input matInput placeholder="Montant" (ngModelChange)="onChange()" [formControl]="montantControl" required>
+    <mat-error *ngIf="montantControl.invalid"> 
+      {{ getErrorMessage() }}
+    </mat-error>
+
   </mat-form-field>
   <mat-form-field>
       <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire">
@@ -34,5 +40,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Annuler</button>
-  <button mat-button (click)="onClick()" [mat-dialog-close]="data" cdkFocusInitial>Ajouter</button>
+  <button mat-button [disabled]="!_ldfValide" (click)="onClick()" [mat-dialog-close]="data">Ajouter</button>
 </div>

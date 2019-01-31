@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
 
@@ -29,17 +29,35 @@ export class LignedefraisService {
     this.http.post(`${this.url}/lignedefrais/ajoutlignedefrais`, data)
       .subscribe(
         res => {
-          //this.ldf.refreshLignesdefrais();
-          console.log('service ajout');
-          console.log(res);
-          this.toastr.success('Ligne de frais ajoutée.', 'Success');
+        //this.ldf.refreshLignesdefrais();
+        // console.log('service ajout');
+        // console.log(res);
+        this.toastr.success('Ligne de frais ajoutée.', 'Success');
 
         },
         err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
         }
       );
+  }
+
+  deleteLignedefrais(data) {
+      
+    this.http.delete(`${this.url}/lignedefrais/supprlignedefrais/${data.id}`)
+        .subscribe(
+            res => {
+            //this.ldf.refreshLignesdefrais();
+            // console.log('service suppr');
+            // console.log(res);
+            this.toastr.success('Ligne de frais supprimé.', 'Success');
+
+            },
+            err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+        );
   }
 
 }

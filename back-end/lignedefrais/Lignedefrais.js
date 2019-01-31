@@ -30,6 +30,9 @@ var Lignedefrais = {
             VALUES(?, ?, ?, ?, ?, ?, ?, \'\', NULL)', 
             [data.id_ndf, data.id_mission, data.libelle, data.montant, data.commentaire, date, 'noSent'], callback);
     },
+    deleteLignedefrais: function (data, callback) {
+        return db.query('DELETE from t_ligne_de_frais WHERE id_ldf = ?', [data.id], callback);
+    },
 }
 
 module.exports = Lignedefrais;

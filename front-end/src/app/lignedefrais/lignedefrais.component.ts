@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
 import { ILignedefraisFull, ILignedefrais, ILignedefraisDialog, ILignedefraisToSend } from './lignedefrais.interface';
@@ -43,12 +43,13 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     id_mission : '',
     libelle : '',
     montant : '',
-    commentaire : '' 
+    commentaire : '',
+    valide : false 
   }
 
   private _id_ndf: number;
   private sub: any;
-  listlignedefraisfull : ILignedefraisFull[];
+  listlignedefraisfull : ILignedefraisFull[] = [];
   listlignedefrais : ILignedefrais[] = [];
   listAvance : Number[] = [];
   dataSource;
@@ -71,12 +72,15 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
   
   refreshLignesdefrais(){
+    // vide la liste affichee dans le tableau 
+    this.listlignedefrais = [];    
+    // requete SQL pour avoir toutes les lignes de frais de la note de frais
     this.lignedefraisService
       .getLignesdefraisFromIdNdf({id : this.id_ndf.toString()})
       .subscribe( (data : ILignedefraisFull[]) => {
         console.log('query')
         this.listlignedefraisfull = data;
-        
+        // transformation de la liste pour afficher les informations dans le tableau
         this.listlignedefraisfull.forEach( ldf => {
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
@@ -85,6 +89,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               'libelle' : ldf.libelle_ldf, 'montant' : ldf.montant_ldf, 
               'commentaire' : ldf.commentaire_ldf, 'justificatif' : ldf.justif_ldf})
         });
+        // creation du tableau avec les options sort et paginator
         this.dataSource = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -100,41 +105,48 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return ldf.avance;
   }
 
+  
+
   onCheck(ldf : ILignedefrais) {
     var idx = this.listAvance.indexOf(ldf.id_ldf);
     (idx != -1) ? this.listAvance.splice(idx, 1) : this.listAvance.push(ldf.id_ldf);
   }
 
   openDialog() {
-    console.log("here")
     this.componentData.id_mission = '';
     this.componentData.libelle = '';
     this.componentData.montant = '';
     this.componentData.commentaire = '';
+    this.componentData.valide = false;
     const dialogRef = this.dialog.open(DialogNouvelleLignedefrais, {
       data: { comp : this.componentData }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.ldf = result;
-      // if(this.ldf != undefined){
-      //   var lignedefrais = {
-      //     id_ndf : this.id_ndf,
-      //     id_mission : this.componentData.id_mission,
-      //     libelle : this.componentData.libelle,
-      //     montant : this.componentData.montant,
-      //     commentaire : this.componentData.commentaire
-      //   }
-        //this.lignedefraisService.createLignedefrais(lignedefrais);
-        console.log('refresh');
-        this.delay(1500).then(any => {
-          this.refreshLignesdefrais();
-          this.openSnackBar()
-        });
-      // }
+      var temp = result;
+      if(temp){
+        if(temp.comp.valide) {
+          console.log('temp')
+          console.log(temp.comp.valide)
+          this.delay(1500).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Ligne de frais ajoutée')
+          });
+        }
+      }
     });
   }
 
   temp(){
+  }
+
+  supprLignedefrais(id_ldf : any) {
+    console.log("wtf")
+    console.log(id_ldf);
+    this.lignedefraisService.deleteLignedefrais({id : id_ldf});
+    this.delay(1500).then(any => {
+      this.refreshLignesdefrais();
+      this.openSnackBar('Ligne de frais supprimée');
+    });
   }
 
   ngOnDestroy() {
@@ -142,7 +154,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 
   async delay(ms: number) {
-    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
 }
 
   transformStatus(status : String) : String {
@@ -153,9 +165,11 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return 'statut undefined'
   }
 
-  openSnackBar() {
+  openSnackBar(msg: string) {
+    console.log('snack')
     this.snackBar.openFromComponent(LignedefraisAjoutComponent, {
-      duration: 500,
+      duration: 750,
+      data : msg
     });
   }
 }
@@ -173,12 +187,23 @@ export interface IMission {
 })
 export class DialogNouvelleLignedefrais implements OnInit{
 
+  // myGroup = new FormGroup({
+  //   montantControl : new FormControl('', [
+  //     Validators.required,
+  //     Validators.pattern('^\\d+(\.\\d{1,2})?$')
+  //   ])
+  // });
   myGroup = new FormGroup({
-    montantControl : new FormControl('', [
-      Validators.required,
-      Validators.pattern('^\\d+(\.\\d{1,2})?$')
-    ])
   });
+  
+  montantControl = new FormControl('', [
+    Validators.required,
+    Validators.pattern('^\\d+(\.\\d{1,2})?$')
+  ]);
+  getErrorMessage() {
+    return this.montantControl.hasError('required') ? 'Montant manquant' :
+        this.montantControl.hasError('pattern') ? 'Montant invalide' : '';
+  }
   missionControl = new FormControl('', [Validators.required]);
   libelleControl = new FormControl('', [Validators.required]);
 
@@ -192,7 +217,8 @@ export class DialogNouvelleLignedefrais implements OnInit{
     {value: 'autre-5', viewValue: 'Autre'}
   ];
 
-  missions : IMission[] ;
+  missions : IMission[];
+  _ldfValide : boolean = false;
   
   constructor(
     public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
@@ -209,21 +235,50 @@ export class DialogNouvelleLignedefrais implements OnInit{
   }
 
   onClick(): void {
-    console.log("onclick");
-    this.data.comp.montant =  this.myGroup.get('montantControl').value;
-    console.log('ajout ldf')
-    this.lignedefraisService.createLignedefrais({
-      id_ndf : this.data.comp.id_ndf,
-      id_mission : this.data.comp.id_mission,
-      libelle : this.data.comp.libelle,
-      montant : this.data.comp.montant,
-      commentaire : this.data.comp.commentaire
-    });
-    console.log('fin ajout ldf')
+    //this.data.comp.montant =  this.myGroup.get('montantControl').value;
+    this.data.comp.montant =  this.montantControl.value;
+    // verification de la validité de la note de frais 
+    // avec les champs missions, libellé et montant
+    if(this._ldfValide) {
+      console.log('valid ldf')
+      this.data.comp.valide = true;
+      // query SQL pour l'ajout de la ligne de frais
+      this.lignedefraisService.createLignedefrais({
+        id_ndf : this.data.comp.id_ndf,
+        id_mission : this.data.comp.id_mission,
+        libelle : this.data.comp.libelle,
+        montant : this.data.comp.montant,
+        commentaire : this.data.comp.commentaire
+      });
+    }
+    else {
+      this.data.comp.valide = false;
+      console.log('refus ldf')
+
+    }
   }
+
+  ldfValide() {
+    // console.log("id " + this.data.comp.id_mission)
+    // console.log("li " + this.data.comp.libelle)
+    // console.log("mo " + this.montantControl.value);
+    this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
+    return this._ldfValide;
+  }
+
+  onChange(value : any) {
+    // console.log('value changed')
+    // console.log(this.ldfValide());
+    this.ldfValide();
+  }
+
   onNoClick(): void {
     console.log(this.data);
     this.dialogRef.close();
+  }
+
+  montantValid(montant : String) : boolean {
+    return (montant != '') && (montant.match('\\d+(\.\\d{1,2})?')[0] == montant);
   }
 }
 
@@ -232,8 +287,10 @@ export class DialogNouvelleLignedefrais implements OnInit{
   templateUrl: 'snack-bar-component-ajout.html',
   styles: [`
     .ajout-ligne-de-frais {
-      color: hotpink;
+      text-align: center;
     }
   `],
 })
-export class LignedefraisAjoutComponent {}
+export class LignedefraisAjoutComponent {
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }
+}
