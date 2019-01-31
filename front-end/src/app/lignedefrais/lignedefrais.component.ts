@@ -149,6 +149,34 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+  modifPossible(ldf : ILignedefrais) : boolean {
+    if( (!ldf.avance &&
+      ldf.status == 'Attente Compta' ||
+      ldf.status == 'Validée' ) ||
+      (ldf.avance && (
+        ldf.status == 'Avance attente Compta' ||
+        ldf.status == 'Attente Compta' ||
+        ldf.status == 'Validée' )
+        ) )
+        return false;
+    return true;
+  }
+
+  supprPossible(ldf : ILignedefrais) : boolean{
+    if( (!ldf.avance &&
+      ldf.status == 'Validée' ) ||
+      (ldf.avance && (
+        ldf.status == 'Non envoyée' ||
+        ldf.status == 'Attente CDS' ||
+        ldf.status == 'Attente Compta' ||
+        ldf.status == 'Refusée CDS' ||
+        ldf.status == 'Refusée Compta' ||
+        ldf.status == 'Validée' )
+        ) )
+        return false;
+    return true;
+  }
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }

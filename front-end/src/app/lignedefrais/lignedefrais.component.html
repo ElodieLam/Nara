@@ -55,14 +55,14 @@
       <ng-container matColumnDef="modifier">
           <th mat-header-cell *matHeaderCellDef>Modifier</th>
           <td mat-cell *matCellDef="let element">
-              <button mat-flat-button (click)="temp()" color="accent">Modifier</button>    
+              <button mat-flat-button *ngIf="modifPossible(element)" (click)="temp()" color="accent">Modifier</button>    
           </td>
       </ng-container>
       
       <ng-container matColumnDef="supprimer">
           <th mat-header-cell *matHeaderCellDef>Supprimer</th>
           <td mat-cell *matCellDef="let element">
-              <button mat-flat-button (click)="supprLignedefrais(element.id_ldf)" color="warn">Supprimer</button>    
+              <button mat-flat-button *ngIf="supprPossible(element)" (click)="supprLignedefrais(element.id_ldf)" color="warn">Supprimer</button>    
           </td>
       </ng-container>
   

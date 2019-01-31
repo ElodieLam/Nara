@@ -3,9 +3,6 @@ import { NgModule } from '@angular/core';
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { FlatpickrModule } from 'angularx-flatpickr';
-import { FormsModule } from '@angular/forms';
-import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
@@ -27,8 +24,6 @@ import {
   MatSelectModule,
   MatSnackBarModule,
   MatNativeDateModule,
-  MatFormField,
-  MatInputModule,
   MAT_DATE_LOCALE
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -115,7 +110,6 @@ const appRoutes: Routes = [
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    [FormsModule, FlatpickrModule.forRoot()],
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
     CalendarModule.forRoot({
