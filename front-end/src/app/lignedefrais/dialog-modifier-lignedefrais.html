@@ -1,0 +1,40 @@
+<h1 mat-dialog-title>Modifier ligne de frais</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput *ngIf="!_missModif" placeholder="Mission" [(ngModel)]="data.comp.nom_mission" disabled>
+        <mat-select *ngIf="_missModif" placeholder="Mission" [(ngModel)]="data.comp.id_mission" (ngModelChange)="onChange()" required>
+            <mat-option *ngFor="let miss of missions" [value]="miss.id_mission">
+                {{miss.nom_mission}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="missionControl.hasError('required')">Sélectionner une mission</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput *ngIf="!_libModif" placeholder="Libellé" [(ngModel)]="data.comp.libelle" disabled>
+        <mat-select *ngIf="_libModif" placeholder="Libellé " [(ngModel)]="data.comp.libelle" (ngModelChange)="onChange()" required>
+            <mat-option *ngFor="let lib of libelles" [value]="lib.value">
+                {{lib.value}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="libelleControl.hasError('required')">Sélectionner un libellé</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Montant" (ngModelChange)="onChange()" [formControl]="montantControl" required>
+        <mat-error *ngIf="montantControl.invalid"> 
+            {{ getErrorMessage() }}
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire" (ngModelChange)="onChange()">
+    </mat-form-field> 
+</div>
+<p *ngIf="_refusCDS || _refusCompta">
+    <span *ngIf="_refusCDS">Refus chef de service</span>
+    <span *ngIf="_refusCompta">Refus service comptabilité</span>
+    <br>
+    Motif : {{data.comp.commentaire_refus}}    
+</p>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button [disabled]="!_ldfValide || !_modif" (click)="onClick()" [mat-dialog-close]="data">Modifier</button>
+</div>

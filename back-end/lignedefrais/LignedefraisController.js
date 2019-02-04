@@ -51,4 +51,16 @@ router.delete('/supprlignedefrais/:id', function (req, res) {
     });
 });
 
+router.post('/updatelignedefrais', function (req, res) {
+    Lignedefrais.updateLignedefrais(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
 module.exports = router;

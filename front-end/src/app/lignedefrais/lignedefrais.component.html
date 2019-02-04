@@ -55,7 +55,7 @@
       <ng-container matColumnDef="modifier">
           <th mat-header-cell *matHeaderCellDef>Modifier</th>
           <td mat-cell *matCellDef="let element">
-              <button mat-flat-button *ngIf="modifPossible(element)" (click)="temp()" color="accent">Modifier</button>    
+              <button mat-flat-button *ngIf="modifPossible(element)" (click)="openDialogModifierLignedefrais(element)" color="accent">Modifier</button>    
           </td>
       </ng-container>
       
@@ -73,7 +73,7 @@
     <!-- <mat-paginator showFirstLastButtons></mat-paginator> -->
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>
-  <button mat-raised-button (click)="openDialog()">Ajouter une ligne</button>
+  <button mat-raised-button (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
   <br>
   <button mat-flat-button (click)="temp()" color="warn">Annuler</button>
   <button mat-flat-button (click)="temp()" color="warn">Enregistrer</button>

@@ -39,6 +39,7 @@ import { ToastrModule } from "ngx-toastr";
 import { 
   LignedefraisComponent,
   DialogNouvelleLignedefrais,
+  DialogModifierLignedefrais,
   LignedefraisAjoutComponent 
 } from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
@@ -72,6 +73,7 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     DialogNouvelleLignedefrais,
+    DialogModifierLignedefrais,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -119,6 +121,7 @@ const appRoutes: Routes = [
   ],
   entryComponents: [ 
     DialogNouvelleLignedefrais,
+    DialogModifierLignedefrais,
     LignedefraisAjoutComponent
   ],
   providers: [

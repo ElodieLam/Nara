@@ -50,7 +50,7 @@ export class LignedefraisService {
             //this.ldf.refreshLignesdefrais();
             // console.log('service suppr');
             // console.log(res);
-            this.toastr.success('Ligne de frais supprimé.', 'Success');
+            this.toastr.success('Ligne de frais supprimée.', 'Success');
 
             },
             err => {
@@ -60,4 +60,37 @@ export class LignedefraisService {
         );
   }
 
+  updateLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefrais`, data)
+        .subscribe(
+            res => {
+            //this.ldf.refreshLignesdefrais();
+            // console.log('service suppr');
+            // console.log(res);
+            this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+            },
+            err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+        );
+  }
+
+  updateLignedefraisAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisavance`, data)
+      .subscribe(
+        res => {
+        //this.ldf.refreshLignesdefrais();
+        // console.log('service suppr');
+        // console.log(res);
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
 }
