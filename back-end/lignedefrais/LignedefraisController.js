@@ -63,4 +63,16 @@ router.post('/updatelignedefrais', function (req, res) {
     });
 });
 
+router.post('/updatelignedefraisavance', function (req, res) {
+    Lignedefrais.updateLignedefraisAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
 module.exports = router;

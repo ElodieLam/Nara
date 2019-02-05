@@ -39,11 +39,15 @@ var Lignedefrais = {
         motif_refus = ? WHERE id_ldf = ?';
         return db.query(sql, [data.id_mission, data.libelle, data.montant, "noSent", data.commentaire, "", data.id_ldf], callback);
     },
-    updateLignedefrais: function (data, callback) {
+    updateLignedefraisAvance: function (data, callback) {
+        console.log(data)
         var sql = 'UPDATE t_ligne_de_frais_avance SET id_mission = ?, \
         libelle_ldf = ?, montant_ldf = ?, status_ldf = ?, commentaire_ldf = ?, \
-        motif_refus = ? WHERE id_ldf = ?';
-        return db.query(sql, [data.id_mission, data.libelle, data.montant, "noSent", data.commentaire, "", data.id_ldf], callback);
+        motif_refus = ?, montant_estime = ?, montant_avance = ? \
+        WHERE id_ldf = ?';
+        return db.query(sql, 
+            [data.id_mission, data.libelle, data.montant, data.status, data.commentaire, "",
+            data.montant_estime, data.montant_avance, data.id_ldf], callback);
     },
 }
 

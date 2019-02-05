@@ -20,6 +20,7 @@ export interface ILignedefrais {
     id_mission: Number;
     avance: boolean;
     montant_avance: Number;
+    montant_estime: Number;
     status: String;
     mission: String;
     date: Date;
