@@ -41,6 +41,7 @@ import {
   DialogNouvelleLignedefrais,
   DialogModifierLignedefrais,
   DialogModifierAvance,
+  DialogEnvoyerAvance,
   LignedefraisAjoutComponent 
 } from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
@@ -76,6 +77,7 @@ const appRoutes: Routes = [
     DialogNouvelleLignedefrais,
     DialogModifierLignedefrais,
     DialogModifierAvance,
+    DialogEnvoyerAvance,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -125,6 +127,7 @@ const appRoutes: Routes = [
     DialogNouvelleLignedefrais,
     DialogModifierLignedefrais,
     DialogModifierAvance,
+    DialogEnvoyerAvance,
     LignedefraisAjoutComponent
   ],
   providers: [

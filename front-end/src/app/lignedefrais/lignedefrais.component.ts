@@ -8,6 +8,17 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 export interface Libelle {
   value: string;
 }
+
+export interface Avance {
+  id_ldf: Number;
+  id_mission: Number;
+  nom_mission: String;
+  libelle: String;
+  montant_estime: Number;
+  montant_avance: Number;
+  commentaire: String;
+}
+
 @Component({
   selector: 'app-lignedefrais',
   templateUrl: './lignedefrais.component.html',
@@ -203,6 +214,34 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+
+  openDialogEnvoyerAvance() {
+    if(this.listAvance.length > 0) {
+      var listLdf : Avance[] = [];
+      this.listAvance.forEach( num => {
+        for(var i = 0 ; i < this.listlignedefrais.length ; ++i) {
+          if(this.listlignedefrais[i].id_ldf == num)
+            listLdf.push({ 'id_ldf' : this.listlignedefrais[i].id_ldf,
+              'id_mission' : this.listlignedefrais[i].id_mission,
+              'nom_mission' : this.listlignedefrais[i].mission, 
+              'libelle' : this.listlignedefrais[i].libelle, 
+              'montant_estime' : this.listlignedefrais[i].montant, 
+              'montant_avance' : this.listlignedefrais[i].montant, 
+              'commentaire' : this.listlignedefrais[i].commentaire})
+        }
+      });
+      const dialogRef = this.dialog.open(DialogEnvoyerAvance, {
+        data: { liste : listLdf }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        var temp = result;
+      });
+    }
+    else {
+      this.openSnackBar('Aucune ligne de frais séléctionnée')
+    }
+  }
+
   temp(){
   }
 
@@ -274,6 +313,11 @@ export interface IMission {
   nom_mission : string 
 }
 
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
 
 @Component({
   selector: 'dialog-overview-example-dialog',
@@ -507,40 +551,22 @@ export class DialogModifierAvance implements OnInit{
     missionControl : new FormControl('', [Validators.required]),
     libelleControl : new FormControl('', [Validators.required])
   });
-  // montantControl = new FormControl('', [
-  //   Validators.required,
-  //   Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  // ]);
   getErrorMessage() {
     return this.myGroup.get('montantControl').hasError('required') ? 'Montant manquant' :
       this.myGroup.get('montantControl').hasError('pattern') ? 'Montant invalide' : '';
   }
-  // montantAvanceControl = new FormControl('', [
-  //   Validators.required,
-  //   Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  // ]);
   getErrorMessageAvance() {
     return this.myGroup.get('montantAvanceControl').hasError('required') ? 'Montant manquant' :
       this.myGroup.get('montantAvanceControl').hasError('pattern') ? 'Montant invalide' : '';
   }
-  // montantEstimeControl = new FormControl('', [
-  //   Validators.required,
-  //   Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  // ]);
   getErrorMessageEstime() {
     return this.myGroup.get('montantEstimeControl').hasError('required') ? 'Montant manquant' :
       this.myGroup.get('montantEstimeControl').hasError('pattern') ? 'Montant invalide' : '';
   }
-  missionControl = new FormControl('', [Validators.required]);
-  libelleControl = new FormControl('', [Validators.required]);
-
+  
   libelles: Libelle[] = [
-    {value: 'Taxi'},
-    {value: 'Restaurant'},
-    {value: 'Hotel'},
-    {value: 'Fourniture'},
-    {value: 'Essence'},
-    {value: 'Autre'}
+    {value: 'Taxi'}, {value: 'Restaurant'}, {value: 'Hotel'}, 
+    {value: 'Fourniture'},{value: 'Essence'}, {value: 'Autre'}
   ];
 
   missions : IMission[];
@@ -569,7 +595,6 @@ export class DialogModifierAvance implements OnInit{
    
   ngOnInit() {
     console.log('avance')
-    //this.montantControl.setValue(this.data.comp.montant);
     // valeurs pour la comparaison pour activer le bouton modifier
     this.valuesAtStart = {id_mission : this.data.comp.id_mission,
       libelle : this.data.comp.libelle, montant : this.data.comp.montant,
@@ -678,6 +703,64 @@ export class DialogModifierAvance implements OnInit{
   }
 }
 
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: './dialog-envoyer-avance.html',
+  styleUrls: ['./lignedefrais.component.css']
+})
+export class DialogEnvoyerAvance implements OnInit{
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  dataSource;
+  displayedColumns: string[] = ['mission', 'libelle', 'montant_estime', 'montant_avance'];
+  _avanceValid:boolean = true;
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private lignedefraisService : LignedefraisService) {}
+   
+  ngOnInit() {
+    console.log(this.data)
+    console.log('avance')
+    this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
+    this.dataSource.paginator = this.paginator;
+  }
+
+  onClick(): void {
+    // boucle d'ajout des notes d'avance, et suppr des ldf
+  }
+
+  onChange() {
+    for(var i=0; i < this.data.liste.length; i++) {
+      if(!this.montantValid(this.data.liste[i].montant_avance)) {
+        this._avanceValid = false;
+        break;
+      }
+      this._avanceValid = true;
+    }
+  }
+  
+  montantValid(montant : String) : boolean {
+    if(String(montant).match('\\d+(\.\\d{1,2})?'))
+      return (montant != '') && (String(montant).match('\\d+(\.\\d{1,2})?')[0] == montant);
+    else
+      return false;
+  }
+
+  temp()
+  {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
 
 // ###############################################################
 // ###############################################################

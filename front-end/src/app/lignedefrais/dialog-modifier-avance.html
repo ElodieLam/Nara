@@ -7,7 +7,7 @@
                 {{miss.nom_mission}}
             </mat-option>
         </mat-select>
-        <mat-error *ngIf="missionControl.hasError('required')">Sélectionner une mission</mat-error>
+        <mat-error *ngIf="myGroup.get('missionControl').hasError('required')">Sélectionner une mission</mat-error>
     </mat-form-field>
     <mat-form-field>
         <input matInput *ngIf="!_libModif" placeholder="Libellé" [(ngModel)]="data.comp.libelle" disabled>
@@ -16,7 +16,7 @@
                 {{lib.value}}
             </mat-option>
         </mat-select>
-        <mat-error *ngIf="libelleControl.hasError('required')">Sélectionner un libellé</mat-error>
+        <mat-error *ngIf="myGroup.get('libelleControl').hasError('required')">Sélectionner un libellé</mat-error>
     </mat-form-field>
     <mat-form-field>
         <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire" (ngModelChange)="onChange()">
