@@ -31,4 +31,4 @@
 </div> 
 
 <button mat-flat-button (click)="onNoClick()">Annuler</button>
-<button mat-flat-button [disabled]="!_avanceValid" (click)="temp()" color="warn">Envoyer</button>
+<button mat-flat-button [disabled]="!_avanceValid" (click)="onClick()" [mat-dialog-close]="data">Envoyer</button>

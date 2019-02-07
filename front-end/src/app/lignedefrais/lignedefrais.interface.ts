@@ -29,6 +29,13 @@ export interface ILignedefrais {
     commentaire: String;
     commentaire_refus: String;
     justificatif: Blob;
-    //button modifier
-    //button supprimer 
+ }
+
+export interface IMission { 
+    id_mission : number;
+    nom_mission : string 
+}
+
+export interface ILibelle {
+    value: string;
 }

@@ -36,18 +36,12 @@ import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { 
-  LignedefraisComponent,
-  DialogNouvelleLignedefrais,
-  DialogModifierLignedefrais,
-  DialogModifierAvance,
-  DialogEnvoyerAvance,
-  LignedefraisAjoutComponent 
-} from './lignedefrais/lignedefrais.component';
+import { LignedefraisComponent, LignedefraisAjoutComponent } from './lignedefrais/lignedefrais.component';
+import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.component'
+import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component'
+import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component'
+import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component'
 import { CongeComponent } from './conge/conge.component';
-
-
-
 
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';

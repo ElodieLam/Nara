@@ -11,7 +11,7 @@
             {{element.montant_avance}}
           </div>
           <ng-template #elseBlock>
-            <mat-checkbox (change)="onCheck(element)"></mat-checkbox>
+            <mat-checkbox *ngIf="isCheckable(element.status)" (change)="onCheck(element)"></mat-checkbox>
           </ng-template>
         </td>
       </ng-container>

@@ -1,13 +1,15 @@
 import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
 import { ILignedefraisFull, ILignedefrais } from './lignedefrais.interface';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
 
-export interface Libelle {
-  value: string;
-}
+import { DialogEnvoyerAvance } from './dialog-envoyer-avance.component';
+import { DialogModifierAvance } from './dialog-modifier-avance.component';
+import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
+import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
+
+
 
 export interface Avance {
   id_ldf: Number;
@@ -118,7 +120,11 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return ldf.avance;
   }
 
-  
+  isCheckable(statut : any) {
+    if(statut == 'Non envoyée')
+      return true;
+    return false;
+  }
 
   onCheck(ldf : ILignedefrais) {
     var idx = this.listAvance.indexOf(ldf.id_ldf);
@@ -164,7 +170,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     console.log(element);
     const dialogRef = this.dialog.open(DialogModifierLignedefrais, {
       data: { comp : this.componentData , stat : element.status, 
-        avance : element.avance, montant_avance : element.montant_avance}
+        avance : element.avance, montant_avance : element.montant_avance
+      }
     });
     dialogRef.afterClosed().subscribe(result => {
       var temp = result;
@@ -196,7 +203,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     console.log(element);
     const dialogRef = this.dialog.open(DialogModifierAvance, {
       data: { comp : this.componentData , stat : element.status, 
-        avance : element.avance}
+        avance : element.avance
+      }
     });
     dialogRef.afterClosed().subscribe(result => {
       var temp = result;
@@ -220,7 +228,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       var listLdf : Avance[] = [];
       this.listAvance.forEach( num => {
         for(var i = 0 ; i < this.listlignedefrais.length ; ++i) {
-          if(this.listlignedefrais[i].id_ldf == num)
+          if(this.listlignedefrais[i].id_ldf == num && !this.listlignedefrais[i].avance)
             listLdf.push({ 'id_ldf' : this.listlignedefrais[i].id_ldf,
               'id_mission' : this.listlignedefrais[i].id_mission,
               'nom_mission' : this.listlignedefrais[i].mission, 
@@ -231,16 +239,24 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         }
       });
       const dialogRef = this.dialog.open(DialogEnvoyerAvance, {
-        data: { liste : listLdf }
+        data: { liste : listLdf, ndf : this.id_ndf }
       });
       dialogRef.afterClosed().subscribe(result => {
         var temp = result;
+        if(temp) {
+          this.delay(1500).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Avances créés et envoyées');
+          });
+        }
       });
     }
     else {
       this.openSnackBar('Aucune ligne de frais séléctionnée')
     }
   }
+
+  
 
   temp(){
   }
@@ -308,463 +324,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 }
 
-export interface IMission { 
-  id_mission : number;
-  nom_mission : string 
-}
-
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: './dialog-nouvelle-lignedefrais.html',
-  styleUrls: ['./lignedefrais.component.css']
-})
-export class DialogNouvelleLignedefrais implements OnInit{
-
-  montantControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  ]);
-  getErrorMessage() {
-    return this.montantControl.hasError('required') ? 'Montant manquant' :
-        this.montantControl.hasError('pattern') ? 'Montant invalide' : '';
-  }
-  missionControl = new FormControl('', [Validators.required]);
-  libelleControl = new FormControl('', [Validators.required]);
-
-  libelles: Libelle[] = [
-    {value: 'Taxi'},
-    {value: 'Restaurant'},
-    {value: 'Hotel'},
-    {value: 'Fourniture'},
-    {value: 'Essence'},
-    {value: 'Autre'}
-  ];
-
-  missions : IMission[];
-  _ldfValide : boolean = false;
-  
-  constructor(
-    public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
-   
-  ngOnInit() {
-    this.lignedefraisService
-      .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-      .subscribe( (data : IMission[]) => {
-        console.log(data);
-        this.missions = data;
-       });
-  }
-
-  onClick(): void {
-    this.data.comp.montant =  this.montantControl.value;
-    // verification de la validité de la note de frais 
-    // avec les champs missions, libellé et montant
-    if(this._ldfValide) {
-      console.log('valid ldf')
-      this.data.comp.valide = true;
-      // query SQL pour l'ajout de la ligne de frais
-      this.lignedefraisService.createLignedefrais({
-        id_ndf : this.data.comp.id_ndf,
-        id_mission : this.data.comp.id_mission,
-        libelle : this.data.comp.libelle,
-        montant : this.data.comp.montant,
-        commentaire : this.data.comp.commentaire
-      });
-    }
-    else {
-      this.data.comp.valide = false;
-      console.log('refus ldf')
-
-    }
-  }
-
-  onChange(value : any) {
-    if(this.montantControl.value)
-      this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
-    else
-      this._ldfValide = false;
-  }
-  
-  montantValid(montant : String) : boolean {
-    return (montant != '') && (montant.match('\\d+(\.\\d{1,2})?')[0] == montant);
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: './dialog-modifier-lignedefrais.html',
-  styleUrls: ['./lignedefrais.component.css']
-})
-export class DialogModifierLignedefrais implements OnInit{
-
-  montantControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  ]);
-  getErrorMessage() {
-    return this.montantControl.hasError('required') ? 'Montant manquant' :
-        this.montantControl.hasError('pattern') ? 'Montant invalide' : '';
-  }
-  missionControl = new FormControl('', [Validators.required]);
-  libelleControl = new FormControl('', [Validators.required]);
-
-  libelles: Libelle[] = [
-    {value: 'Taxi'},
-    {value: 'Restaurant'},
-    {value: 'Hotel'},
-    {value: 'Fourniture'},
-    {value: 'Essence'},
-    {value: 'Autre'}
-  ];
-
-  missions : IMission[];
-  _missModif : boolean = false;
-  _libModif : boolean = true;
-  _ldfValide : boolean = false;
-  _refusCDS :boolean = false;
-  _refusCompta :boolean = false;
-  _modif : boolean = false;
-
-  valuesAtStart : any = {
-    id_mission : 0,
-    libelle : '',
-    montant : 0,
-    commentaire : ''
-  }
-  
-  constructor(
-    public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
-   
-  ngOnInit() {
-    this.montantControl.setValue(this.data.comp.montant);
-    // valeurs pour la comparaison pour activer le bouton modifier
-    this.valuesAtStart = {id_mission : this.data.comp.id_mission,
-      libelle : this.data.comp.libelle, montant : this.data.comp.montant,
-      commentaire : this.data.comp.commentaire };
-    // init pour savoir si on affichera le motif de refus dans le dialog
-    if(this.data.stat == 'Refusée CDS')
-      this._refusCDS = true;
-    if(this.data.stat == 'Refusée Compta')
-      this._refusCompta = true;
-    // cas ou la mission est modifiable
-    if(this.data.stat == 'Non envoyée') {
-        this.lignedefraisService
-        .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-        .subscribe( (data : IMission[]) => {
-          this._missModif = true;
-          this.missions = data;
-        });
-    }
-  }
-
-  onClick(): void {
-    this.data.comp.montant =  this.montantControl.value;
-    console.log(this.data)
-    // verification de la validité de la note de frais 
-    // avec les champs missions, libellé et montant
-    if(this._ldfValide) {
-      console.log('valid ldf')
-      this.data.comp.valide = true;
-      // query SQL pour l'ajout de la ligne de frais
-      this.lignedefraisService.updateLignedefrais({
-        id_mission : this.data.comp.id_mission,
-        id_ldf : this.data.comp.id_ldf,
-        libelle : this.data.comp.libelle,
-        montant : this.data.comp.montant,
-        commentaire : this.data.comp.commentaire
-      });
-    }
-  }
-
-  onChange() {
-    this._modif = (this.valuesAtStart.id_mission != this.data.comp.id_mission) || 
-      (this.valuesAtStart.libelle != this.data.comp.libelle) || 
-      (this.valuesAtStart.montant != this.montantControl.value) ||
-      (this.valuesAtStart.commentaire != this.data.comp.commentaire);
-    if(this.montantControl.value)
-      this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
-    else
-      this._ldfValide = false;
-    return this._ldfValide && this._modif;
-
-  }
-  
-  montantValid(montant : String) : boolean {
-    console.log('check ' + montant);
-    if(String(montant).match('\\d+(\.\\d{1,2})?'))
-      return (montant != '') && (String(montant).match('\\d+(\.\\d{1,2})?')[0] == montant);
-    else
-      return false;
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: './dialog-modifier-avance.html',
-  styleUrls: ['./lignedefrais.component.css']
-})
-export class DialogModifierAvance implements OnInit{
-
-  myGroup = new FormGroup({
-    montantControl : new FormControl('', [
-      Validators.required,
-      Validators.pattern('^\\d+(\.\\d{1,2})?$')
-    ]),
-    montantAvanceControl : new FormControl('', [
-      Validators.required,
-      Validators.pattern('^\\d+(\.\\d{1,2})?$')
-    ]),
-    montantEstimeControl : new FormControl('', [
-      Validators.required,
-      Validators.pattern('^\\d+(\.\\d{1,2})?$')
-    ]),
-    missionControl : new FormControl('', [Validators.required]),
-    libelleControl : new FormControl('', [Validators.required])
-  });
-  getErrorMessage() {
-    return this.myGroup.get('montantControl').hasError('required') ? 'Montant manquant' :
-      this.myGroup.get('montantControl').hasError('pattern') ? 'Montant invalide' : '';
-  }
-  getErrorMessageAvance() {
-    return this.myGroup.get('montantAvanceControl').hasError('required') ? 'Montant manquant' :
-      this.myGroup.get('montantAvanceControl').hasError('pattern') ? 'Montant invalide' : '';
-  }
-  getErrorMessageEstime() {
-    return this.myGroup.get('montantEstimeControl').hasError('required') ? 'Montant manquant' :
-      this.myGroup.get('montantEstimeControl').hasError('pattern') ? 'Montant invalide' : '';
-  }
-  
-  libelles: Libelle[] = [
-    {value: 'Taxi'}, {value: 'Restaurant'}, {value: 'Hotel'}, 
-    {value: 'Fourniture'},{value: 'Essence'}, {value: 'Autre'}
-  ];
-
-  missions : IMission[];
-  _missModif : boolean = false;
-  _libModif : boolean = true;
-  _apresMiss : boolean = false;
-  _ldfValide : boolean = false;
-  _avance : boolean = false;
-  _refusCDS :boolean = false;
-  _refusCompta :boolean = false;
-  _modif : boolean = false;
-
-  valuesAtStart : any = {
-    id_mission : 0,
-    libelle : '',
-    montant : '',
-    commentaire : '',
-    montant_estime : '',
-    montant_avance : ''
-  }
-  
-  constructor(
-    public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
-   
-  ngOnInit() {
-    console.log('avance')
-    // valeurs pour la comparaison pour activer le bouton modifier
-    this.valuesAtStart = {id_mission : this.data.comp.id_mission,
-      libelle : this.data.comp.libelle, montant : this.data.comp.montant,
-      commentaire : this.data.comp.commentaire,
-      montant_estime : this.data.comp.montant_estime,
-      montant_avance : this.data.comp.montant_avance,
-    };
-    this.myGroup.get('montantAvanceControl').setValue(this.data.comp.montant_avance);
-    this.myGroup.get('montantControl').setValue(this.data.comp.montant);
-    this.myGroup.get('montantEstimeControl').setValue(this.data.comp.montant_estime);
-    // init des valeurs si la ldf est une avance
-    if(this.data.stat == 'Non envoyée' || 
-        this.data.stat == 'Attente CDS' || 
-        this.data.stat == 'Refusée CDS' || 
-        this.data.stat == 'Refusée Compta') {
-          this._apresMiss = true;
-          this._libModif = false;
-    } 
-    // init pour savoir si on affichera le motif de refus dans le dialog
-    if(this.data.stat == 'Refusée CDS' || this.data.stat == 'Avance refusée CDS' )
-      this._refusCDS = true;
-    if(this.data.stat == 'Refusée Compta' || this.data.stat == 'Avance refusée Compta' )
-      this._refusCompta = true;
-    // cas ou la mission est modifiable
-    if(this._avance && this.data.stat == 'Avance non envoyée'){
-        this.lignedefraisService
-        .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-        .subscribe( (data : IMission[]) => {
-          this._missModif = true;
-          this.missions = data;
-        });
-    }
-  }
-
-  onClick(): void {
-    this.data.comp.montant =  this.myGroup.get('montantControl').value;
-    this.data.comp.montant_avance =  this.myGroup.get('montantAvanceControl').value;
-    this.data.comp.montant_estime =  this.myGroup.get('montantEstimeControl').value;
-    console.log(this.data)
-    // verification de la validité de la note de frais 
-    // avec les champs missions, libellé et montant
-    if(this._ldfValide) {
-      console.log('valid ldf')
-      this.data.comp.valide = true;
-      if(this._apresMiss) {
-        console.log('apres mission')
-        this.lignedefraisService.updateLignedefraisAvance({
-          id_mission : this.data.comp.id_mission,
-          id_ldf : this.data.comp.id_ldf,
-          libelle : this.data.comp.libelle,
-          montant : this.data.comp.montant,
-          montant_avance : this.data.comp.montant_avance,
-          montant_estime : this.data.comp.montant_estime,
-          commentaire : this.data.comp.commentaire,
-          status : 'noSent'
-        });
-      }
-      else {
-        console.log('avant mission')
-        this.lignedefraisService.updateLignedefraisAvance({
-          id_mission : this.data.comp.id_mission,
-          id_ldf : this.data.comp.id_ldf,
-          libelle : this.data.comp.libelle,
-          montant : 0,
-          montant_avance : this.data.comp.montant_avance,
-          montant_estime : this.data.comp.montant_estime,
-          commentaire : this.data.comp.commentaire,
-          status : 'avnoSent'
-        });
-      }
-
-    }
-  }
-
-  onChange() {
-    this._modif = (this.valuesAtStart.id_mission != this.data.comp.id_mission) || 
-      (this.valuesAtStart.libelle != this.data.comp.libelle) || 
-      (this.valuesAtStart.montant != this.myGroup.get('montantControl').value) ||
-      (this.valuesAtStart.montant_estime != this.myGroup.get('montantAvanceControl').value) ||
-      (this.valuesAtStart.montant_avance != this.myGroup.get('montantEstimeControl').value) ||
-      (this.valuesAtStart.commentaire != this.data.comp.commentaire);
-    console.log('modif ' + this._modif)
-    if(this.myGroup.get('montantControl').value && this._apresMiss)
-      this._ldfValide  = this.montantValid(this.myGroup.get('montantControl').value);
-    else if (this.myGroup.get('montantAvanceControl').value && this.myGroup.get('montantEstimeControl').value && !this._apresMiss)
-      this._ldfValide = this.montantValid(this.myGroup.get('montantEstimeControl').value) &&
-        this.montantValid(this.myGroup.get('montantAvanceControl').value) && 
-        this.data.comp.id_mission != '' && this.data.comp.libelle != '';
-    else
-      this._ldfValide = false;
-    console.log('valid ' + this._ldfValide)
-    return this._ldfValide && this._modif;
-
-  }
-  
-  montantValid(montant : String) : boolean {
-    console.log('check ' + montant);
-    if(String(montant).match('\\d+(\.\\d{1,2})?'))
-      return (montant != '') && (String(montant).match('\\d+(\.\\d{1,2})?')[0] == montant);
-    else
-      return false;
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-// ###############################################################
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: './dialog-envoyer-avance.html',
-  styleUrls: ['./lignedefrais.component.css']
-})
-export class DialogEnvoyerAvance implements OnInit{
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  dataSource;
-  displayedColumns: string[] = ['mission', 'libelle', 'montant_estime', 'montant_avance'];
-  _avanceValid:boolean = true;
-
-  constructor(
-    public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
-   
-  ngOnInit() {
-    console.log(this.data)
-    console.log('avance')
-    this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
-    this.dataSource.paginator = this.paginator;
-  }
-
-  onClick(): void {
-    // boucle d'ajout des notes d'avance, et suppr des ldf
-  }
-
-  onChange() {
-    for(var i=0; i < this.data.liste.length; i++) {
-      if(!this.montantValid(this.data.liste[i].montant_avance)) {
-        this._avanceValid = false;
-        break;
-      }
-      this._avanceValid = true;
-    }
-  }
-  
-  montantValid(montant : String) : boolean {
-    if(String(montant).match('\\d+(\.\\d{1,2})?'))
-      return (montant != '') && (String(montant).match('\\d+(\.\\d{1,2})?')[0] == montant);
-    else
-      return false;
-  }
-
-  temp()
-  {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-// ###############################################################
-// ###############################################################
-// ###############################################################
 // ###############################################################
 // ###############################################################
 

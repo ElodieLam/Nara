@@ -48,7 +48,7 @@ export class LignedefraisService {
         .subscribe(
             res => {
             //this.ldf.refreshLignesdefrais();
-            // console.log('service suppr');
+             console.log('service suppr ldf');
             // console.log(res);
             this.toastr.success('Ligne de frais supprimée.', 'Success');
 
@@ -92,5 +92,39 @@ export class LignedefraisService {
         this.toastr.error(err.message, 'Error occured');
         }
     );
+  }
+
+  createAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/ajoutavance`, data)
+      .subscribe(
+        res => {
+        //this.ldf.refreshLignesdefrais();
+        console.log('service ajout avance');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  deleteAvance(data) {
+    this.http.delete(`${this.url}/lignedefrais/supprligneavance/${data.id}`)
+        .subscribe(
+            res => {
+            //this.ldf.refreshLignesdefrais();
+            // console.log('service suppr');
+            // console.log(res);
+            this.toastr.success('Avance supprimée.', 'Success');
+
+            },
+            err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+        );
   }
 }
