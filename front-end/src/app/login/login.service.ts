@@ -12,10 +12,9 @@ export class LoginService {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
   url = 'http://localhost:3000';
 
-
-  getUserDetails(data){
+  getUserDetails(param){
     return this
       .http
-      .get(`${this.url}/login/loginid`, { params : data});
+      .get(`${this.url}/login/loginid`, { params : param });
   }
 }

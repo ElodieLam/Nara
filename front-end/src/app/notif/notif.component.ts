@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class NotifComponent implements OnInit {
 
   constructor() { }
+  
 
   ngOnInit() {
   }

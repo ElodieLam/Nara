@@ -46,10 +46,10 @@ const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
     {path: 'dashboard', component: DashboardComponent},
-    {path: 'notedefrais/:id', component: NotedefraisComponent},
-    {path: 'conge/:id', component: CongeComponent},
-    {path: 'notifications/:id', component: NotifComponent},
-    {path: 'lignedefrais', component: LignedefraisComponent},
+    {path: 'notedefrais', component: NotedefraisComponent},
+    {path: 'conge', component: CongeComponent},
+    {path: 'notifications', component: NotifComponent},
+    {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
   

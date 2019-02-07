@@ -3,6 +3,7 @@ var db = require('../db');
 var Notedefrais = {
     getNotesdefraisFromIdCollab: function(data, callback)
     {
+        console.log(data)
         return db.query('SELECT * FROM t_note_de_frais WHERE id_collab = ?', [data[0]], callback);
     },
     getLignesdefraisresumeFromIdNdf:function(data, callback)

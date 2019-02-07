@@ -1,16 +1,16 @@
-import { Component} from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from "@angular/router";
-
+import { LoginComponent } from '/Users/Elodie/Nara/front-end/src/app/login/login.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit{
 
   username: string;
   param: string;
@@ -21,7 +21,7 @@ export class DashboardComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private activatedRoute: ActivatedRoute, private login: LoginComponent) {
     this.isOn = true;
     //Récupère les paramètres passés dans l'URL
     this.activatedRoute.queryParams.subscribe(params => {
@@ -30,16 +30,20 @@ export class DashboardComponent {
       });
   }
 
+  ngOnInit(){
+    console.log("userId in dashboard: " + this.login.getUserId());
+  }
+
   goToNotif(){
-    this.router.navigate(['/notifications/:id'], { queryParams: { user: this.username, param: this.param} } ); 
+    this.router.navigate(['/notifications/']); 
   }
 
   goToConge(){
-    this.router.navigate(['/conge/:id'], { queryParams: { user: this.username, param: this.param} } ); 
+    this.router.navigate(['/conge']); 
   }
 
   goToNDF(){
-    this.router.navigate(['/notedefrais/:id'], { queryParams: { user: this.username, param: this.param} } ); 
+    this.router.navigate(['/notedefrais']); 
   }
 
   logout(){
@@ -49,6 +53,7 @@ export class DashboardComponent {
     this.param = "";
     
   }
+
   
 
 }
