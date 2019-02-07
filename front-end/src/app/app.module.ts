@@ -53,14 +53,16 @@ import { CongeComponent } from './conge/conge.component';
 
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';
+import { LoginService } from "./login/login.service";
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
 
 const appRoutes: Routes = [
-    { path: '', redirectTo: 'notifications', pathMatch: 'full'},
-    {path: 'login', component: LoginComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  {path: 'login', component: LoginComponent},
+    {path: 'dashboard', component: DashboardComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
@@ -131,7 +133,9 @@ const appRoutes: Routes = [
     NotedefraisService,
     LignedefraisService,
     CongeService,
+    LoginService,
     {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
+
   ],
   bootstrap: [AppComponent]
 })

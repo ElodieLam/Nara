@@ -17,5 +17,7 @@ app.use('/demandeconge', DemandecongeController);
 var LignedefraisController = require('./lignedefrais/LignedefraisController');
 app.use('/lignedefrais', LignedefraisController);
 
+var LoginController = require('./login/LoginController');
+app.use('/login', LoginController);
 
 module.exports = app;

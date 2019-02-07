@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NotedefraisService } from './notedefrais.service';
 import { INotedefrais } from './notedefrais.interface';
-import { Router } from "@angular/router";
+import { ILignedefrais } from '../lignedefrais/lignedefrais.interface';
+import { Router, ActivatedRoute } from "@angular/router";
 import { DatePipe } from '@angular/common';
 import { isoStringToDate } from '@angular/common/src/i18n/format_date';
+
+import * as CryptoJS from 'crypto-js'; 
 
 @Component({
   selector: 'app-notedefrais',
@@ -23,8 +26,32 @@ export class NotedefraisComponent implements OnInit {
   topthreeMonth: string[] = ['null', 'null','null'];
   currentMissing : boolean = true;
   count : number = 0;
+
+  //Param in URL
+  username: string;
+  param: string;
+  id: any;
+  route: string;
+
+  //Variable pour encrypt/decrypt
+  keySize: number = 256;
+  ivSize : number = 128;
+  iterations : number = 100;
+  key  : any = "daouda";
+
   constructor(private notedefraisService: NotedefraisService , private router: Router,
-    private datePipe: DatePipe) { }
+    private datePipe: DatePipe, private activatedRoute: ActivatedRoute) { 
+      //Récupère les paramètres passés dans l'URL
+      this.activatedRoute.queryParams.subscribe(params => {
+          this.username = params['user'];
+          this.param = params['param'];
+          this.dataS = this.decrypt(this.param, this.key);
+
+          console.log("TEST " + router.url);
+      var sub = activatedRoute.data.subscribe(v => console.log(v));
+
+      });
+    }
   
   ngOnInit() {
     this.sub = this.notedefraisService
@@ -104,5 +131,25 @@ export class NotedefraisComponent implements OnInit {
     console.log("destroy ndf ")
     this.sub.unsubscribe();
   }
+
+
+  decrypt (transitmessage, key) {
+    var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+    var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+    var encrypted = transitmessage.substring(64);
+  
+    var key = CryptoJS.PBKDF2(key, salt, {
+      keySize: this.keySize/32,
+      iterations: this.iterations
+    });
+
+    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { 
+      iv: iv, 
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC  
+    })
+    return decrypted;
+  }
+
 }
 

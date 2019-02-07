@@ -15,3 +15,8 @@
   top: 0;
   z-index: 1;
 }
+
+.top-nav{
+  position: absolute;
+  right: 0;
+}
