@@ -41,6 +41,7 @@ import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.compon
 import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component'
 import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component'
 import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component'
+import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component'
 import { CongeComponent } from './conge/conge.component';
 
 import { NotifComponent } from './notif/notif.component';
@@ -72,6 +73,7 @@ const appRoutes: Routes = [
     DialogModifierLignedefrais,
     DialogModifierAvance,
     DialogEnvoyerAvance,
+    DialogEnvoyerLignes,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -122,6 +124,7 @@ const appRoutes: Routes = [
     DialogModifierLignedefrais,
     DialogModifierAvance,
     DialogEnvoyerAvance,
+    DialogEnvoyerLignes,
     LignedefraisAjoutComponent
   ],
   providers: [

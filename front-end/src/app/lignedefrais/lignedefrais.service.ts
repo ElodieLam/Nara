@@ -48,7 +48,7 @@ export class LignedefraisService {
         .subscribe(
             res => {
             //this.ldf.refreshLignesdefrais();
-             console.log('service suppr ldf');
+            // console.log('service suppr ldf');
             // console.log(res);
             this.toastr.success('Ligne de frais supprimée.', 'Success');
 
@@ -99,7 +99,7 @@ export class LignedefraisService {
       .subscribe(
         res => {
         //this.ldf.refreshLignesdefrais();
-        console.log('service ajout avance');
+        //console.log('service ajout avance');
         // console.log(res);
         this.toastr.success('Avance ajoutée.', 'Success');
 
@@ -113,18 +113,42 @@ export class LignedefraisService {
 
   deleteAvance(data) {
     this.http.delete(`${this.url}/lignedefrais/supprligneavance/${data.id}`)
-        .subscribe(
-            res => {
-            //this.ldf.refreshLignesdefrais();
-            // console.log('service suppr');
-            // console.log(res);
-            this.toastr.success('Avance supprimée.', 'Success');
+      .subscribe(
+        res => {
+        this.toastr.success('Avance supprimée.', 'Success');
 
-            },
-            err => {
-            console.log('Error occured:' , err);
-            this.toastr.error(err.message, 'Error occured');
-            }
-        );
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  updateStatutLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/updatestatutlignedefrais`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+  updateStatutAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/updatestatutavance`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
   }
 }

@@ -2,24 +2,17 @@ import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, I
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
-import { ILignedefraisFull, ILignedefrais } from './lignedefrais.interface';
+import { ILignedefraisFull, ILignedefrais, IAvance, ILignedefraisShort } from './lignedefrais.interface';
 
 import { DialogEnvoyerAvance } from './dialog-envoyer-avance.component';
+import { DialogEnvoyerLignes } from './dialog-envoyer-lignes.component';
 import { DialogModifierAvance } from './dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
 
 
 
-export interface Avance {
-  id_ldf: Number;
-  id_mission: Number;
-  nom_mission: String;
-  libelle: String;
-  montant_estime: Number;
-  montant_avance: Number;
-  commentaire: String;
-}
+
 
 @Component({
   selector: 'app-lignedefrais',
@@ -225,7 +218,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   openDialogEnvoyerAvance() {
     if(this.listAvance.length > 0) {
-      var listLdf : Avance[] = [];
+      var listLdf : IAvance[] = [];
       this.listAvance.forEach( num => {
         for(var i = 0 ; i < this.listlignedefrais.length ; ++i) {
           if(this.listlignedefrais[i].id_ldf == num && !this.listlignedefrais[i].avance)
@@ -256,6 +249,45 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     }
   }
 
+  openDialogEnvoyerLignes() {
+      
+    var listLdf : ILignedefraisShort[] = [];
+    this.listlignedefrais.forEach( ligne => {
+      if(ligne.avance && ligne.status == 'Avance non envoyée')
+        listLdf.push({ 'id_ldf' : ligne.id_ldf,
+              'nom_mission' : ligne.mission, 
+              'libelle' : ligne.libelle, 
+              'avance' : ligne.avance,
+              'apres_mission' : false,
+              'montant' : ligne.montant_avance})
+      else if(ligne.status == 'Non envoyée' && ligne.montant != 0)
+        listLdf.push({ 'id_ldf' : ligne.id_ldf,
+              'nom_mission' : ligne.mission, 
+              'libelle' : ligne.libelle, 
+              'avance' : ligne.avance,
+              'apres_mission' : true,
+              'montant' : ligne.montant})
+        
+      });
+    if(listLdf.length > 0) {
+
+        const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
+          data: { liste : listLdf }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          var temp = result;
+        if(temp) {
+          this.delay(3000).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Lignes envoyées');
+          });
+        }
+      });
+    }
+    else {
+      this.openSnackBar('Aucune lignes à envoyer');
+    }
+    }
   
 
   temp(){

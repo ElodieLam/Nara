@@ -39,3 +39,23 @@ export interface IMission {
 export interface ILibelle {
     value: string;
 }
+
+export interface IAvance {
+    id_ldf: Number;
+    id_mission: Number;
+    nom_mission: String;
+    libelle: String;
+    montant_estime: Number;
+    montant_avance: Number;
+    commentaire: String;
+  }
+
+export interface ILignedefraisShort {
+    id_ldf: Number;
+    nom_mission: String;
+    libelle: String;
+    avance: Boolean;
+    apres_mission: Boolean;
+    montant: Number;
+
+}
