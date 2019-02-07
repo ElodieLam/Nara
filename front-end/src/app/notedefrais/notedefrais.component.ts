@@ -6,8 +6,6 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { DatePipe } from '@angular/common';
 import { isoStringToDate } from '@angular/common/src/i18n/format_date';
 
-import * as CryptoJS from 'crypto-js'; 
-
 @Component({
   selector: 'app-notedefrais',
   templateUrl: './notedefrais.component.html',
@@ -33,34 +31,18 @@ export class NotedefraisComponent implements OnInit {
   id: any;
   route: string;
 
-  //Variable pour encrypt/decrypt
-  keySize: number = 256;
-  ivSize : number = 128;
-  iterations : number = 100;
-  key  : any = "daouda";
-
   constructor(private notedefraisService: NotedefraisService , private router: Router,
-    private datePipe: DatePipe, private activatedRoute: ActivatedRoute) { 
-      //Récupère les paramètres passés dans l'URL
-      this.activatedRoute.queryParams.subscribe(params => {
-          this.username = params['user'];
-          this.param = params['param'];
-          this.dataS = this.decrypt(this.param, this.key);
-
-          console.log("TEST " + router.url);
-      var sub = activatedRoute.data.subscribe(v => console.log(v));
-
-      });
+    private datePipe: DatePipe) { 
     }
   
   ngOnInit() {
     this.sub = this.notedefraisService
-      .getNotedefraisFromIdCollab({id : this.dataS})
-        .subscribe( (data : INotedefrais[]) => {
-          // récupération des données de la query
-          this.lnotedefrais = data;
-          // trie la liste de la plus récente à la plus ancienne
-          if(this.lnotedefrais.length != 0){
+    .getNotedefraisFromIdCollab({id : this.dataS})
+    .subscribe( (data : INotedefrais[]) => {
+      // récupération des données de la query
+      this.lnotedefrais = data;
+      // trie la liste de la plus récente à la plus ancienne
+      if(this.lnotedefrais.length != 0){
             this.lnotedefrais.sort((a, b) => {   
               return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
             });
@@ -130,25 +112,6 @@ export class NotedefraisComponent implements OnInit {
   ngOnDestroy() {
     console.log("destroy ndf ")
     this.sub.unsubscribe();
-  }
-
-
-  decrypt (transitmessage, key) {
-    var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
-    var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
-    var encrypted = transitmessage.substring(64);
-  
-    var key = CryptoJS.PBKDF2(key, salt, {
-      keySize: this.keySize/32,
-      iterations: this.iterations
-    });
-
-    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { 
-      iv: iv, 
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC  
-    })
-    return decrypted;
   }
 
 }
