@@ -112,7 +112,7 @@ export class LignedefraisService {
   }
 
   deleteAvance(data) {
-    this.http.delete(`${this.url}/lignedefrais/supprligneavance/${data.id}`)
+    this.http.delete(`${this.url}/lignedefrais/suppravance/${data.id}`)
       .subscribe(
         res => {
         this.toastr.success('Avance supprimée.', 'Success');

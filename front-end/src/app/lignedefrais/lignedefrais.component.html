@@ -1,7 +1,10 @@
 <p>
-  Id ndf = {{ id_ndf }}
+  Total note de frais = {{ montantTotal | number }}€ 
 </p>
 <div class="mat-elevation-z8">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
       
       <ng-container matColumnDef="avance">
@@ -63,7 +66,7 @@
       <ng-container matColumnDef="supprimer">
           <th mat-header-cell *matHeaderCellDef>Supprimer</th>
           <td mat-cell *matCellDef="let element">
-              <button mat-flat-button *ngIf="supprPossible(element)" (click)="supprLignedefrais(element.id_ldf)" color="warn">Supprimer</button>    
+              <button mat-flat-button *ngIf="supprPossible(element)" (click)="supprLignedefrais(element)" color="warn">Supprimer</button>    
           </td>
       </ng-container>
   
@@ -74,7 +77,8 @@
     <!-- <mat-paginator showFirstLastButtons></mat-paginator> -->
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>
-  <button mat-raised-button (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
-  <br>
-  <button mat-flat-button (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances</button>
-  <button mat-flat-button (click)="openDialogEnvoyerLignes()" color="warn">Envoyer</button>
+  <div class="button-row">
+    <button mat-raised-button (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
+    <button mat-flat-button (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances</button>
+    <button mat-flat-button (click)="openDialogEnvoyerLignes()" color="warn">Envoyer</button>
+  </div>

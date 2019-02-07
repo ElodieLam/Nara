@@ -10,10 +10,6 @@ import { DialogModifierAvance } from './dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
 
-
-
-
-
 @Component({
   selector: 'app-lignedefrais',
   templateUrl: './lignedefrais.component.html',
@@ -38,6 +34,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   id_ndf: number = 0;
   id_collab: number = 6;
+  montantTotal: number = 0.00;
   
   componentData : any = {
     id_ldf : 0,
@@ -77,6 +74,10 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
     this.refreshLignesdefrais();
   }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
   
   refreshLignesdefrais(){
     // vide la liste affichee dans le tableau 
@@ -96,6 +97,16 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 'montant_estime' : ldf.montant_estime,
               'montant' : ldf.montant_ldf, 'commentaire' : ldf.commentaire_ldf, 
               'commentaire_refus' : ldf.motif_refus, 'justificatif' : ldf.justif_ldf})
+          // if(ldf.montant_avance != null && ldf.montant_ldf == 0) {
+          //   console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
+          //   console.log(this.montantTotal)
+          //   this.montantTotal -= +ldf.montant_avance;
+          // }
+          //else {
+            console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
+            this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
+            console.log(this.montantTotal)
+          //}
         });
         // creation du tableau avec les options sort et paginator
         this.dataSource = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
@@ -293,14 +304,21 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   temp(){
   }
 
-  supprLignedefrais(id_ldf : any) {
-    console.log("wtf")
-    console.log(id_ldf);
-    this.lignedefraisService.deleteLignedefrais({id : id_ldf});
-    this.delay(1500).then(any => {
-      this.refreshLignesdefrais();
-      this.openSnackBar('Ligne de frais supprimée');
-    });
+  supprLignedefrais(ldf : ILignedefrais) {
+    if(ldf.avance) {
+      this.lignedefraisService.deleteAvance({id : ldf.id_ldf});
+      this.delay(1500).then(any => {
+        this.refreshLignesdefrais();
+        this.openSnackBar('Avance supprimée');
+      });
+    }
+    else {
+      this.lignedefraisService.deleteLignedefrais({id : ldf.id_ldf});
+      this.delay(1500).then(any => {
+        this.refreshLignesdefrais();
+        this.openSnackBar('Ligne de frais supprimée');
+      });
+    }
   }
 
   modifPossible(ldf : ILignedefrais) : boolean {
