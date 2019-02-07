@@ -1,7 +1,7 @@
-export interface ILignedefrais {
+export interface ILignedefraisFull {
     id_ldf: Number;
     id_ndf: Number;
-    id_mission: Number;
+    nom_mission: String;
     libelle_ldf: String;
     montant_ldf: Number;
     date_ldf: Date;
@@ -12,4 +12,35 @@ export interface ILignedefrais {
     mission_passe: boolean;
     montant_estime: Number;
     montant_avance: Number;
+}
+
+export interface ILignedefrais {
+    id_ldf: Number;
+    avance: boolean;
+    montant_avance: Number;
+    status: String;
+    mission: String;
+    date: Date;
+    libelle: String;
+    montant: Number;
+    commentaire: String;
+    justificatif: Blob;
+    //button modifier
+    //button supprimer 
+}
+
+export interface ILignedefraisDialog {
+    id_collab: number;
+    id_mission: number;
+    libelle: string;
+    montant: number;
+    commentaire: string;
+}
+
+export interface ILignedefraisToSend {
+    id_ndf: number;
+    id_mission: number;
+    libelle: string;
+    montant: number;
+    commentaire: string;
 }

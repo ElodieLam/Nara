@@ -23,32 +23,35 @@
         </mat-form-field>
       </td>
       <td>
-        <input
-          class="form-control"
-          type="text"
-          mwlFlatpickr
-          [(ngModel)]="newDemande.date_debut">
+          <mat-form-field>
+              <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker3" placeholder="Date début congé" [(ngModel)]="newDemande.date_debut" [min] = "dateMin" disabled>
+              <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+              <mat-datepicker #picker3 disabled="false"></mat-datepicker>
+            </mat-form-field>
+      
       </td>
       <td>
           <mat-form-field>
               <mat-select [(value)]="newDemande.debut_matin">
-                <mat-option value="true">Matin</mat-option>
-                <mat-option value="false">Après-Midi</mat-option>
+                <mat-option value=1>Matin</mat-option>
+                <mat-option value=0>Après-Midi</mat-option>
               </mat-select>
             </mat-form-field>
       </td>
       <td>
-        <input
-          class="form-control"
-          type="date"
-          mwlFlatpickr
-          [(ngModel)]="newDemande.date_fin">
+          <mat-form-field>
+              <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker2" placeholder="Date fin congé" 
+              [(ngModel)]="newDemande.date_fin" [min] = "newDemande.date_debut" disabled>
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+            </mat-form-field>
+
       </td>
       <td>
           <mat-form-field>
               <mat-select [(value)]="newDemande.fin_aprem">
-                <mat-option value="false">Matin</mat-option>
-                <mat-option value="true">Après-Midi</mat-option>
+                <mat-option value=0>Matin</mat-option>
+                <mat-option value=1>Après-Midi</mat-option>
               </mat-select>
             </mat-form-field>
       </td>

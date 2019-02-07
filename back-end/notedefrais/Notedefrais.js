@@ -3,12 +3,11 @@ var db = require('../db');
 var Notedefrais = {
     getNotesdefraisFromIdCollab: function(data, callback)
     {
-        console.log(data)
-        return db.query('SELECT * FROM t_note_de_frais WHERE id_collab = ?', [data[0]], callback);
+        return db.query('SELECT * FROM t_note_de_frais WHERE id_collab = ?', [data.id], callback);
     },
     getLignesdefraisresumeFromIdNdf:function(data, callback)
     {
-        return db.query('SELECT miss.nom_mission, ldf.libelle_ldf, ldf.status_ldf from t_ligne_de_frais as ldf, t_mission as miss WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission', [data[0]], callback);
+        return db.query('SELECT miss.nom_mission, ldf.libelle_ldf, ldf.status_ldf from t_ligne_de_frais as ldf, t_mission as miss WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission', [data.id], callback);
     },
     createNotedefraisWithMonth: function (data, callback) 
     {

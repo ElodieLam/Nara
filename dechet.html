@@ -83,3 +83,28 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
   </table>
+
+
+
+
+
+  <input
+          class="form-control"
+          type="text"
+          mwlFlatpickr
+          dateFormat="d-m-Y"          
+          [minDate] = "dateMin"
+          [(ngModel)]="newDemande.date_debut"
+          [convertModelValue] = "true"
+          [disable] = "weekEnd(newDemande.date_debut)">
+
+
+               <input
+          class="form-control"
+          type="text"
+          mwlFlatpickr
+          dateFormat="d-m-Y"
+          [minDate] = "newDemande.date_debut"
+          [(ngModel)]="newDemande.date_fin"
+          [convertModelValue] = "true"
+          [disable] = "weekEnd(newDemande.date_fin)">

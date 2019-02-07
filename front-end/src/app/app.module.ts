@@ -6,6 +6,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { FormsModule } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
   MatToolbarModule,
@@ -18,8 +19,19 @@ import {
   MatSortModule,
   MatGridListModule,
   MatCardModule,
-  MatMenuModule
+  MatMenuModule,
+  MatCheckboxModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatDialogModule,
+  MatSelectModule,
+  MatSnackBarModule,
+  MatNativeDateModule,
+  MatFormField,
+  MatInputModule,
+  MAT_DATE_LOCALE
 } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotedefraisComponent } from './notedefrais/notedefrais.component';
@@ -29,8 +41,13 @@ import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { LignedefraisComponent } from './lignedefrais/lignedefrais.component';
+import { 
+  LignedefraisComponent,
+  DialogNouvelleLignedefrais,
+  LignedefraisAjoutComponent 
+} from './lignedefrais/lignedefrais.component';
 import { CongeComponent } from './conge/conge.component';
+
 
 
 
@@ -61,6 +78,8 @@ const appRoutes: Routes = [
     DashboardComponent,
     NotedefraisComponent,
     LignedefraisComponent,
+    DialogNouvelleLignedefrais,
+    LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
 
@@ -79,14 +98,25 @@ const appRoutes: Routes = [
     MatIconModule,
     MatListModule,
     BrowserAnimationsModule,
+    MatInputModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     [FormsModule, FlatpickrModule.forRoot()],
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
@@ -95,11 +125,17 @@ const appRoutes: Routes = [
       useFactory: adapterFactory
     })
   ],
+  entryComponents: [ 
+    DialogNouvelleLignedefrais,
+    LignedefraisAjoutComponent
+  ],
   providers: [
     NotedefraisService,
     LignedefraisService,
     CongeService,
-    LoginService
+    LoginService,
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
+
   ],
   bootstrap: [AppComponent]
 })
