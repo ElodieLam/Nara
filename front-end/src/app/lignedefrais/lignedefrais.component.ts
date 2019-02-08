@@ -3,17 +3,20 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar, MAT_
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
 import { ILignedefraisFull, ILignedefrais, IAvance, ILignedefraisShort } from './lignedefrais.interface';
+import { DatePipe } from '@angular/common';
 
 import { DialogEnvoyerAvance } from './dialog-envoyer-avance.component';
 import { DialogEnvoyerLignes } from './dialog-envoyer-lignes.component';
 import { DialogModifierAvance } from './dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
+import * as CryptoJS from 'crypto-js'; 
 
 @Component({
   selector: 'app-lignedefrais',
   templateUrl: './lignedefrais.component.html',
-  styleUrls: ['./lignedefrais.component.css']
+  styleUrls: ['./lignedefrais.component.css'],
+  providers: [DatePipe]
 })
 export class LignedefraisComponent implements OnInit, OnChanges {
  
@@ -33,6 +36,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   ];
 
   id_ndf: number = 0;
+  annee: number = 0;
+  mois: number = 0;
   id_collab: number = 6;
   montantTotal: number = 0.00;
   
@@ -57,19 +62,42 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   listlignedefrais : ILignedefrais[] = [];
   listAvance : Number[] = [];
   dataSource;
+  currentNdf:boolean = false;
   displayedColumns: string[] = ['avance', 'status', 'mission', 'date',
   'libelle', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
+  listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  //Variable pour encrypt/decrypt
+  keySize: number = 256;
+  ivSize : number = 128;
+  iterations : number = 100;
+  key  : any = "daouda";
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private lignedefraisService : LignedefraisService, private route : ActivatedRoute,
-    private dialog: MatDialog, private snackBar: MatSnackBar) { }
+    private dialog: MatDialog, private snackBar: MatSnackBar, private datePipe: DatePipe) { }
   
   ngOnInit() {
     console.log('init')
     this.sub = this.route.params.subscribe(params => {
-      this.id_ndf = +params['id'];
+
+      console.log(params['id'])
+      var decrypted = this.decrypt(params['id'], this.key);
+      console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+      var str = decrypted.toString(CryptoJS.enc.Utf8).split("-",3);
+      
+      this.id_ndf = +str[0]
+      this.annee = +str[1];
+      this.mois = +str[2];
+      var stri = this.datePipe.transform(new Date(), 'yyyy-MM-dd').split("-",2);
+      console.log(+stri[0])
+      console.log(+stri[1])
+      console.log(this.annee)
+      console.log(this.mois)
+      if(+stri[0] == this.annee && +stri[1] == this.mois) {
+        this.currentNdf = true;
+      }
       this.componentData.id_ndf = this.id_ndf;
     });
     this.refreshLignesdefrais();
@@ -80,6 +108,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
   
   refreshLignesdefrais(){
+    this.montantTotal = 0;
     // vide la liste affichee dans le tableau 
     this.listlignedefrais = [];    
     // requete SQL pour avoir toutes les lignes de frais de la note de frais
@@ -97,16 +126,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 'montant_estime' : ldf.montant_estime,
               'montant' : ldf.montant_ldf, 'commentaire' : ldf.commentaire_ldf, 
               'commentaire_refus' : ldf.motif_refus, 'justificatif' : ldf.justif_ldf})
-          // if(ldf.montant_avance != null && ldf.montant_ldf == 0) {
-          //   console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
-          //   console.log(this.montantTotal)
-          //   this.montantTotal -= +ldf.montant_avance;
-          // }
-          //else {
-            console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
-            this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
-            console.log(this.montantTotal)
-          //}
+          //console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
+          this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
+          //console.log(this.montantTotal)
         });
         // creation du tableau avec les options sort et paginator
         this.dataSource = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
@@ -371,6 +393,42 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       duration: 750,
       data : msg
     });
+  }
+
+  encrypt (msg, key) {
+    var salt = CryptoJS.lib.WordArray.random(128/8);
+    var key = CryptoJS.PBKDF2(key, salt, {
+        keySize: this.keySize/32,
+        iterations: this.iterations
+      });
+    var iv = CryptoJS.lib.WordArray.random(128/8);
+    var encrypted = CryptoJS.AES.encrypt(msg, key, { 
+      iv: iv, 
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+
+    });
+    var transitmessage = salt.toString()+ iv.toString() + encrypted.toString();
+    return transitmessage;
+  }
+
+
+  decrypt (transitmessage, key) {
+    var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+    var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+    var encrypted = transitmessage.substring(64);
+
+    var key = CryptoJS.PBKDF2(key, salt, {
+      keySize: this.keySize/32,
+      iterations: this.iterations
+    });
+
+    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { 
+      iv: iv, 
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC  
+    })
+    return decrypted;
   }
 }
 

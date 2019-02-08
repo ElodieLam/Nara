@@ -13,6 +13,17 @@ var Notedefrais = {
     {
         return db.query('Insert into t_note_de_frais(id_collab, mois) values(?, ?)',[data.id_collab, data.mois], callback);
     },
+    createNotedefrais: function (data, callback) 
+    {
+        return db.query('Insert into t_note_de_frais(id_collab, mois, annee, total) values(?, ?, ?, 0)',
+        [data.id_collab, data.mois, data.annee], callback);
+    },
+    getNotedefraisMonthYear: function(data, callback)
+    {
+        console.log(data)
+        return db.query('SELECT id_ndf FROM t_note_de_frais WHERE id_collab = ? AND mois = ? AND annee = ?',
+        [data.id_collab, parseInt(data.mois), data.annee], callback);
+    },
     getNotedefraisFromIdCollabAndMonth: function(id_collab, month, callback)
     {
         return db.query('SELECT * FROM t_ligne_de_frais WHERE id_ndf IN (SELECT id_ndf FROM t_note_de_frais WHERE id_collab = ? AND mois = ?)', id_collab, month, callback);

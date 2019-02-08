@@ -24,6 +24,7 @@ import {
   MatSelectModule,
   MatSnackBarModule,
   MatNativeDateModule,
+  MatProgressSpinnerModule,
   MAT_DATE_LOCALE
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -106,6 +107,7 @@ const appRoutes: Routes = [
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

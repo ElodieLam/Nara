@@ -1,4 +1,5 @@
 <p>
+  {{ listemois[mois] }} {{ annee}}
   Total note de frais = {{ montantTotal | number }}€ 
 </p>
 <div class="mat-elevation-z8">
@@ -78,7 +79,7 @@
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>
   <div class="button-row">
-    <button mat-raised-button (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
-    <button mat-flat-button (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances</button>
+    <button mat-raised-button [disabled]="!currentNdf" (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
+    <button mat-flat-button [disabled]="!currentNdf" (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances</button>
     <button mat-flat-button (click)="openDialogEnvoyerLignes()" color="warn">Envoyer</button>
   </div>

@@ -35,4 +35,25 @@ export class NotedefraisService {
         }
       );
   }
+
+  createNotedefrais(data) {
+    this.http.post(`${this.url}/notedefrais/createnotedefrais`, data)
+      .subscribe(
+        res => {
+          //console.log(res);
+          this.toastr.success('Note de frais créée.', 'Success');
+          //this.router.navigateByUrl('/notedefrais');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  getNotedefraisMonthYear(data){
+    return this
+      .http
+      .get(`${this.url}/notedefrais/getnotedefraismonthyear`, { params : data });
+  }
 }
