@@ -25,9 +25,12 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   annee : number = 0;
   dateVerbose : string;
   // pour la pagination
-  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'status_ldf'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'status_ldf'];
   //dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
   dataSource;
+  values:boolean = true;
+  lignesValid:number = 0;
+  lignesTotal:number = 0;
 
   //Variable pour encrypt/decrypt
   keySize: number = 256;
@@ -53,6 +56,20 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
         this.listLignedefrais = data;
         var temp = this.moisAnnee.split("-",2);
 
+        this.lignesTotal = this.listLignedefrais.length;
+        this.listLignedefrais.forEach( ligne => {
+          console.log(ligne)
+          ligne.no = false;
+          ligne.wait = false;
+          ligne.val = false;
+          ligne.nosent = false;
+          ligne.status_ldf == 'val' ? ligne.val = true : ( 
+            (ligne.status_ldf == 'noCds' || ligne.status_ldf == 'noF' ||
+            ligne.status_ldf == 'avnoCds' || ligne.status_ldf == 'avnoF') ? ligne.no = true : (
+              (ligne.status_ldf == 'noSent' || ligne.status_ldf == 'avnoSent') ? 
+                ligne.nosent = true : ligne.wait = true));
+          ligne.status_ldf == 'val' ? this.lignesValid++ : {};
+        });
         this.mois = +temp[0];
         this.annee = +temp[1];
 
@@ -60,6 +77,9 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
         this.dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        if(this.listLignedefrais.length == 0) {
+          this.values = false;
+        }
     });
   }
 

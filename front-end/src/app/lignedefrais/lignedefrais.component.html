@@ -1,7 +1,14 @@
-<p>
-  {{ listemois[mois] }} {{ annee}}
-  Total note de frais = {{ montantTotal | number }}€ 
-</p>
+<div>
+  <p>
+    {{ listemois[mois] }} {{ annee}}
+    Total note de frais = {{ montantTotal | number }}€ 
+  </p>
+  <button mat-icon-button (click)="refreshLignesdefrais()">
+    <mat-icon>autorenew</mat-icon>
+  <!-- <mat-icon aria-label="Example icon-button with a heart icon" >favorite</mat-icon> -->
+  </button>
+</div>
+
 <div class="mat-elevation-z8">
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
@@ -15,7 +22,7 @@
             {{element.montant_avance}}
           </div>
           <ng-template #elseBlock>
-            <mat-checkbox *ngIf="isCheckable(element.status)" (change)="onCheck(element)"></mat-checkbox>
+            <mat-checkbox *ngIf="isCheckable(element.status) && currentNdf" (change)="onCheck(element)"></mat-checkbox>
           </ng-template>
         </td>
       </ng-container>
