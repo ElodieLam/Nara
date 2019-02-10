@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NotedefraisService } from './notedefrais.service';
 import { INotedefrais } from './notedefrais.interface';
-import { Router } from "@angular/router";
+import { ILignedefrais } from '../lignedefrais/lignedefrais.interface';
+import { Router, ActivatedRoute } from "@angular/router";
 import { DatePipe } from '@angular/common';
 import { isoStringToDate } from '@angular/common/src/i18n/format_date';
 import * as CryptoJS from 'crypto-js'; 
@@ -32,18 +33,24 @@ export class NotedefraisComponent implements OnInit {
   ivSize : number = 128;
   iterations : number = 100;
   key  : any = "daouda";
+  //Param in URL
+  username: string;
+  param: string;
+  id: any;
+  route: string;
 
   constructor(private notedefraisService: NotedefraisService , private router: Router,
-    private datePipe: DatePipe) { }
+    private datePipe: DatePipe) { 
+    }
   
   ngOnInit() {
     this.sub = this.notedefraisService
-      .getNotedefraisFromIdCollab({id : this.dataS})
-        .subscribe( (data : INotedefrais[]) => {
-          // récupération des données de la query
-          this.lnotedefrais = data;
-          // trie la liste de la plus récente à la plus ancienne
-          if(this.lnotedefrais.length != 0){
+    .getNotedefraisFromIdCollab({id : this.dataS})
+    .subscribe( (data : INotedefrais[]) => {
+      // récupération des données de la query
+      this.lnotedefrais = data;
+      // trie la liste de la plus récente à la plus ancienne
+      if(this.lnotedefrais.length != 0){
             this.lnotedefrais.sort((a, b) => {   
               return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
             });
@@ -194,5 +201,6 @@ export class NotedefraisComponent implements OnInit {
     console.log("destroy ndf ")
     this.sub.unsubscribe();
   }
+
 }
 
