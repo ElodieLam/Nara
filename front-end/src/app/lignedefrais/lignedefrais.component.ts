@@ -1,23 +1,25 @@
 import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
-import { ILignedefraisFull, ILignedefrais, ILignedefraisDialog, ILignedefraisToSend } from './lignedefrais.interface';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { ILignedefraisFull, ILignedefrais, IAvance, ILignedefraisShort } from './lignedefrais.interface';
+import { DatePipe } from '@angular/common';
 
-export interface Libelle {
-  value: string;
-  viewValue: string;
-}
+import { DialogEnvoyerAvance } from './dialog-envoyer-avance.component';
+import { DialogEnvoyerLignes } from './dialog-envoyer-lignes.component';
+import { DialogModifierAvance } from './dialog-modifier-avance.component';
+import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
+import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
+import * as CryptoJS from 'crypto-js'; 
+
 @Component({
   selector: 'app-lignedefrais',
   templateUrl: './lignedefrais.component.html',
-  styleUrls: ['./lignedefrais.component.css']
+  styleUrls: ['./lignedefrais.component.css'],
+  providers: [DatePipe]
 })
 export class LignedefraisComponent implements OnInit, OnChanges {
  
-  
-
   status : any[] = [
     {key: 'avnoSent', value : 'Avance non envoyée'},
     {key: 'avattCds', value : 'Avance attente CDS'},
@@ -33,17 +35,24 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   ];
 
-  ldf : ILignedefraisDialog;
   id_ndf: number = 0;
+  annee: number = 0;
+  mois: number = 0;
   id_collab: number = 6;
+  montantTotal: number = 0.00;
   
   componentData : any = {
+    id_ldf : 0,
     id_ndf : 0,
     id_collab : 6,
     id_mission : '',
+    nom_mission : '',
     libelle : '',
     montant : '',
+    montant_estime : '',
+    montant_avance : '',
     commentaire : '',
+    commentaire_refus : '',
     valide : false 
   }
 
@@ -53,25 +62,53 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   listlignedefrais : ILignedefrais[] = [];
   listAvance : Number[] = [];
   dataSource;
+  currentNdf:boolean = false;
   displayedColumns: string[] = ['avance', 'status', 'mission', 'date',
   'libelle', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
+  listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  //Variable pour encrypt/decrypt
+  keySize: number = 256;
+  ivSize : number = 128;
+  iterations : number = 100;
+  key  : any = "daouda";
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private lignedefraisService : LignedefraisService, private route : ActivatedRoute,
-    private dialog: MatDialog, private snackBar: MatSnackBar) { }
+    private dialog: MatDialog, private snackBar: MatSnackBar, private datePipe: DatePipe) { }
   
   ngOnInit() {
     console.log('init')
     this.sub = this.route.params.subscribe(params => {
-      this.id_ndf = +params['id'];
+
+      console.log(params['id'])
+      var decrypted = this.decrypt(params['id'], this.key);
+      console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+      var str = decrypted.toString(CryptoJS.enc.Utf8).split("-",3);
+      
+      this.id_ndf = +str[0]
+      this.annee = +str[1];
+      this.mois = +str[2];
+      var stri = this.datePipe.transform(new Date(), 'yyyy-MM-dd').split("-",2);
+      console.log(+stri[0])
+      console.log(+stri[1])
+      console.log(this.annee)
+      console.log(this.mois)
+      if(+stri[0] == this.annee && +stri[1] == this.mois) {
+        this.currentNdf = true;
+      }
       this.componentData.id_ndf = this.id_ndf;
     });
     this.refreshLignesdefrais();
   }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
   
   refreshLignesdefrais(){
+    this.montantTotal = 0;
     // vide la liste affichee dans le tableau 
     this.listlignedefrais = [];    
     // requete SQL pour avoir toutes les lignes de frais de la note de frais
@@ -85,9 +122,13 @@ export class LignedefraisComponent implements OnInit, OnChanges {
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
               'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.status_ldf), 
-              'mission' : ldf.nom_mission, 'date' : ldf.date_ldf, 
-              'libelle' : ldf.libelle_ldf, 'montant' : ldf.montant_ldf, 
-              'commentaire' : ldf.commentaire_ldf, 'justificatif' : ldf.justif_ldf})
+              'id_mission' : ldf.id_mission, 'mission' : ldf.nom_mission, 
+              'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 'montant_estime' : ldf.montant_estime,
+              'montant' : ldf.montant_ldf, 'commentaire' : ldf.commentaire_ldf, 
+              'commentaire_refus' : ldf.motif_refus, 'justificatif' : ldf.justif_ldf})
+          //console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
+          this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
+          //console.log(this.montantTotal)
         });
         // creation du tableau avec les options sort et paginator
         this.dataSource = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
@@ -105,18 +146,25 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return ldf.avance;
   }
 
-  
+  isCheckable(statut : any) {
+    if(statut == 'Non envoyée')
+      return true;
+    return false;
+  }
 
   onCheck(ldf : ILignedefrais) {
     var idx = this.listAvance.indexOf(ldf.id_ldf);
     (idx != -1) ? this.listAvance.splice(idx, 1) : this.listAvance.push(ldf.id_ldf);
   }
 
-  openDialog() {
+  openDialogNouvelleLignedefrais() {
+    this.componentData.id_ldf = 0;
     this.componentData.id_mission = '';
+    this.componentData.nom_mission = '';
     this.componentData.libelle = '';
     this.componentData.montant = '';
     this.componentData.commentaire = '';
+    this.componentData.commentaire_refus = '';
     this.componentData.valide = false;
     const dialogRef = this.dialog.open(DialogNouvelleLignedefrais, {
       data: { comp : this.componentData }
@@ -136,17 +184,191 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+  openDialogModifierLignedefrais(element : ILignedefrais) {
+    this.componentData.id_ldf = element.id_ldf;
+    this.componentData.id_mission = element.id_mission;
+    this.componentData.nom_mission = element.mission;
+    this.componentData.libelle = element.libelle;
+    this.componentData.montant = element.montant;
+    this.componentData.commentaire = element.commentaire;
+    this.componentData.commentaire_refus = element.commentaire_refus;
+    this.componentData.valide = false;
+    console.log(element);
+    const dialogRef = this.dialog.open(DialogModifierLignedefrais, {
+      data: { comp : this.componentData , stat : element.status, 
+        avance : element.avance, montant_avance : element.montant_avance
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      var temp = result;
+      console.log('temp');
+      if(temp){
+        if(temp.comp.valide) {
+          console.log('temp')
+          console.log(temp.comp.valide)
+          this.delay(1500).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Ligne de frais modifiée')
+          });
+        }
+      }
+    });
+  }
+
+  openDialogModifierAvance(element : ILignedefrais) {
+    this.componentData.id_ldf = element.id_ldf;
+    this.componentData.id_mission = element.id_mission;
+    this.componentData.nom_mission = element.mission;
+    this.componentData.libelle = element.libelle;
+    this.componentData.montant = element.montant;
+    this.componentData.montant_avance = element.montant_avance;
+    this.componentData.montant_estime = element.montant_estime;
+    this.componentData.commentaire = element.commentaire;
+    this.componentData.commentaire_refus = element.commentaire_refus;
+    this.componentData.valide = false;
+    console.log(element);
+    const dialogRef = this.dialog.open(DialogModifierAvance, {
+      data: { comp : this.componentData , stat : element.status, 
+        avance : element.avance
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      var temp = result;
+      console.log('temp');
+      if(temp){
+        if(temp.comp.valide) {
+          console.log('temp')
+          console.log(temp.comp.valide)
+          this.delay(1500).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Avance modifiée')
+          });
+        }
+      }
+    });
+  }
+
+
+  openDialogEnvoyerAvance() {
+    if(this.listAvance.length > 0) {
+      var listLdf : IAvance[] = [];
+      this.listAvance.forEach( num => {
+        for(var i = 0 ; i < this.listlignedefrais.length ; ++i) {
+          if(this.listlignedefrais[i].id_ldf == num && !this.listlignedefrais[i].avance)
+            listLdf.push({ 'id_ldf' : this.listlignedefrais[i].id_ldf,
+              'id_mission' : this.listlignedefrais[i].id_mission,
+              'nom_mission' : this.listlignedefrais[i].mission, 
+              'libelle' : this.listlignedefrais[i].libelle, 
+              'montant_estime' : this.listlignedefrais[i].montant, 
+              'montant_avance' : this.listlignedefrais[i].montant, 
+              'commentaire' : this.listlignedefrais[i].commentaire})
+        }
+      });
+      const dialogRef = this.dialog.open(DialogEnvoyerAvance, {
+        data: { liste : listLdf, ndf : this.id_ndf }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        var temp = result;
+        if(temp) {
+          this.delay(1500).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Avances créés et envoyées');
+          });
+        }
+      });
+    }
+    else {
+      this.openSnackBar('Aucune ligne de frais séléctionnée')
+    }
+  }
+
+  openDialogEnvoyerLignes() {
+      
+    var listLdf : ILignedefraisShort[] = [];
+    this.listlignedefrais.forEach( ligne => {
+      if(ligne.avance && ligne.status == 'Avance non envoyée')
+        listLdf.push({ 'id_ldf' : ligne.id_ldf,
+              'nom_mission' : ligne.mission, 
+              'libelle' : ligne.libelle, 
+              'avance' : ligne.avance,
+              'apres_mission' : false,
+              'montant' : ligne.montant_avance})
+      else if(ligne.status == 'Non envoyée' && ligne.montant != 0)
+        listLdf.push({ 'id_ldf' : ligne.id_ldf,
+              'nom_mission' : ligne.mission, 
+              'libelle' : ligne.libelle, 
+              'avance' : ligne.avance,
+              'apres_mission' : true,
+              'montant' : ligne.montant})
+        
+      });
+    if(listLdf.length > 0) {
+
+        const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
+          data: { liste : listLdf }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          var temp = result;
+        if(temp) {
+          this.delay(3000).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Lignes envoyées');
+          });
+        }
+      });
+    }
+    else {
+      this.openSnackBar('Aucune lignes à envoyer');
+    }
+    }
+  
+
   temp(){
   }
 
-  supprLignedefrais(id_ldf : any) {
-    console.log("wtf")
-    console.log(id_ldf);
-    this.lignedefraisService.deleteLignedefrais({id : id_ldf});
-    this.delay(1500).then(any => {
-      this.refreshLignesdefrais();
-      this.openSnackBar('Ligne de frais supprimée');
-    });
+  supprLignedefrais(ldf : ILignedefrais) {
+    if(ldf.avance) {
+      this.lignedefraisService.deleteAvance({id : ldf.id_ldf});
+      this.delay(1500).then(any => {
+        this.refreshLignesdefrais();
+        this.openSnackBar('Avance supprimée');
+      });
+    }
+    else {
+      this.lignedefraisService.deleteLignedefrais({id : ldf.id_ldf});
+      this.delay(1500).then(any => {
+        this.refreshLignesdefrais();
+        this.openSnackBar('Ligne de frais supprimée');
+      });
+    }
+  }
+
+  modifPossible(ldf : ILignedefrais) : boolean {
+    if( (!ldf.avance &&
+      ldf.status == 'Attente Compta' ||
+      ldf.status == 'Validée' ) ||
+      (ldf.avance && (
+        ldf.status == 'Avance attente Compta' ||
+        ldf.status == 'Attente Compta' ||
+        ldf.status == 'Validée' )
+        ) )
+        return false;
+    return true;
+  }
+
+  supprPossible(ldf : ILignedefrais) : boolean{
+    if( (!ldf.avance &&
+      ldf.status == 'Validée' ) ||
+      (ldf.avance && (
+        ldf.status == 'Non envoyée' ||
+        ldf.status == 'Attente CDS' ||
+        ldf.status == 'Attente Compta' ||
+        ldf.status == 'Refusée CDS' ||
+        ldf.status == 'Refusée Compta' ||
+        ldf.status == 'Validée' )
+        ) )
+        return false;
+    return true;
   }
 
   ngOnDestroy() {
@@ -172,115 +394,46 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       data : msg
     });
   }
-}
 
-export interface IMission { 
-  id_mission : number;
-  nom_mission : string 
-}
-
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: './dialog-nouvelle-lignedefrais.html',
-  styleUrls: ['./lignedefrais.component.css']
-})
-export class DialogNouvelleLignedefrais implements OnInit{
-
-  // myGroup = new FormGroup({
-  //   montantControl : new FormControl('', [
-  //     Validators.required,
-  //     Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  //   ])
-  // });
-  myGroup = new FormGroup({
-  });
-  
-  montantControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern('^\\d+(\.\\d{1,2})?$')
-  ]);
-  getErrorMessage() {
-    return this.montantControl.hasError('required') ? 'Montant manquant' :
-        this.montantControl.hasError('pattern') ? 'Montant invalide' : '';
-  }
-  missionControl = new FormControl('', [Validators.required]);
-  libelleControl = new FormControl('', [Validators.required]);
-
-  //TODO change
-  libelles: Libelle[] = [
-    {value: 'taxi-0', viewValue: 'Taxi'},
-    {value: 'restaurant-1', viewValue: 'Restaurant'},
-    {value: 'hotel-2', viewValue: 'Hotel'},
-    {value: 'fourniture-3', viewValue: 'Fourniture'},
-    {value: 'essence-4', viewValue: 'Essence'},
-    {value: 'autre-5', viewValue: 'Autre'}
-  ];
-
-  missions : IMission[];
-  _ldfValide : boolean = false;
-  
-  constructor(
-    public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
-   
-  ngOnInit() {
-    this.lignedefraisService
-      .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-      .subscribe( (data : IMission[]) => {
-        console.log(data);
-        this.missions = data;
-       });
-  }
-
-  onClick(): void {
-    //this.data.comp.montant =  this.myGroup.get('montantControl').value;
-    this.data.comp.montant =  this.montantControl.value;
-    // verification de la validité de la note de frais 
-    // avec les champs missions, libellé et montant
-    if(this._ldfValide) {
-      console.log('valid ldf')
-      this.data.comp.valide = true;
-      // query SQL pour l'ajout de la ligne de frais
-      this.lignedefraisService.createLignedefrais({
-        id_ndf : this.data.comp.id_ndf,
-        id_mission : this.data.comp.id_mission,
-        libelle : this.data.comp.libelle,
-        montant : this.data.comp.montant,
-        commentaire : this.data.comp.commentaire
+  encrypt (msg, key) {
+    var salt = CryptoJS.lib.WordArray.random(128/8);
+    var key = CryptoJS.PBKDF2(key, salt, {
+        keySize: this.keySize/32,
+        iterations: this.iterations
       });
-    }
-    else {
-      this.data.comp.valide = false;
-      console.log('refus ldf')
+    var iv = CryptoJS.lib.WordArray.random(128/8);
+    var encrypted = CryptoJS.AES.encrypt(msg, key, { 
+      iv: iv, 
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
 
-    }
+    });
+    var transitmessage = salt.toString()+ iv.toString() + encrypted.toString();
+    return transitmessage;
   }
 
-  ldfValide() {
-    // console.log("id " + this.data.comp.id_mission)
-    // console.log("li " + this.data.comp.libelle)
-    // console.log("mo " + this.montantControl.value);
-    this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
-    return this._ldfValide;
-  }
 
-  onChange(value : any) {
-    // console.log('value changed')
-    // console.log(this.ldfValide());
-    this.ldfValide();
-  }
+  decrypt (transitmessage, key) {
+    var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
+    var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+    var encrypted = transitmessage.substring(64);
 
-  onNoClick(): void {
-    console.log(this.data);
-    this.dialogRef.close();
-  }
+    var key = CryptoJS.PBKDF2(key, salt, {
+      keySize: this.keySize/32,
+      iterations: this.iterations
+    });
 
-  montantValid(montant : String) : boolean {
-    return (montant != '') && (montant.match('\\d+(\.\\d{1,2})?')[0] == montant);
+    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { 
+      iv: iv, 
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC  
+    })
+    return decrypted;
   }
 }
+
+// ###############################################################
+// ###############################################################
 
 @Component({
   selector: 'snack-bar-component-ajout',

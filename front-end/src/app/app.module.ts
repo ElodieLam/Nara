@@ -3,9 +3,6 @@ import { NgModule } from '@angular/core';
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { FlatpickrModule } from 'angularx-flatpickr';
-import { FormsModule } from '@angular/forms';
-import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
@@ -27,8 +24,7 @@ import {
   MatSelectModule,
   MatSnackBarModule,
   MatNativeDateModule,
-  MatFormField,
-  MatInputModule,
+  MatProgressSpinnerModule,
   MAT_DATE_LOCALE
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -41,15 +37,13 @@ import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { 
-  LignedefraisComponent,
-  DialogNouvelleLignedefrais,
-  LignedefraisAjoutComponent 
-} from './lignedefrais/lignedefrais.component';
+import { LignedefraisComponent, LignedefraisAjoutComponent } from './lignedefrais/lignedefrais.component';
+import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.component'
+import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component'
+import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component'
+import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component'
+import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component'
 import { CongeComponent } from './conge/conge.component';
-
-
-
 
 import { NotifComponent } from './notif/notif.component';
 import { LoginComponent } from './login/login.component';
@@ -79,6 +73,10 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     DialogNouvelleLignedefrais,
+    DialogModifierLignedefrais,
+    DialogModifierAvance,
+    DialogEnvoyerAvance,
+    DialogEnvoyerLignes,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -111,13 +109,13 @@ const appRoutes: Routes = [
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    [FormsModule, FlatpickrModule.forRoot()],
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
     CalendarModule.forRoot({
@@ -127,6 +125,10 @@ const appRoutes: Routes = [
   ],
   entryComponents: [ 
     DialogNouvelleLignedefrais,
+    DialogModifierLignedefrais,
+    DialogModifierAvance,
+    DialogEnvoyerAvance,
+    DialogEnvoyerLignes,
     LignedefraisAjoutComponent
   ],
   providers: [
