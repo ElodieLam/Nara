@@ -52,13 +52,11 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
     this.sub = this.notedefraisService
       .getNotedefraisresumeFromIdNdf({id : this.id_notedefrais})
       .subscribe( (data : INotedefraisresume[]) => {
-        console.log(data);
         this.listLignedefrais = data;
         var temp = this.moisAnnee.split("-",2);
 
         this.lignesTotal = this.listLignedefrais.length;
         this.listLignedefrais.forEach( ligne => {
-          console.log(ligne)
           ligne.no = false;
           ligne.wait = false;
           ligne.val = false;
@@ -87,10 +85,10 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
     var hiddenParam = this.id_notedefrais + "-" + this.annee + "-" + this.mois;
         //Encrypt-Decrypt
         var encrypted = this.encrypt(hiddenParam, this.key);
-        console.log("Param encrypted: " + encrypted);
-        var decrypted = this.decrypt(encrypted, this.key);
+        //console.log("Param encrypted: " + encrypted);
+        //var decrypted = this.decrypt(encrypted, this.key);
         //var param = encrypted;
-        console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+        //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
         this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
     
   }
@@ -136,7 +134,7 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   }
 
   ngOnDestroy() {
-    console.log("destroy ndf res")
+    //console.log("destroy ndf res")
     this.sub.unsubscribe();
   }
 

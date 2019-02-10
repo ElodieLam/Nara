@@ -10,6 +10,7 @@ import { DialogEnvoyerLignes } from './dialog-envoyer-lignes.component';
 import { DialogModifierAvance } from './dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
+import { LoginComponent } from '../login/login.component'
 import * as CryptoJS from 'crypto-js'; 
 
 @Component({
@@ -38,13 +39,13 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   id_ndf: number = 0;
   annee: number = 0;
   mois: number = 0;
-  id_collab: number = 6;
+  id_collab: number = 0;
   montantTotal: number = 0.00;
   
   componentData : any = {
     id_ldf : 0,
     id_ndf : 0,
-    id_collab : 6,
+    id_collab : 0,
     id_mission : '',
     nom_mission : '',
     libelle : '',
@@ -76,25 +77,24 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private lignedefraisService : LignedefraisService, private route : ActivatedRoute,
-    private dialog: MatDialog, private snackBar: MatSnackBar, private datePipe: DatePipe) { }
+    private dialog: MatDialog, private snackBar: MatSnackBar, private datePipe: DatePipe,
+    private login: LoginComponent) {
+      this.id_collab = login.user.id_collab;
+     }
   
   ngOnInit() {
-    console.log('init')
+    //console.log('init')
     this.sub = this.route.params.subscribe(params => {
 
-      console.log(params['id'])
+      
       var decrypted = this.decrypt(params['id'], this.key);
-      console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+      //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
       var str = decrypted.toString(CryptoJS.enc.Utf8).split("-",3);
       
       this.id_ndf = +str[0]
       this.annee = +str[1];
       this.mois = +str[2];
       var stri = this.datePipe.transform(new Date(), 'yyyy-MM-dd').split("-",2);
-      console.log(+stri[0])
-      console.log(+stri[1])
-      console.log(this.annee)
-      console.log(this.mois)
       if(+stri[0] == this.annee && +stri[1] == this.mois) {
         this.currentNdf = true;
       }
@@ -115,14 +115,13 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     this.lignedefraisService
       .getLignesdefraisFromIdNdf({id : this.id_ndf.toString()})
       .subscribe( (data : ILignedefraisFull[]) => {
-        console.log('query')
         this.listlignedefraisfull = data;
         // transformation de la liste pour afficher les informations dans le tableau
         this.listlignedefraisfull.forEach( ldf => {
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
               'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.status_ldf), 
-              'id_mission' : ldf.id_mission, 'mission' : ldf.nom_mission, 
+              'id_mission' : ldf.id_mission, 'mission' : ldf.nom_mission, 'id_ndf' : ldf.id_ndf, 
               'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 'montant_estime' : ldf.montant_estime,
               'montant' : ldf.montant_ldf, 'commentaire' : ldf.commentaire_ldf, 
               'commentaire_refus' : ldf.motif_refus, 'justificatif' : ldf.justif_ldf})
@@ -160,6 +159,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   openDialogNouvelleLignedefrais() {
     this.componentData.id_ldf = 0;
     this.componentData.id_mission = '';
+    this.componentData.id_collab = this.id_collab;
     this.componentData.nom_mission = '';
     this.componentData.libelle = '';
     this.componentData.montant = '';
@@ -173,8 +173,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       var temp = result;
       if(temp){
         if(temp.comp.valide) {
-          console.log('temp')
-          console.log(temp.comp.valide)
           this.delay(1500).then(any => {
             this.refreshLignesdefrais();
             this.openSnackBar('Ligne de frais ajoutée')
@@ -187,13 +185,13 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   openDialogModifierLignedefrais(element : ILignedefrais) {
     this.componentData.id_ldf = element.id_ldf;
     this.componentData.id_mission = element.id_mission;
+    this.componentData.id_collab = this.id_collab;
     this.componentData.nom_mission = element.mission;
     this.componentData.libelle = element.libelle;
     this.componentData.montant = element.montant;
     this.componentData.commentaire = element.commentaire;
     this.componentData.commentaire_refus = element.commentaire_refus;
     this.componentData.valide = false;
-    console.log(element);
     const dialogRef = this.dialog.open(DialogModifierLignedefrais, {
       data: { comp : this.componentData , stat : element.status, 
         avance : element.avance, montant_avance : element.montant_avance
@@ -201,11 +199,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe(result => {
       var temp = result;
-      console.log('temp');
       if(temp){
         if(temp.comp.valide) {
-          console.log('temp')
-          console.log(temp.comp.valide)
           this.delay(1500).then(any => {
             this.refreshLignesdefrais();
             this.openSnackBar('Ligne de frais modifiée')
@@ -218,6 +213,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   openDialogModifierAvance(element : ILignedefrais) {
     this.componentData.id_ldf = element.id_ldf;
     this.componentData.id_mission = element.id_mission;
+    this.componentData.id_collab = this.id_collab;
     this.componentData.nom_mission = element.mission;
     this.componentData.libelle = element.libelle;
     this.componentData.montant = element.montant;
@@ -226,7 +222,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     this.componentData.commentaire = element.commentaire;
     this.componentData.commentaire_refus = element.commentaire_refus;
     this.componentData.valide = false;
-    console.log(element);
     const dialogRef = this.dialog.open(DialogModifierAvance, {
       data: { comp : this.componentData , stat : element.status, 
         avance : element.avance
@@ -234,11 +229,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe(result => {
       var temp = result;
-      console.log('temp');
       if(temp){
         if(temp.comp.valide) {
-          console.log('temp')
-          console.log(temp.comp.valide)
           this.delay(1500).then(any => {
             this.refreshLignesdefrais();
             this.openSnackBar('Avance modifiée')
@@ -265,12 +257,15 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         }
       });
       const dialogRef = this.dialog.open(DialogEnvoyerAvance, {
-        data: { liste : listLdf, ndf : this.id_ndf }
+        data: { liste : listLdf, ndf : this.id_ndf, id : this.id_collab  }
       });
       dialogRef.afterClosed().subscribe(result => {
         var temp = result;
         if(temp) {
           this.delay(1500).then(any => {
+            this.lignedefraisService.createOrUpdateNotifNdfAvance(
+              { id_ndf : this.id_ndf , id_collab: this.id_collab }
+            );
             this.refreshLignesdefrais();
             this.openSnackBar('Avances créés et envoyées');
           });
@@ -283,18 +278,24 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 
   openDialogEnvoyerLignes() {
-      
+    var avance = false;
     var listLdf : ILignedefraisShort[] = [];
     this.listlignedefrais.forEach( ligne => {
-      if(ligne.avance && ligne.status == 'Avance non envoyée')
-        listLdf.push({ 'id_ldf' : ligne.id_ldf,
+      if(ligne.avance) avance = true;
+      if(ligne.avance && ligne.status == 'Avance non envoyée') 
+        listLdf.push({ 
+              'id_ldf' : ligne.id_ldf,
+              'id_mission' : ligne.id_mission,
               'nom_mission' : ligne.mission, 
               'libelle' : ligne.libelle, 
               'avance' : ligne.avance,
               'apres_mission' : false,
               'montant' : ligne.montant_avance})
+
       else if(ligne.status == 'Non envoyée' && ligne.montant != 0)
-        listLdf.push({ 'id_ldf' : ligne.id_ldf,
+        listLdf.push({ 
+              'id_ldf' : ligne.id_ldf,
+              'id_mission' : ligne.id_mission,
               'nom_mission' : ligne.mission, 
               'libelle' : ligne.libelle, 
               'avance' : ligne.avance,
@@ -305,12 +306,20 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     if(listLdf.length > 0) {
 
         const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
-          data: { liste : listLdf }
+          data: { liste : listLdf, id_collab : this.id_collab , id_ndf : this.id_ndf }
         });
         dialogRef.afterClosed().subscribe(result => {
           var temp = result;
         if(temp) {
           this.delay(3000).then(any => {
+            this.lignedefraisService.createOrUpdateNotifNdf(
+              { id_ndf : this.id_ndf , id_collab: this.id_collab }
+            );
+            if(avance) {
+              this.lignedefraisService.createOrUpdateNotifNdfAvance(
+                { id_ndf : this.id_ndf , id_collab: this.id_collab }
+              );
+            }
             this.refreshLignesdefrais();
             this.openSnackBar('Lignes envoyées');
           });

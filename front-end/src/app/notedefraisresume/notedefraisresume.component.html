@@ -3,9 +3,8 @@
     {{ dateVerbose }}
   </h1>
 
-  <p>
-    Total de lignes : {{ lignesTotal }} <br>
-    Lignes validées : {{ lignesValid }}
+  <p *ngIf="lignesTotal > 0">
+    Lignes validées / Total : {{ lignesValid }} / {{ lignesTotal }} <br>
   </p>
   
   <div>

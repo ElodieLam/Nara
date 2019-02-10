@@ -23,15 +23,13 @@ export class DialogEnvoyerAvance implements OnInit{
     private lignedefraisService : LignedefraisService) {}
     
   ngOnInit() {
-    console.log(this.data)
-    console.log('avance')
     this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
     this.dataSource.paginator = this.paginator;
   }
 
   onClick(): void {
+    var listeldf = [];
     this.data.liste.forEach(element => {
-      console.log(element);
       this.lignedefraisService.deleteLignedefrais({id : element.id_ldf});
       this.lignedefraisService.createAvance({
         id_ndf : this.data.ndf,
@@ -41,6 +39,12 @@ export class DialogEnvoyerAvance implements OnInit{
         montant_avance : element.montant_avance,
         commentaire : element.commentaire
       });
+      listeldf.push({
+        'id_collab' : this.data.id,
+        'id_ndf' : this.data.ndf,
+        'avance' : true,
+        'id_mission' : element.id_mission,
+        });
     });
   }
 

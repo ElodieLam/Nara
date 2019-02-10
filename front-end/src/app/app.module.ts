@@ -52,12 +52,14 @@ import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
+import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedefrais.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
     {path: 'dashboard', component: DashboardComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
+    {path: 'gestionnotedefrais', component: GestionnotedefraisComponent},
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
@@ -86,6 +88,7 @@ const appRoutes: Routes = [
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
+    GestionnotedefraisComponent,
   ],
   imports: [
     BrowserModule,

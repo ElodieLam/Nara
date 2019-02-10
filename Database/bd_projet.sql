@@ -327,16 +327,18 @@ ALTER TABLE `t_notif_mod_conge`
 CREATE TABLE `t_notif_ndf` (
   `id_ndf` int(11) NOT NULL,
   `id_collab` int(11) NOT NULL,
-  PRIMARY KEY (`id_ndf`, `id_collab`)
+  `id_cds` int(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `avance` boolean NOT NULL,
+  `nb_lignes` int(5) NOT NULL,
+  PRIMARY KEY (`id_ndf`, `id_collab`, `id_cds`, `avance`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `t_notif_ndf`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_notif_ndf`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
-
-INSERT INTO `t_notif_ndf` (`id_ndf`, `id_collab`) VALUES
-(1, 5),
-(2, 5);
+ALTER TABLE `t_notif_ndf`
+  ADD FOREIGN KEY (`id_cds`) REFERENCES t_collaborateur(`id_collab`);
 
 COMMIT;

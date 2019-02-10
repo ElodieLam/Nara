@@ -151,4 +151,37 @@ export class LignedefraisService {
         }
     );
   }
+
+  createOrUpdateNotifNdf(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndf`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  createOrUpdateNotifNdfAvance(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndfavance`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+  createorupdatenotifndfavance
 }

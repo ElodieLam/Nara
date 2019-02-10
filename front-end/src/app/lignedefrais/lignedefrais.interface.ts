@@ -17,6 +17,7 @@ export interface ILignedefraisFull {
 
 export interface ILignedefrais {
     id_ldf: Number;
+    id_ndf: Number;
     id_mission: Number;
     avance: boolean;
     montant_avance: Number;
@@ -52,6 +53,7 @@ export interface IAvance {
 
 export interface ILignedefraisShort {
     id_ldf: Number;
+    id_mission: Number;
     nom_mission: String;
     libelle: String;
     avance: Boolean;
