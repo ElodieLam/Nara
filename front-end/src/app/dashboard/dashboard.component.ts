@@ -12,9 +12,8 @@ import { LoginComponent } from '/Users/Elodie/Nara/front-end/src/app/login/login
 })
 export class DashboardComponent implements OnInit{
 
-  username: string;
-  param: string;
   isOn: boolean = false;
+
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -23,11 +22,6 @@ export class DashboardComponent implements OnInit{
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private activatedRoute: ActivatedRoute, private login: LoginComponent) {
     this.isOn = true;
-    //Récupère les paramètres passés dans l'URL
-    this.activatedRoute.queryParams.subscribe(params => {
-          this.username = params['user'];
-          this.param = params['param'];
-      });
   }
 
   ngOnInit(){
@@ -45,13 +39,11 @@ export class DashboardComponent implements OnInit{
   goToNDF(){
     this.router.navigate(['/notedefrais']); 
   }
-
+ 
   logout(){
     this.isOn = false;
     this.router.navigate(['/login']); 
-    this.username = "";
-    this.param = "";
-    
+    this.login.setUserNull();
   }
 
   

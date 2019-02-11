@@ -4,8 +4,6 @@ import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { FormsModule } from '@angular/forms';
-import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
@@ -28,7 +26,6 @@ import {
   MatSnackBarModule,
   MatNativeDateModule,
   MatFormField,
-  MatInputModule,
   MAT_DATE_LOCALE
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -52,12 +49,15 @@ import { CongeComponent } from './conge/conge.component';
 
 
 import { NotifComponent } from './notif/notif.component';
+import { NotifMsgComponent } from './notif-msg/notif-msg.component';
 import { LoginComponent } from './login/login.component';
 import { LoginService } from "./login/login.service";
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
+import { NotifService } from './notif/notif.service';
+import { NotifMsgService } from './notif-msg/notif-msg.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -88,6 +88,7 @@ const appRoutes: Routes = [
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
+    NotifMsgComponent
   ],
   imports: [
     BrowserModule,
@@ -134,7 +135,9 @@ const appRoutes: Routes = [
     LignedefraisService,
     CongeService,
     LoginService,
-    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
+    NotifService,
+    NotifMsgService
 
   ],
   bootstrap: [AppComponent]

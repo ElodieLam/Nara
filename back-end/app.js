@@ -20,4 +20,10 @@ app.use('/lignedefrais', LignedefraisController);
 var LoginController = require('./login/LoginController');
 app.use('/login', LoginController);
 
+var NotifController = require('./notif/NotifController');
+app.use('/notif', NotifController);
+
+var NotifMsgController = require('./notifMsg/NotifMsgController');
+app.use('/notifMsg', NotifMsgController);
+
 module.exports = app;

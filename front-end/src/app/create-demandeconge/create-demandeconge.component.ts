@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DemandecongeService } from '../demandeconge/demandeconge.service';
 import {Router} from "@angular/router";
 import { IDemandeconge } from '../demandeconge/demandeconge.interface';
-import { cpus } from 'os';
 
 @Component({
   selector: 'app-create-demandeconge',
