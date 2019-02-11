@@ -3,7 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from "@angular/router";
-import { LoginComponent } from '/Users/Elodie/Nara/front-end/src/app/login/login.component';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-dashboard',
