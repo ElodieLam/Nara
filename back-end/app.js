@@ -23,4 +23,7 @@ app.use('/login', LoginController);
 var NotifndfController = require('./notifndf/NotifndfController');
 app.use('/notifndf', NotifndfController);
 
+var GestionndfController = require('./gestionndf/GestionndfController');
+app.use('/gestionndf', GestionndfController);
+
 module.exports = app;

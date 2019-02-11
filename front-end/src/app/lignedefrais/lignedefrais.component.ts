@@ -281,17 +281,17 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     var avance = false;
     var listLdf : ILignedefraisShort[] = [];
     this.listlignedefrais.forEach( ligne => {
-      if(ligne.avance) avance = true;
-      if(ligne.avance && ligne.status == 'Avance non envoyée') 
+      if(ligne.avance && ligne.status == 'Avance non envoyée')  {
+        avance = true;
         listLdf.push({ 
-              'id_ldf' : ligne.id_ldf,
-              'id_mission' : ligne.id_mission,
-              'nom_mission' : ligne.mission, 
-              'libelle' : ligne.libelle, 
-              'avance' : ligne.avance,
-              'apres_mission' : false,
-              'montant' : ligne.montant_avance})
-
+          'id_ldf' : ligne.id_ldf,
+          'id_mission' : ligne.id_mission,
+          'nom_mission' : ligne.mission, 
+          'libelle' : ligne.libelle, 
+          'avance' : ligne.avance,
+          'apres_mission' : false,
+          'montant' : ligne.montant_avance})    
+      }
       else if(ligne.status == 'Non envoyée' && ligne.montant != 0)
         listLdf.push({ 
               'id_ldf' : ligne.id_ldf,
@@ -316,6 +316,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               { id_ndf : this.id_ndf , id_collab: this.id_collab }
             );
             if(avance) {
+              console.log('avance')
               this.lignedefraisService.createOrUpdateNotifNdfAvance(
                 { id_ndf : this.id_ndf , id_collab: this.id_collab }
               );

@@ -53,6 +53,9 @@ import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresum
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
 import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedefrais.component';
+import { GestionnotedefraisService } from './gestionnotedefrais/gestionnotedefrais.service';
+import { GestionlignedefraisComponent } from './gestionlignedefrais/gestionlignedefrais.component'
+import { DialogRefuserLigne } from './gestionlignedefrais/dialog-refuser-ligne.component'
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -60,6 +63,7 @@ const appRoutes: Routes = [
     {path: 'dashboard', component: DashboardComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
     {path: 'gestionnotedefrais', component: GestionnotedefraisComponent},
+    {path: 'gestionnotedefrais/:id', component: GestionlignedefraisComponent},
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
@@ -79,6 +83,7 @@ const appRoutes: Routes = [
     DialogModifierAvance,
     DialogEnvoyerAvance,
     DialogEnvoyerLignes,
+    DialogRefuserLigne,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -89,6 +94,7 @@ const appRoutes: Routes = [
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
     GestionnotedefraisComponent,
+    GestionlignedefraisComponent,
   ],
   imports: [
     BrowserModule,
@@ -132,6 +138,7 @@ const appRoutes: Routes = [
     DialogModifierAvance,
     DialogEnvoyerAvance,
     DialogEnvoyerLignes,
+    DialogRefuserLigne,
     LignedefraisAjoutComponent
   ],
   providers: [
@@ -139,6 +146,7 @@ const appRoutes: Routes = [
     LignedefraisService,
     CongeService,
     LoginService,
+    GestionnotedefraisService,
     {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
 
   ],

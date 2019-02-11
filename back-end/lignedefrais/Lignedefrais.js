@@ -60,15 +60,11 @@ var Lignedefrais = {
         return db.query('DELETE from t_ligne_de_frais_avance WHERE id_ldf = ?', [data.id], callback);
     },
     updateStatutLignedefrais: function (data, callback) {
-        console.log('ldf')
-        console.log(data)
         var sql = 'UPDATE t_ligne_de_frais SET status_ldf = ? WHERE id_ldf = ?';
         return db.query(sql, 
             [data.statut, data.id], callback);
     },
     updateStatutAvance: function (data, callback) {
-        console.log('ava')
-        console.log(data)
         var sql = 'UPDATE t_ligne_de_frais_avance SET status_ldf = ? WHERE id_ldf = ?';
         return db.query(sql, 
             [data.statut, data.id], callback);
