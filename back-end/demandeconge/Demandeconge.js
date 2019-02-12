@@ -8,6 +8,12 @@ var Demandeconge =
         console.log(Demandeconge);
         return db.query('SELECT * from t_demande_conge WHERE id_collab = ?', [Demandeconge.id_collab], callback);
     },
+    
+    // // // // getTest:function(data, callback)
+    // // // // {
+    // // // //     console.log(data);
+    // // // //     return db.query('SELECT * from table WHERE id_qq = ?', [data[0]], callback);
+    // // // // }
 
     /*
 
