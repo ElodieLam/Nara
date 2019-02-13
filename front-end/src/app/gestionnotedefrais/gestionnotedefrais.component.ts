@@ -51,7 +51,7 @@ export class GestionnotedefraisComponent implements OnInit {
   goToGestionlignedefrais(element : any) {
 
     var hiddenParam = element.id_ndf + '-' + element.prenom_collab + '-' + element.nom_collab + '-' 
-      + this.listemois[element.mois] + '-' + element.annee;
+      + this.listemois[element.mois] + '-' + element.annee + '-' + element.id_send;
     //Encrypt-Decrypt
     var encrypted = this.encrypt(hiddenParam, this.key);
     //console.log("Param encrypted: " + encrypted);

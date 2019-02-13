@@ -25,7 +25,7 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   annee : number = 0;
   dateVerbose : string;
   // pour la pagination
-  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'status_ldf'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'statut_ldf'];
   //dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
   dataSource;
   values:boolean = true;
@@ -61,12 +61,12 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
           ligne.wait = false;
           ligne.val = false;
           ligne.nosent = false;
-          ligne.status_ldf == 'val' ? ligne.val = true : ( 
-            (ligne.status_ldf == 'noCds' || ligne.status_ldf == 'noF' ||
-            ligne.status_ldf == 'avnoCds' || ligne.status_ldf == 'avnoF') ? ligne.no = true : (
-              (ligne.status_ldf == 'noSent' || ligne.status_ldf == 'avnoSent') ? 
+          ligne.statut_ldf == 'val' ? ligne.val = true : ( 
+            (ligne.statut_ldf == 'noCds' || ligne.statut_ldf == 'noF' ||
+            ligne.statut_ldf == 'avnoCds' || ligne.statut_ldf == 'avnoF') ? ligne.no = true : (
+              (ligne.statut_ldf == 'noSent' || ligne.statut_ldf == 'avnoSent') ? 
                 ligne.nosent = true : ligne.wait = true));
-          ligne.status_ldf == 'val' ? this.lignesValid++ : {};
+          ligne.statut_ldf == 'val' ? this.lignesValid++ : {};
         });
         this.mois = +temp[0];
         this.annee = +temp[1];

@@ -3,82 +3,88 @@
   <br>
   {{ mois }} {{ annee }}
 </p>
-<div>
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-      
-      <ng-container matColumnDef="mission">
-        <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Mission </th>
-        <td mat-cell *matCellDef="let element"> 
-          {{ element.nom_mission }} 
-        </td>
-      </ng-container>
-      
-      <ng-container matColumnDef="libelle">
-        <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Libellé </th>
-        <td mat-cell *matCellDef="let element"> 
-          {{ element.libelle_ldf }}
-        </td>
-      </ng-container>
-      
-      <ng-container matColumnDef="montant">
-        <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Montant /<br>Estimé </th>
-        <td mat-cell *matCellDef="let element">
-            {{ element.montant_display }}
-        </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="commentaire">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Commentaire </th>
-        <td mat-cell *matCellDef="let element">    
-          {{ element.commentaire_ldf }}
-        </td>
-      </ng-container>
-      
-      <ng-container matColumnDef="justif">
-        <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header>Justificatif</th>
-        <td mat-cell *matCellDef="let element">
-            {{ element.justif_ldf }}
-        </td>
-      </ng-container>
-      
-      <ng-container matColumnDef="statut">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
-        <td mat-cell *matCellDef="let element">
-            {{ element.status_ldf }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="accepter">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-flat-button 
-          *ngIf="element.modif"
-          (click)="accepterLdf(element.id_ldf, element.avance, element.status_ldf)" 
-          style="color:green;">Accepter</button>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="refuser">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-flat-button 
-          *ngIf="element.modif"
-          (click)="refuserLdf(element.id_ldf, element.avance, element.status_ldf)" 
-          style="color:red;">Refuser</button>
-          <button mat-flat-button 
-          *ngIf="element.annuler"
-          (click)="annulerLdf(element.id_ldf, element.avance, element.status_ldf)" 
-          style="color:orange;">Annuler</button>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="motif">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Motif refus</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.motif_refus }}
-        </td>
-      </ng-container>
+<div style="width: 80%">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    
+    <ng-container matColumnDef="mission">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Mission </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{ element.nom_mission }} 
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="libelle">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Libellé </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{ element.libelle_ldf }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="montant">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Montant /<br>Estimé </th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.montant_display }}
+      </td>
+    </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  
-    <mat-paginator *ngIf="values" [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
-  </div>
+    <ng-container matColumnDef="commentaire">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Commentaire </th>
+      <td mat-cell *matCellDef="let element">    
+        {{ element.commentaire_ldf }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="justif">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header>Justificatif</th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.justif_ldf }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="statut">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.statut_ldf }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="accepter">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button 
+        [disabled]="isDisabled"
+        *ngIf="element.modif"
+        (click)="accepterLdf(element.id_ldf, element.avance, element.statut_ldf)" 
+        style="color:green;">Accepter</button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="refuser">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button 
+        [disabled]="isDisabled"
+        *ngIf="element.modif"
+        (click)="refuserLdf(element.id_ldf, element.avance, element.statut_ldf)" 
+        style="color:red;">Refuser</button>
+        <button mat-flat-button 
+        [disabled]="isDisabled"
+        *ngIf="element.annuler"
+        (click)="annulerLdf(element.id_ldf, element.avance, element.statut_ldf)" 
+        style="color:orange;">Annuler</button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="motif">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Motif refus</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.motif_refus }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+</div>
+<button mat-flat-button [disabled]="isDisabled" (click)="retourGestionNdf()">
+  Envoyer les changements
+</button>

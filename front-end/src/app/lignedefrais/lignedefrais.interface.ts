@@ -6,7 +6,7 @@ export interface ILignedefraisFull {
     libelle_ldf: String;
     montant_ldf: Number;
     date_ldf: Date;
-    status_ldf: String;
+    statut_ldf: String;
     commentaire_ldf: String;
     motif_refus: String;
     justif_ldf: Blob;

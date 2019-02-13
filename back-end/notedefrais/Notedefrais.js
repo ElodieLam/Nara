@@ -7,13 +7,14 @@ var Notedefrais = {
     },
     getLignesdefraisresumeFromIdNdf:function(data, callback)
     {
-        return db.query('SELECT miss.nom_mission, ldf.libelle_ldf, ldf.status_ldf, FALSE as avance \
-            from t_ligne_de_frais as ldf, t_mission as miss \
-            WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission\
+        return db.query('SELECT ldf.id_ldf, miss.nom_mission, ldf.libelle_ldf, stat.libelle as statut_ldf, \
+            FALSE as avance \
+            from t_ligne_de_frais as ldf, t_mission as miss, t_statut as stat \
+            WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission AND ldf.id_statut = stat.id_statut\
             UNION \
-            SELECT miss.nom_mission, ldf.libelle_ldf, ldf.status_ldf, TRUE as avance \
-            from t_ligne_de_frais_avance as ldf, t_mission as miss \
-            WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission',
+            SELECT ldf.id_ldf, miss.nom_mission, ldf.libelle_ldf, stat.libelle as statut_ldf, TRUE as avance \
+            from t_ligne_de_frais_avance as ldf, t_mission as miss, t_statut as stat \
+            WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission AND ldf.id_statut = stat.id_statut',
             [data.id, data.id], callback);
     },
     createNotedefraisWithMonth: function (data, callback) 

@@ -120,7 +120,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         this.listlignedefraisfull.forEach( ldf => {
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
-              'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.status_ldf), 
+              'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
               'id_mission' : ldf.id_mission, 'mission' : ldf.nom_mission, 'id_ndf' : ldf.id_ndf, 
               'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 'montant_estime' : ldf.montant_estime,
               'montant' : ldf.montant_ldf, 'commentaire' : ldf.commentaire_ldf, 
@@ -316,7 +316,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               { id_ndf : this.id_ndf , id_collab: this.id_collab }
             );
             if(avance) {
-              console.log('avance')
+              //console.log('avance')
               this.lignedefraisService.createOrUpdateNotifNdfAvance(
                 { id_ndf : this.id_ndf , id_collab: this.id_collab }
               );

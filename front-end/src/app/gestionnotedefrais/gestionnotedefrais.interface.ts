@@ -1,6 +1,6 @@
 export interface INotedefraisListe {
     id_ndf:Number;
-    id_collab:Number;
+    id_send:Number;
     date:String;
     prenom_collab:String;
     nom_collab:String;
@@ -18,7 +18,7 @@ export interface ILignedefraisListe {
     libelle_ldf: String;
     montant_ldf: Number;
     date_ldf: String;
-    status_ldf: String;
+    statut_ldf: String;
     commentaire_ldf: String;
     motif_refus: String;
     justif_ldf: Blob;

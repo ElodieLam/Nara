@@ -3,9 +3,11 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/m
 import { GestionnotedefraisService } from '../gestionnotedefrais/gestionnotedefrais.service';
 import { ILignedefraisListe } from '../gestionnotedefrais/gestionnotedefrais.interface';
 import { LoginComponent } from '../login/login.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { DialogRefuserLigne } from './dialog-refuser-ligne.component';
+import { LignedefraisService } from '../lignedefrais/lignedefrais.service';
+import { DialogEnvoyer } from './dialog-envoyer.component';
 
 @Component({
   selector: 'app-gestionlignedefrais',
@@ -20,11 +22,12 @@ export class GestionlignedefraisComponent implements OnInit {
   prenom:String ='';
   mois:String = '';
   annee:String = '';
+  id_collab:number = 0;
   str:String[] = [];
+  isDisabled:boolean = true;
+
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = [
-    'mission', 'libelle', 'montant', 'commentaire', 'justif', 'statut', 'accepter', 'refuser', 'motif'
-  ];
+  displayedColumns: string[] = ['mission', 'libelle', 'montant', 'commentaire', 'justif', 'statut', 'accepter', 'refuser', 'motif'];
   listNotedefrais: ILignedefraisListe[] = [];
   dataSource;
   sub : any;
@@ -38,19 +41,24 @@ export class GestionlignedefraisComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   constructor(private gestionnotedefraisService : GestionnotedefraisService,
-    private login : LoginComponent, private route : ActivatedRoute,private dialog: MatDialog) { }
+    private lignedefraisService : LignedefraisService,
+    private login : LoginComponent, private route : ActivatedRoute,
+    private dialog: MatDialog, private router : Router) { }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
 
       var decrypted = this.decrypt(params['id'], this.key);
       //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
-      this.str = decrypted.toString(CryptoJS.enc.Utf8).split('-', 5);
+      this.str = decrypted.toString(CryptoJS.enc.Utf8).split('-', 6);
+      console.log(this.str)
       this.id_ndf = +this.str[0];
       this.prenom = this.str[1];
       this.nom = this.str[2];
       this.mois = this.str[3];
       this.annee = this.str[4];
+      this.id_collab = +this.str[5];
+
     });
     this.id_cds = this.login.user.id_collab;
     this.refreshLignes();
@@ -65,12 +73,12 @@ export class GestionlignedefraisComponent implements OnInit {
         this.listNotedefrais.forEach(element => {
           // le cds peut acceder à accepter et refuser
           element.modif = false;
-          if(element.status_ldf == 'attCds' || element.status_ldf == 'avattCds')
+          if(element.statut_ldf == 'attCds' || element.statut_ldf == 'avattCds')
             element.modif = true;
           // le cds peut acceder à annuler
           element.annuler = false;
-          if(element.status_ldf == 'attF' || element.status_ldf == 'avattF' ||
-            element.status_ldf == 'noCds' || element.status_ldf == 'avnoCds')
+          if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF' ||
+            element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
             element.annuler = true;
 
           element.avance = false;
@@ -84,10 +92,12 @@ export class GestionlignedefraisComponent implements OnInit {
         this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listNotedefrais);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.isDisabled = false;
     });
   }
 
   accepterLdf(id : number, avance : boolean, statut : String) {
+    this.isDisabled = true;
     var stat = '';
     if(avance && statut == 'avattCds')
       stat = 'avattF';
@@ -97,7 +107,7 @@ export class GestionlignedefraisComponent implements OnInit {
       console.log('accepter avance ' + stat)
       this.gestionnotedefraisService.updateStatutAvance(
         { id : id, motif : '', statut : stat }
-        );
+      );
     }
     else {
       console.log('accepter ldf ' + stat)
@@ -112,7 +122,7 @@ export class GestionlignedefraisComponent implements OnInit {
 
   refuserLdf(id : number, avance : boolean, statut : string) {
     const dialogRef = this.dialog.open(DialogRefuserLigne, {
-      data: { id : id, avance : avance, statut : statut }
+      data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf }
     });
     dialogRef.afterClosed().subscribe(res => {
       this.delay(1500).then(any => {
@@ -122,6 +132,7 @@ export class GestionlignedefraisComponent implements OnInit {
   }
 
   annulerLdf(id : number, avance : boolean, statut : String) {
+    this.isDisabled = true;
     var stat = '';
     console.log(statut)
     if(avance && (statut == 'avnoCds' || statut == 'avattF')) 
@@ -132,7 +143,7 @@ export class GestionlignedefraisComponent implements OnInit {
       console.log('annuler avance ' + stat)
       this.gestionnotedefraisService.updateStatutAvance(
         { id : id, motif : '', statut : stat }
-        );
+      );       
     }
     else {
       console.log('annuler ldf ' + stat)
@@ -145,6 +156,23 @@ export class GestionlignedefraisComponent implements OnInit {
     });
   }
 
+  retourGestionNdf() {
+    var toCompta = false;
+    var fromCompta = false;
+    this.listNotedefrais.forEach( element => {
+      if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF')
+        toCompta = true;
+      if(element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
+        fromCompta = true;
+    })
+    console.log('to ' + toCompta + ' from ' + fromCompta)
+    this.gestionnotedefraisService.createOrUpdateAllNotifications(
+      { id_ndf : this.id_ndf, id_cds : this.id_cds }
+    )
+    // TODO use router as soon the query success
+    const dialogRef = this.dialog.open(DialogEnvoyer);
+    dialogRef.afterClosed().subscribe(() => {});
+  }
   async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
   }
