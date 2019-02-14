@@ -23,7 +23,8 @@ import {
   MatNativeDateModule,
   MatFormField,
   MatInputModule,
-  MAT_DATE_LOCALE
+  MAT_DATE_LOCALE,
+  MatSnackBarModule
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -44,7 +45,7 @@ import { LoginComponent } from './login/login.component';
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
-import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
+import { CreateDemandecongeComponent, DemandeRefuseeComponent } from './create-demandeconge/create-demandeconge.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'notifications', pathMatch: 'full'},
@@ -72,6 +73,7 @@ const appRoutes: Routes = [
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
+    DemandeRefuseeComponent
   ],
   imports: [
     BrowserModule,
@@ -86,6 +88,7 @@ const appRoutes: Routes = [
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatSnackBarModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
@@ -100,6 +103,9 @@ const appRoutes: Routes = [
       provide: DateAdapter,
       useFactory: adapterFactory
     })
+  ],
+  entryComponents: [
+    DemandeRefuseeComponent
   ],
   providers: [
     NotedefraisService,

@@ -16,4 +16,22 @@ export class CongeService
       .http
       .get(`${this.url}/conge/congesid`, { params : data});
   }
+
+  createConges(data)
+  {
+    console.log("oh bosetti");
+    return this
+      .http
+      .post(`${this.url}/conge/congescreate`, data)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastr.success('Conge créée.', 'Success');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
 }
