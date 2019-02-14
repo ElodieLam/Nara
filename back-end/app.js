@@ -14,6 +14,8 @@ app.use('/conge', CongeController);
 var DemandecongeController = require('./demandeconge/DemandecongeController');
 app.use('/demandeconge', DemandecongeController);
 
+var MissionController = require('./missions/MissionController');
+app.use('/missions', MissionController);
 
 
 
