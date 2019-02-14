@@ -24,7 +24,7 @@
   <!-- Bouton pour création d'une nouvelle mission -->
   <br>
 
-  <button mat-flat-button color="accent">Ajouter une nouvelle mission</button> 
+  <button mat-flat-button (click)="openDialogCreationMission()" color="accent">Ajouter une nouvelle mission</button> 
   
   <br>
   <br>
@@ -32,38 +32,50 @@
   <!-- Tableau des missions -->
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  
-    <!-- Position Column -->
-    <ng-container matColumnDef="missionName">
+ 
+     <!-- ID de la mission -->
+     <ng-container matColumnDef="id_mission">
+      <th mat-header-cell *matHeaderCellDef> N° </th>
+      <td mat-cell *matCellDef="let element"> {{element.id_mission}} </td>
+    </ng-container>
+
+    <!-- Nom de la mission -->
+    <ng-container matColumnDef="nom_mission">
       <th mat-header-cell *matHeaderCellDef> Mission </th>
-      <td mat-cell *matCellDef="let element"> {{element.missionName}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.nom_mission}} </td>
     </ng-container>
   
-    <!-- Name Column -->
-    <ng-container matColumnDef="collaborateurs">
+    <!-- Chef de service -->
+    <ng-container matColumnDef="id_chef">
       <th mat-header-cell *matHeaderCellDef> Collaborateurs </th>
-      <td mat-cell *matCellDef="let element"> {{element.collaborateurs}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.id_chef}} </td>
+    </ng-container>
+
+    <!-- Date -->
+    <ng-container matColumnDef="date_mission">
+      <th mat-header-cell *matHeaderCellDef> Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.date_mission | date : 'dd/MM/yyyy'}} </td>
     </ng-container>
   
-    <!-- Weight Column -->
+    <!-- Bouton "voir" -->
     <ng-container matColumnDef="voirButton">
       <th mat-header-cell *matHeaderCellDef>  </th>
       <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Voir</button> </td>
     </ng-container>
     
-    <!-- Symbol Column -->
+    <!-- Bouton "Modifier" -->
     <ng-container matColumnDef="modifierButton">
       <th mat-header-cell *matHeaderCellDef>  </th>
       <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Modifier</button> </td>
     </ng-container>
 
-    <!-- Symbol Column -->
+    <!-- Bouton "Clore" -->
     <ng-container matColumnDef="cloreButton">
       <th mat-header-cell *matHeaderCellDef>  </th>
       <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Clore</button> </td>
     </ng-container>
     
-    <!-- Symbol Column -->
+    <!-- Bouton "Supprimer" -->
     <ng-container matColumnDef="supprimerButton">
       <th mat-header-cell *matHeaderCellDef> </th>
       <td mat-cell *matCellDef="let element">  <button mat-flat-button color="warn">Supprimer</button>  </td>
