@@ -1,0 +1,57 @@
+<h1 mat-dialog-title>Modifier Avance</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput *ngIf="!_missModif" placeholder="Mission" [(ngModel)]="data.comp.nom_mission" disabled>
+        <mat-select *ngIf="_missModif" placeholder="Mission" [(ngModel)]="data.comp.id_mission" (ngModelChange)="onChange()" required>
+            <mat-option *ngFor="let miss of missions" [value]="miss.id_mission">
+                {{miss.nom_mission}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="myGroup.get('missionControl').hasError('required')">Sélectionner une mission</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput *ngIf="!_libModif" placeholder="Libellé" [(ngModel)]="data.comp.libelle" disabled>
+        <mat-select *ngIf="_libModif" placeholder="Libellé " [(ngModel)]="data.comp.libelle" (ngModelChange)="onChange()" required>
+            <mat-option *ngFor="let lib of libelles" [value]="lib.value">
+                {{lib.value}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="myGroup.get('libelleControl').hasError('required')">Sélectionner un libellé</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire" (ngModelChange)="onChange()">
+    </mat-form-field> 
+    <div [formGroup]="myGroup">
+        <mat-form-field>
+            <input matInput *ngIf="!_apresMiss" placeholder="Montant" disabled>
+            <input matInput *ngIf="_apresMiss" placeholder="Montant" (ngModelChange)="onChange()" formControlName="montantControl" required>
+            <mat-error *ngIf="myGroup.get('montantControl').invalid"> 
+                {{ getErrorMessage() }}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput *ngIf="_apresMiss" placeholder="Montant estimé" [(ngModel)]="data.comp.montant_estime" disabled [ngModelOptions]="{standalone: true}">
+            <input matInput *ngIf="!_apresMiss" placeholder="Montant estimé" (ngModelChange)="onChange()" formControlName="montantEstimeControl" required>
+            <mat-error *ngIf="myGroup.get('montantEstimeControl').invalid"> 
+                {{ getErrorMessageEstime() }}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput *ngIf="_apresMiss" placeholder="Montant avancé" [(ngModel)]="data.comp.montant_avance" disabled [ngModelOptions]="{standalone: true}">
+            <input matInput *ngIf="!_apresMiss" placeholder="Montant avancé" (ngModelChange)="onChange()" formControlName="montantAvanceControl" required>
+            <mat-error *ngIf="myGroup.get('montantAvanceControl').invalid"> 
+                {{ getErrorMessageAvance() }}
+            </mat-error>
+        </mat-form-field>
+    </div>
+</div>
+<p *ngIf="_refusCDS || _refusCompta">
+    <span *ngIf="_refusCDS">Refus chef de service</span>
+    <span *ngIf="_refusCompta">Refus service comptabilité</span>
+    <br>
+    Motif : {{data.comp.commentaire_refus}}    
+</p>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button [disabled]="!_ldfValide || !_modif" (click)="onClick()" [mat-dialog-close]="data">Modifier</button>
+</div>
