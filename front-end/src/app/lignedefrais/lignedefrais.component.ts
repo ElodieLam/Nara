@@ -67,6 +67,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   displayedColumns: string[] = ['avance', 'status', 'mission', 'date',
   'libelle', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  isDisabled: boolean = true;
   //Variable pour encrypt/decrypt
   keySize: number = 256;
   ivSize : number = 128;
@@ -121,10 +122,11 @@ export class LignedefraisComponent implements OnInit, OnChanges {
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
               'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
-              'id_mission' : ldf.id_mission, 'mission' : ldf.nom_mission, 'id_ndf' : ldf.id_ndf, 
-              'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 'montant_estime' : ldf.montant_estime,
-              'montant' : ldf.montant_ldf, 'commentaire' : ldf.commentaire_ldf, 
-              'commentaire_refus' : ldf.motif_refus, 'justificatif' : ldf.justif_ldf})
+              'id_mission' : ldf.id_mission, 'id_chef' : ldf.id_chef, 'mission' : ldf.nom_mission, 
+              'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
+              'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
+              'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
+              'justificatif' : ldf.justif_ldf})
           //console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
           this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
           //console.log(this.montantTotal)
@@ -133,7 +135,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         this.dataSource = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.isDisabled = false;
     });
+    
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -249,6 +253,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
           if(this.listlignedefrais[i].id_ldf == num && !this.listlignedefrais[i].avance)
             listLdf.push({ 'id_ldf' : this.listlignedefrais[i].id_ldf,
               'id_mission' : this.listlignedefrais[i].id_mission,
+              'id_chef' : this.listlignedefrais[i].id_chef,
               'nom_mission' : this.listlignedefrais[i].mission, 
               'libelle' : this.listlignedefrais[i].libelle, 
               'montant_estime' : this.listlignedefrais[i].montant, 
@@ -263,9 +268,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         var temp = result;
         if(temp) {
           this.delay(1500).then(any => {
-            this.lignedefraisService.createOrUpdateNotifNdfAvance(
-              { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            );
+            // this.lignedefraisService.createOrUpdateNotifNdfAvance(
+            //   { id_ndf : this.id_ndf , id_collab: this.id_collab }
+            // );
             this.refreshLignesdefrais();
             this.openSnackBar('Avances créés et envoyées');
           });
@@ -285,7 +290,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         avance = true;
         listLdf.push({ 
           'id_ldf' : ligne.id_ldf,
+          'id_ndf' : ligne.id_ndf,
           'id_mission' : ligne.id_mission,
+          'id_chef' : ligne.id_chef,
           'nom_mission' : ligne.mission, 
           'libelle' : ligne.libelle, 
           'avance' : ligne.avance,
@@ -295,7 +302,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       else if(ligne.status == 'Non envoyée' && ligne.montant != 0)
         listLdf.push({ 
               'id_ldf' : ligne.id_ldf,
+              'id_ndf' : ligne.id_ndf,
               'id_mission' : ligne.id_mission,
+              'id_chef' : ligne.id_chef,
               'nom_mission' : ligne.mission, 
               'libelle' : ligne.libelle, 
               'avance' : ligne.avance,
@@ -304,23 +313,22 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         
       });
     if(listLdf.length > 0) {
-
-        const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
-          data: { liste : listLdf, id_collab : this.id_collab , id_ndf : this.id_ndf }
-        });
-        dialogRef.afterClosed().subscribe(result => {
-          var temp = result;
+      const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
+        data: { liste : listLdf, id_collab : this.id_collab , id_ndf : this.id_ndf }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        var temp = result;
         if(temp) {
           this.delay(3000).then(any => {
-            this.lignedefraisService.createOrUpdateNotifNdf(
-              { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            );
-            if(avance) {
-              //console.log('avance')
-              this.lignedefraisService.createOrUpdateNotifNdfAvance(
-                { id_ndf : this.id_ndf , id_collab: this.id_collab }
-              );
-            }
+            // this.lignedefraisService.createOrUpdateNotifNdf(
+            //   { id_ndf : this.id_ndf , id_collab: this.id_collab }
+            // );
+            // if(avance) {
+            //   //console.log('avance')
+            //   this.lignedefraisService.createOrUpdateNotifNdfAvance(
+            //     { id_ndf : this.id_ndf , id_collab: this.id_collab }
+            //   );
+            // }
             this.refreshLignesdefrais();
             this.openSnackBar('Lignes envoyées');
           });
@@ -337,6 +345,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 
   supprLignedefrais(ldf : ILignedefrais) {
+    this.isDisabled = true;
     if(ldf.avance) {
       this.lignedefraisService.deleteAvance({id : ldf.id_ldf});
       this.delay(1500).then(any => {

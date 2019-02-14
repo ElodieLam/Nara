@@ -183,4 +183,38 @@ export class LignedefraisService {
         }
       );
   }
+
+  updateLignedefraisGlobal(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisglobal`, data)
+      .subscribe(
+        res => {
+        console.log('Update global');
+        // console.log(res);
+        this.toastr.success('global success.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+    }
+    
+    deleteAndCreateAvance(data) {
+      this.http.post(`${this.url}/lignedefrais/deletecreateavance`, data)
+        .subscribe(
+          res => {
+          console.log('delete create avance');
+          // console.log(res);
+          this.toastr.success('d c success.', 'Success');
+  
+          },
+          err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+          }
+      );
+
+  }
+
 }

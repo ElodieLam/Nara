@@ -26,22 +26,40 @@ export class DialogEnvoyerLignes implements OnInit{
   }
 
   onClick(): void {
+    var liste = []
+    var listeCds = [];
     this.data.liste.forEach(element => {
         if(element.avance && !element.apres_mission) {
-          this.lignedefraisService.updateStatutAvance({
-              id : element.id_ldf, statut : 'avattCds'
-          });
+          liste.push({id : element.id_ldf, id_ndf : element.id_ndf ,avance : true, stat : 3 })
+          // this.lignedefraisService.updateStatutAvance({
+          //   id : element.id_ldf, statut : 'avattCds'
+          // });
         }
         else if(element.avance){
-          this.lignedefraisService.updateStatutAvance({
-            id : element.id_ldf, statut : 'attCds'
-          });
+          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : true, stat : 3 })
+          // this.lignedefraisService.updateStatutAvance({
+          //   id : element.id_ldf, statut : 'attCds'
+          // });
         }
         else {
-          this.lignedefraisService.updateStatutLignedefrais({
-            id : element.id_ldf, statut : 'attCds'
-          });
+          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 7 })
+          // this.lignedefraisService.updateStatutLignedefrais({
+          //   id : element.id_ldf, statut : 'attCds'
+          // });
         }
+        var isIn = false;
+        console.log('liste')
+        console.log(listeCds)
+        listeCds.forEach( cds =>  {
+          if(cds == element.id_chef)
+          isIn = true
+        });
+        console.log(isIn)
+        isIn ? {} : listeCds.push(element.id_chef);
+        console.log(listeCds)
+    });
+    this.lignedefraisService.updateLignedefraisGlobal( {
+      liste : liste, listeCds : listeCds
     });    
   }
 

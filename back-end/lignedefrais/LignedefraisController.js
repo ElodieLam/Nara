@@ -123,4 +123,28 @@ router.post('/updatestatutavance', function (req, res) {
     });
 });
 
+router.post('/updatelignedefraisglobal', function (req, res) {
+    Lignedefrais.updateStatutGlobal(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/deletecreateavance', function (req, res) {
+    Lignedefrais.deleteAndCreateAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
 module.exports = router;
