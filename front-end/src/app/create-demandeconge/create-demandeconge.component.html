@@ -16,7 +16,7 @@
       <td>
         <mat-form-field *ngIf = "infoConge.length > 0">
             <mat-label>Type demande congé</mat-label>
-          <mat-select [(value)]="newDemande.type_demande_conge">
+          <mat-select [(value)]="newDemande.type_demande_conge" (selectionChange) = "fill(0)">
             <mat-select-trigger *ngIf = "newDemande.type_demande_conge == 'rtt'">RTT</mat-select-trigger>
             <mat-select-trigger *ngIf = "newDemande.type_demande_conge == 'cp'">Congé Payé</mat-select-trigger>
             <mat-select-trigger *ngIf = "newDemande.type_demande_conge == 'css'">Congé Sans Solde</mat-select-trigger>
@@ -34,16 +34,17 @@
       <td>
           <mat-form-field>
               <mat-label>Date début congé</mat-label>
-              <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker3" placeholder="Date début congé" [(ngModel)]="newDemande.date_debut" [min] = "dateMin" disabled>
+              <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker3" placeholder="Date début congé" 
+              [(ngModel)]="newDemande.date_debut" [min] = "dateMin" (dateChange) = "fill(1)" disabled>
               <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-              <mat-datepicker #picker3 disabled="false"></mat-datepicker>
+              <mat-datepicker #picker3 [disabled]="!isFilled.type"></mat-datepicker>
             </mat-form-field>
       
       </td>
       <td>
           <mat-form-field>
               <mat-label>Début Congé</mat-label>
-              <mat-select [(value)]="newDemande.debut_matin">
+              <mat-select [(value)]="newDemande.debut_matin" (selectionChange) = "fill(2)">
                 <mat-option value=1>Matin</mat-option>
                 <mat-option value=0>Après-Midi</mat-option>
               </mat-select>
@@ -53,18 +54,18 @@
           <mat-form-field>
               <mat-label>Date fin congé</mat-label>
               <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker2" placeholder="Date fin congé" 
-              [(ngModel)]="newDemande.date_fin" [min] = "newDemande.date_debut" disabled>
+              [(ngModel)]="newDemande.date_fin" [min] = "newDemande.date_debut" (dateChange) = "fill(3)" [max] = "dateMaxi" disabled>
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-              <mat-datepicker #picker2 disabled="false"></mat-datepicker>
+              <mat-datepicker #picker2 [disabled]="!isFilled.am"></mat-datepicker>
             </mat-form-field>
 
       </td>
       <td>
           <mat-form-field>
               <mat-label>Fin Congé</mat-label>
-              <mat-select [(value)]="newDemande.fin_aprem">
+              <mat-select [(value)]="newDemande.fin_aprem" (selectionChange) = "fill(4)" [disabled] = "!isFilled.end">
                 <mat-option value=0>Matin</mat-option>
-                <mat-option value=1>Après-Midi</mat-option>
+                <mat-option value=1 [disabled] = "forcedAm">Après-Midi</mat-option>
               </mat-select>
             </mat-form-field>
       </td>
@@ -73,7 +74,8 @@
       <td>
         <button
           class="btn btn-success"
-          (click) = "createDemande(newDemande)">
+          (click) = "createDemande(newDemande)"
+          [disabled] = "!isFilled.pm">
           Valider
         </button>
       </td>

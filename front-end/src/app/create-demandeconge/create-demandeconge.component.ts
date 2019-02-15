@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges } from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import { DemandecongeService } from '../demandeconge/demandeconge.service';
 import {Router} from "@angular/router";
@@ -15,13 +15,147 @@ import { IConge } from '../conge/conge.interface';
   templateUrl: './create-demandeconge.component.html',
   styleUrls: ['./create-demandeconge.component.css']
 })
-export class CreateDemandecongeComponent implements OnInit 
+export class CreateDemandecongeComponent implements OnInit, OnChanges 
 {
   newDemande: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: new Date(), date_fin: null, motif_refus: "", debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: 'attCds'};
   test: IConge = {id_collab: 6, rtt_restant: null, rtt_pris: null, cp_pris: null, cp_restant: null, css_pris: null}
   infoConge : IConge [] = [];
+  isFilled = {type: false, start: false, am: false, end: false, pm: false}
   dateMin = new Date();
+  dateMaxi = null;
+  forcedAm = false;
 
+  calculateDateMax(type)
+  {
+    var dateMax = new Date();
+
+    var addweekend;
+    var congerestants;
+
+    if (type ==="rtt")
+    {
+      congerestants = this.infoConge[0].rtt_restant;
+    }
+    else if (type === "cp")
+    {
+      congerestants = this.infoConge[0].cp_restant;
+    }
+    else
+    {
+      dateMax.setDate(this.newDemande.date_debut.getDate()+365)
+    }
+    if (type === "rtt" || type === "cp")
+    {
+      if (congerestants % 2 == 0)
+      {
+        addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, congerestants/2);
+        dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
+      }
+      else
+      {
+        addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2));
+        dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
+      }
+    }
+
+    return dateMax;
+  }
+  
+  resetDemande(into)
+  {
+    switch(into)
+    {
+      case 0:
+      {
+        this.isFilled.start = false;
+        this.isFilled.am = false;
+        this.isFilled.end = false;
+        this.isFilled.pm = false;
+        this.newDemande.date_debut = new Date();
+        this.newDemande.date_debut.setHours(0,0,0,0);
+        this.newDemande.date_debut = this.incrementeDate(this.newDemande.date_debut);
+        while(this.newDemande.date_debut.getDay() == 0 || this.newDemande.date_debut.getDay() == 6)
+        {
+          this.newDemande.date_debut = this.incrementeDate(this.newDemande.date_debut);
+        }
+        this.newDemande.debut_matin = null;
+        this.newDemande.date_fin = null;
+        this.newDemande.fin_aprem = null;
+        break;
+      }
+      case 1:
+      {
+        this.isFilled.am = false;
+        this.isFilled.end = false;
+        this.isFilled.pm = false;
+        this.newDemande.debut_matin = null;
+        this.newDemande.date_fin = null;
+        
+
+        break;
+      }
+      case 2:
+      {
+        this.isFilled.end = false;
+        this.isFilled.pm = false;
+        this.newDemande.date_fin = null;
+        this.newDemande.fin_aprem = null;
+        break;
+      }
+      case 3:
+      {
+        this.isFilled.pm = false;
+        this.newDemande.fin_aprem = null;
+        
+        break;
+      }
+
+      case 4:
+      {
+        break;
+      }
+    }
+  }
+  fill(into)
+  {
+    switch(into)
+    {
+      case 0:
+      {
+        this.isFilled.type = true;
+        this.resetDemande(into);
+        
+        break;
+      }
+      case 1:
+      {
+        this.isFilled.start = true;
+        this.dateMaxi = this.calculateDateMax(this.newDemande.type_demande_conge);
+        this.resetDemande(into);
+        break;
+      }
+      case 2:
+      {
+        this.isFilled.am = true;
+        this.resetDemande(into);
+        break;
+      }
+      case 3:
+      {
+        this.isFilled.end = true;
+        this.forcedAm = false;
+        this.resetDemande(into);
+        
+        break;
+      }
+
+      case 4:
+      {
+        this.isFilled.pm = true;
+        break;
+      }
+    }
+  }
 
   myFilter = (d: Date): boolean => 
   {
@@ -109,11 +243,55 @@ export class CreateDemandecongeComponent implements OnInit
     {
       diff = diff - 1;
     }
+
+    
+    if (data.type_demande_conge === "rtt")
+    {
+      if (diff > this.infoConge[0].rtt_restant)
+      {
+        this.forcedAm = true;
+      }
+    }
+    else if (data.type_demande_conge === "cp")
+    {
+      
+      if (diff > this.infoConge[0].cp_restant)
+      {
+        this.forcedAm = true;
+      }
+    }
+    else
+    {
+      this.forcedAm = false;
+    }
     
     return diff;
   }
 
   //fonction retournant la liste des dates comprises entre les deux dates entrees
+  getEntreDatesWithoutWeekend(datedebut, nbjours)
+  {
+    var dates = []
+    var dateActuelle = new Date(datedebut);
+    var datefin = new Date();
+    datefin.setDate(dateActuelle.getDate()+(nbjours-1));
+    dates = this.getEntreDates(dateActuelle, datefin);
+    var compteur = 0;
+    for(var date of dates)
+    {
+      if (date.getDay() == 0 || date.getDay() == 6)
+      {
+        compteur += 2;
+      }
+      else
+      {
+        compteur++;
+      }
+    }
+    return compteur;
+
+
+  }
   getEntreDates(datedebut, datefin)
   {
     var dates = [];
@@ -151,8 +329,20 @@ export class CreateDemandecongeComponent implements OnInit
       .subscribe( (data : IConge []) => {
       this.infoConge = data;
     });
-    
+
     this.newDemande.date_debut.setHours(0,0,0,0);
+    this.newDemande.date_debut = this.incrementeDate(this.newDemande.date_debut);
+    while(this.newDemande.date_debut.getDay() == 0 || this.newDemande.date_debut.getDay() == 6)
+    {
+      this.newDemande.date_debut = this.incrementeDate(this.newDemande.date_debut);
+    }
+
+    this.dateMin = this.newDemande.date_debut;
+
+  }
+
+  ngOnChanges()
+  {
 
   }
 
