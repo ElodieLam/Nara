@@ -49,34 +49,6 @@ export class GestionnotedefraisService {
       );
     }
 
-    createOrUpdateNotifNdfToCompta(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndftocompta`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif to compta.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
-    createOrUpdateNotifNdfToComptaAvance(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndftocomptaavance`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif to compta avance.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
     createOrUpdateNotifNdfToComptaGlobal(data) {
       this.http.post(`${this.url}/notifndf/createnotifndftocomptaglobal`, data)
         .subscribe(
@@ -91,62 +63,6 @@ export class GestionnotedefraisService {
       );
     }
     
-    createOrUpdateNotifNdfFromComptaAcceptee(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndffromcomptaacc`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif from compta acc.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
-    createOrUpdateNotifNdfFromComptaRefusee(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndffromcomptaref`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif from compta ref.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-    
-    createOrUpdateNotifNdfFromComptaAvanceAcceptee(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndffromcomptaavanceacc`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif from compta avance acc.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
-    createOrUpdateNotifNdfFromComptaAvanceRefusee(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndffromcomptaavanceref`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif from compta avance ref.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
     createOrUpdateAllNotifications(data) {
       this.http.post(`${this.url}/notifndf/createorupdateallnotifications`, data)
         .subscribe(

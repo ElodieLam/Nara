@@ -28,25 +28,9 @@ export class DialogEnvoyerAvance implements OnInit{
   }
 
   onClick(): void {
-    var listeldf = [];
     var liste = [];
     var listeCds = [];
     this.data.liste.forEach(element => {
-      // this.lignedefraisService.deleteLignedefrais({id : element.id_ldf});
-      // this.lignedefraisService.createAvance({
-      //   id_ndf : this.data.ndf,
-      //   id_mission : element.id_mission,
-      //   libelle : element.libelle,
-      //   montant_estime : element.montant_estime,
-      //   montant_avance : element.montant_avance,
-      //   commentaire : element.commentaire
-      // });
-      // listeldf.push({
-      //   'id_collab' : this.data.id,
-      //   'id_ndf' : this.data.ndf,
-      //   'avance' : true,
-      //   'id_mission' : element.id_mission,
-      //   });
       liste.push( {
         id : element.id_ldf,
         id_ndf : this.data.ndf,
@@ -57,16 +41,11 @@ export class DialogEnvoyerAvance implements OnInit{
         commentaire : element.commentaire
       });
       var isIn = false;
-      console.log('liste')
-      console.log(listeCds)
       listeCds.forEach( cds =>  {
         if(cds == element.id_chef)
         isIn = true
       });
-      console.log(isIn)
       isIn ? {} : listeCds.push(element.id_chef);
-      console.log(listeCds)
-
     });
     this.lignedefraisService.deleteAndCreateAvance( {
       liste : liste, listeCds : listeCds

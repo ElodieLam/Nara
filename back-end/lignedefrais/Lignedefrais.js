@@ -51,15 +51,6 @@ var Lignedefrais = {
             [data.id_mission, data.libelle, data.montant, data.status, data.commentaire, "",
             data.montant_estime, data.montant_avance, data.id_ldf], callback);
     },
-    createAvance: function(data, callback) {
-        date = new Date();
-        return db.query('INSERT INTO t_ligne_de_frais_avance(id_ndf, id_mission, libelle_ldf, montant_ldf, \
-            montant_estime, montant_avance, commentaire_ldf, date_ldf, id_statut, motif_refus, \
-            justif_ldf, mission_passee) VALUES(?, ?, ?, ?, ?, ?, ?, ?, \
-                (SELECT id_statut FROM t_statut WHERE libelle = ?), \'\', NULL, TRUE)', 
-            [data.id_ndf, data.id_mission, data.libelle, 0, data.montant_estime, 
-            data.montant_avance, data.commentaire, date, 'avattCds'], callback);
-    },
     deleteAvance: function(data, callback) {
         return db.query('DELETE from t_ligne_de_frais_avance WHERE id_ldf = ?', [data.id], callback);
     },
@@ -76,7 +67,6 @@ var Lignedefrais = {
             [data.statut, data.id], callback);
     },
     updateStatutGlobal: function(data, callback) {
-        console.log(data)
         var id_ndf = data.liste[0].id_ndf;
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
@@ -121,12 +111,10 @@ var Lignedefrais = {
                         date = VALUES(date) ;'
                 })
             }
-            console.log(sql);
         }
         return db.query(sql, callback);
     },
     deleteAndCreateAvance: function(data, callback) {
-        console.log(data)
         var id_ndf = data.liste[0].id_ndf;
         var d = new Date(),
         month = '' + (d.getMonth() + 1),

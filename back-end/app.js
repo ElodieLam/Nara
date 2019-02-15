@@ -26,4 +26,7 @@ app.use('/notifndf', NotifndfController);
 var GestionndfController = require('./gestionndf/GestionndfController');
 app.use('/gestionndf', GestionndfController);
 
+var ServicecomptaController = require('./servicecompta/ServicecomptaController');
+app.use('/servicecompta', ServicecomptaController);
+
 module.exports = app;

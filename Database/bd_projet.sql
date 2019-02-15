@@ -185,7 +185,7 @@ CREATE TABLE `t_statut` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `t_statut` (`id_statut`, `libelle`) VALUES
-(1, 'avnoSend'),
+(1, 'avnoSent'),
 (2, 'avattF'),
 (3, 'avattCds'),
 (4, 'avnoCds'),

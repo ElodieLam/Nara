@@ -15,6 +15,8 @@ export class DashboardComponent implements OnInit{
   firstname: string = '';
   lastname: string = '';
   isCDS: boolean = false;
+  isCompta: boolean = false;
+  isRH: boolean = false;
   //param: string;
   isOn: boolean = false;
 
@@ -27,11 +29,13 @@ export class DashboardComponent implements OnInit{
     this.isOn = true;
     //Récupère les paramètres passés dans l'URL
     this.activatedRoute.queryParams.subscribe(params => {
-        this.firstname = login.user.prenom_collab;
-        this.lastname = login.user.nom_collab;
-        this.isCDS = login.user.isCDS;
-        //this.param = params['param'];
-      });
+      //this.param = params['param'];
+    });
+    this.firstname = login.user.prenom_collab;
+    this.lastname = login.user.nom_collab;
+    this.isCDS = login.user.isCDS;
+    this.isCompta = login.user.id_service == 2 ? true : false;
+    this.isRH = login.user.id_service == 1 ? true : false;
   }
 
   ngOnInit(){
@@ -51,12 +55,22 @@ export class DashboardComponent implements OnInit{
   }
   
   goToGestionConge(){
-    //this.router.navigate(['/notedefrais']); 
+
+  }
+
+  goToGestionRH(){
+
   }
   
   goToGestionNDF(){
     this.router.navigate(['/gestionnotedefrais']); 
   }
+  
+  goToGestionCompta(){
+    this.router.navigate(['/servicecompta']); 
+  }
+  
+
 
   logout(){
     console.log("logged out");

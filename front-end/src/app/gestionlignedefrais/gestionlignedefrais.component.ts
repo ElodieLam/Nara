@@ -27,7 +27,7 @@ export class GestionlignedefraisComponent implements OnInit {
   isDisabled:boolean = true;
 
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = ['mission', 'libelle', 'montant', 'commentaire', 'justif', 'statut', 'accepter', 'refuser', 'motif'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
   listNotedefrais: ILignedefraisListe[] = [];
   dataSource;
   sub : any;
