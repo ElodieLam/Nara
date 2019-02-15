@@ -81,9 +81,6 @@ export class LignedefraisService {
     this.http.post(`${this.url}/lignedefrais/updatelignedefraisavance`, data)
       .subscribe(
         res => {
-        //this.ldf.refreshLignesdefrais();
-        // console.log('service suppr');
-        // console.log(res);
         this.toastr.success('Ligne de frais modifiée.', 'Success');
 
         },
@@ -92,23 +89,6 @@ export class LignedefraisService {
         this.toastr.error(err.message, 'Error occured');
         }
     );
-  }
-
-  createAvance(data) {
-    this.http.post(`${this.url}/lignedefrais/ajoutavance`, data)
-      .subscribe(
-        res => {
-        //this.ldf.refreshLignesdefrais();
-        //console.log('service ajout avance');
-        // console.log(res);
-        this.toastr.success('Avance ajoutée.', 'Success');
-
-        },
-        err => {
-        console.log('Error occured:' , err);
-        this.toastr.error(err.message, 'Error occured');
-        }
-      );
   }
 
   deleteAvance(data) {
@@ -151,4 +131,70 @@ export class LignedefraisService {
         }
     );
   }
+
+  createOrUpdateNotifNdf(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndf`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  createOrUpdateNotifNdfAvance(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndfavance`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  updateLignedefraisGlobal(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisglobal`, data)
+      .subscribe(
+        res => {
+        console.log('Update global');
+        // console.log(res);
+        this.toastr.success('global success.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+    }
+    
+    deleteAndCreateAvance(data) {
+      this.http.post(`${this.url}/lignedefrais/deletecreateavance`, data)
+        .subscribe(
+          res => {
+          console.log('delete create avance');
+          // console.log(res);
+          this.toastr.success('d c success.', 'Success');
+  
+          },
+          err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+          }
+      );
+
+  }
+
 }

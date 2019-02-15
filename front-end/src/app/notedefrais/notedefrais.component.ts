@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { DatePipe } from '@angular/common';
 import { isoStringToDate } from '@angular/common/src/i18n/format_date';
 import * as CryptoJS from 'crypto-js'; 
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-notedefrais',
@@ -19,7 +20,7 @@ export class NotedefraisComponent implements OnInit {
   lnotedefrais: INotedefrais[];
   //data: Notedefrais = { id_ndf:null, id_collab:6, mois:null, annee:null, total:null, };
   dataS: String = '6';
-  user: String = '6';
+  user: String = '0';
   date = new Date();
   dateS: string;
   topthreeNdf: string[] = ['null', 'null','null'];
@@ -40,30 +41,31 @@ export class NotedefraisComponent implements OnInit {
   route: string;
 
   constructor(private notedefraisService: NotedefraisService , private router: Router,
-    private datePipe: DatePipe) { 
+    private datePipe: DatePipe, private login : LoginComponent) { 
+      this.user = login.user.id_collab.toString();
     }
   
   ngOnInit() {
     this.sub = this.notedefraisService
-    .getNotedefraisFromIdCollab({id : this.dataS})
+    .getNotedefraisFromIdCollab({id : this.user})
     .subscribe( (data : INotedefrais[]) => {
       // récupération des données de la query
       this.lnotedefrais = data;
       // trie la liste de la plus récente à la plus ancienne
+      this.dataS = this.datePipe.transform(this.date, 'yyyy-MM-dd');
+      this.str = this.dataS.split("-",2);
+      console.log(this.str)
       if(this.lnotedefrais.length != 0){
             this.lnotedefrais.sort((a, b) => {   
               return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
             });
 
-            console.log(this.lnotedefrais)
+            //console.log(this.lnotedefrais)
             // enlève les ndf validées
             // TODO
 
 
             // vérifie s'il existe une ndf pour le mois courrant
-            this.dataS = this.datePipe.transform(this.date, 'yyyy-MM-dd');
-            this.str = this.dataS.split("-",2);
-            console.log(this.str)
             if(+this.str[0] == this.lnotedefrais[0].annee 
               && +this.str[1] == this.lnotedefrais[0].mois){
                 this.currentMissing = false;
@@ -92,7 +94,6 @@ export class NotedefraisComponent implements OnInit {
               this.topthreeNdf[2] = this.lnotedefrais[1].id_ndf.toString();
               this.topthreeMonth[2] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
               this.count = 3;
-              console.log(this.topthreeMonth)
             }
             else if(this.lnotedefrais.length == 2)
             {
@@ -101,7 +102,6 @@ export class NotedefraisComponent implements OnInit {
               this.topthreeNdf[1] = this.lnotedefrais[1].id_ndf.toString();
               this.topthreeMonth[1] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
               this.count = 2;
-              console.log(this.topthreeMonth)
             }
             else if(this.lnotedefrais.length > 2 && this.currentMissing)         
             {
@@ -112,7 +112,6 @@ export class NotedefraisComponent implements OnInit {
               this.topthreeNdf[2] = this.lnotedefrais[1].id_ndf.toString();
               this.topthreeMonth[2] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
               this.count = 3;
-              console.log(this.topthreeMonth)
             }
             else         
             {
@@ -123,7 +122,6 @@ export class NotedefraisComponent implements OnInit {
               this.topthreeNdf[2] = this.lnotedefrais[2].id_ndf.toString();
               this.topthreeMonth[2] = this.lnotedefrais[2].mois + "-" + this.lnotedefrais[2].annee;
               this.count = 3;
-              console.log(this.topthreeMonth)
             }
         }
     }); 
@@ -135,23 +133,20 @@ export class NotedefraisComponent implements OnInit {
         this.spinner = true;
         this.notedefraisService.createNotedefrais({
           id_collab : this.user, annee : this.str[0], mois : this.str[1]
-        });
-        this.delay(1500).then(any => {
+        })
+        this.delay(2000).then(any => {
           this.notedefraisService.getNotedefraisMonthYear({
             id_collab : this.user, annee : this.str[0], mois : this.str[1]
           })
           .subscribe( (data : any) => {
             var temp = data;
-            console.log('temp')
-            console.log(temp[0].id_ndf.toString());
-            
             var hiddenParam = temp[0].id_ndf + "-" + this.str[0] + "-" + this.str[1];
             //Encrypt-Decrypt
             var encrypted = this.encrypt(hiddenParam, this.key);
-            console.log("Param encrypted: " + encrypted);
-            var decrypted = this.decrypt(encrypted, this.key);
+            //console.log("Param encrypted: " + encrypted);
+            //var decrypted = this.decrypt(encrypted, this.key);
             //var param = encrypted;
-            console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+            //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
             this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
           });
         });

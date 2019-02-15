@@ -8,6 +8,11 @@
       <a mat-list-item (click)="goToNotif()">Notifications</a>
       <a mat-list-item (click)="goToConge()">Congés</a>
       <a mat-list-item (click)="goToNDF()">Note de frais</a>
+      <a mat-list-item *ngIf="isCDS" (click)="goToGestionConge()">Gestion congés</a>
+      <a mat-list-item *ngIf="isCDS" (click)="goToGestionNDF()">Gestion note de frais</a>
+      <a mat-list-item *ngIf="isCompta" (click)="goToGestionCompta()">Service comptabilité</a>
+      <a mat-list-item *ngIf="isRH" (click)="goToGestionRH()">Service RH</a>
+
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -21,6 +26,9 @@
         <mat-icon aria-label="Side nav toggle icon">Menu</mat-icon>
       </button>
       <h1>Nara</h1>
+      <h1 style="position: absolute; left: 100px;">
+        {{ firstname }} {{ lastname }}
+      </h1>
       <button class="btn btn-lg btn-primary" style="position: absolute; right: 0;" (click)="logout()">Se déconnecter</button>
     </mat-toolbar>
     <!-- Add Content Here -->

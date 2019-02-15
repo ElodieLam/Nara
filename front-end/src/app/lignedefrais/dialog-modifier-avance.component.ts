@@ -70,7 +70,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
       private lignedefraisService : LignedefraisService) {}
      
     ngOnInit() {
-      console.log('avance')
       // valeurs pour la comparaison pour activer le bouton modifier
       this.valuesAtStart = {id_mission : this.data.comp.id_mission,
         libelle : this.data.comp.libelle, montant : this.data.comp.montant,
@@ -109,14 +108,11 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
       this.data.comp.montant =  this.myGroup.get('montantControl').value;
       this.data.comp.montant_avance =  this.myGroup.get('montantAvanceControl').value;
       this.data.comp.montant_estime =  this.myGroup.get('montantEstimeControl').value;
-      console.log(this.data)
       // verification de la validité de la note de frais 
       // avec les champs missions, libellé et montant
       if(this._ldfValide) {
-        console.log('valid ldf')
         this.data.comp.valide = true;
         if(this._apresMiss) {
-          console.log('apres mission')
           this.lignedefraisService.updateLignedefraisAvance({
             id_mission : this.data.comp.id_mission,
             id_ldf : this.data.comp.id_ldf,
@@ -129,7 +125,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
           });
         }
         else {
-          console.log('avant mission')
           this.lignedefraisService.updateLignedefraisAvance({
             id_mission : this.data.comp.id_mission,
             id_ldf : this.data.comp.id_ldf,
@@ -152,7 +147,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
         (this.valuesAtStart.montant_estime != this.myGroup.get('montantAvanceControl').value) ||
         (this.valuesAtStart.montant_avance != this.myGroup.get('montantEstimeControl').value) ||
         (this.valuesAtStart.commentaire != this.data.comp.commentaire);
-      console.log('modif ' + this._modif)
       if(this.myGroup.get('montantControl').value && this._apresMiss)
         this._ldfValide  = this.montantValid(this.myGroup.get('montantControl').value);
       else if (this.myGroup.get('montantAvanceControl').value && this.myGroup.get('montantEstimeControl').value && !this._apresMiss)
@@ -161,13 +155,11 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
           this.data.comp.id_mission != '' && this.data.comp.libelle != '';
       else
         this._ldfValide = false;
-      console.log('valid ' + this._ldfValide)
       return this._ldfValide && this._modif;
   
     }
     
     montantValid(montant : String) : boolean {
-      console.log('check ' + montant);
       if(String(montant).match('\\d+(\.\\d{1,2})?'))
         return (montant != '') && (String(montant).match('\\d+(\.\\d{1,2})?')[0] == montant);
       else

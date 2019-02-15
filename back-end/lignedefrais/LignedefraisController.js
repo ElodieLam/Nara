@@ -75,17 +75,6 @@ router.post('/updatelignedefraisavance', function (req, res) {
     });
 });
 
-router.post('/ajoutavance', function (req, res) {
-    Lignedefrais.createAvance(req.body, function (err, count) {
-        if (err) {
-            res.status(400).json(err);
-        }
-        else {
-            req.body.id = count.insertId;
-            res.json(req.body);
-        }
-    });
-});
 
 router.delete('/suppravance/:id', function (req, res) {
     Lignedefrais.deleteAvance(req.params, function (err, count) {
@@ -113,6 +102,30 @@ router.post('/updatestatutlignedefrais', function (req, res) {
 
 router.post('/updatestatutavance', function (req, res) {
     Lignedefrais.updateStatutAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/updatelignedefraisglobal', function (req, res) {
+    Lignedefrais.updateStatutGlobal(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/deletecreateavance', function (req, res) {
+    Lignedefrais.deleteAndCreateAvance(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }

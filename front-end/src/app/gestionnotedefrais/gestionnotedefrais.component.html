@@ -1,0 +1,48 @@
+<div>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    
+    <ng-container matColumnDef="date">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.date | date : 'dd/MM/yyyy'}} </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="nom">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Collaborateur </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{element.prenom_collab}} {{ element.nom_collab }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="mois">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Mois </th>
+      <td mat-cell *matCellDef="let element">
+          {{ listemois[element.mois] }} {{ element.annee}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="avance">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Avance </th>
+      <td mat-cell *matCellDef="let element">    
+        <mat-icon *ngIf="element.avance">check_circle_outline</mat-icon>  
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="nb_lignes">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Nombre de lignes </th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.nb_lignes }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="voir">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button (click)="goToGestionlignedefrais(element)">Voir</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+</div>

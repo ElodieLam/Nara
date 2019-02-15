@@ -3,7 +3,6 @@ import { MatPaginator, MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from 
 import { LignedefraisService } from './lignedefrais.service';
 import { ILignedefrais } from './lignedefrais.interface';
 
-
 @Component({
   selector: 'dialog-overview-example-dialog',
   templateUrl: './dialog-envoyer-lignes.html',
@@ -27,24 +26,28 @@ export class DialogEnvoyerLignes implements OnInit{
   }
 
   onClick(): void {
+    var liste = []
+    var listeCds = [];
     this.data.liste.forEach(element => {
-        console.log(element);
         if(element.avance && !element.apres_mission) {
-            this.lignedefraisService.updateStatutAvance({
-                id : element.id_ldf, statut : 'avattCds'
-            });
+          liste.push({id : element.id_ldf, id_ndf : element.id_ndf ,avance : true, stat : 3 })
         }
         else if(element.avance){
-            this.lignedefraisService.updateStatutAvance({
-                id : element.id_ldf, statut : 'attCds'
-            });
+          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : true, stat : 3 })
         }
         else {
-            this.lignedefraisService.updateStatutLignedefrais({
-                id : element.id_ldf, statut : 'attCds'
-            });
+          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 7 })
         }
+        var isIn = false;
+        listeCds.forEach( cds =>  {
+          if(cds == element.id_chef)
+          isIn = true
+        });
+        isIn ? {} : listeCds.push(element.id_chef);
     });
+    this.lignedefraisService.updateLignedefraisGlobal( {
+      liste : liste, listeCds : listeCds
+    });    
   }
 
   onNoClick(): void {
