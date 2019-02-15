@@ -20,12 +20,12 @@ import {
   MatCheckboxModule,
   MatFormFieldModule,
   MatInputModule,
+  MAT_DATE_LOCALE,
+  MatSnackBarModule,
   MatDialogModule,
   MatSelectModule,
-  MatSnackBarModule,
   MatNativeDateModule,
   MatProgressSpinnerModule,
-  MAT_DATE_LOCALE
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -51,7 +51,7 @@ import { LoginService } from "./login/login.service"
 import { DemandecongeComponent } from './demandeconge/demandeconge.component'
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component'
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component'
-import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component'
+import { CreateDemandecongeComponent, DemandeRefuseeComponent } from './create-demandeconge/create-demandeconge.component';
 import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedefrais.component'
 import { GestionnotedefraisService } from './gestionnotedefrais/gestionnotedefrais.service'
 import { GestionlignedefraisComponent } from './gestionlignedefrais/gestionlignedefrais.component'
@@ -61,7 +61,6 @@ import { ServicecomptaComponent } from './servicecompta/servicecompta.component'
 import { ServicecomptaService } from './servicecompta/servicecompta.service';
 import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component'
 import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-ligne.component'
-
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -103,6 +102,7 @@ const appRoutes: Routes = [
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
+    DemandeRefuseeComponent
     GestionnotedefraisComponent,
     GestionlignedefraisComponent,
     ServicecomptaComponent,
@@ -121,6 +121,7 @@ const appRoutes: Routes = [
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatSnackBarModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
@@ -144,7 +145,8 @@ const appRoutes: Routes = [
       useFactory: adapterFactory
     })
   ],
-  entryComponents: [ 
+  entryComponents: [
+    DemandeRefuseeComponent,
     DialogNouvelleLignedefrais,
     DialogModifierLignedefrais,
     DialogModifierAvance,
