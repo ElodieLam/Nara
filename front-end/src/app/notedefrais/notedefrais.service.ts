@@ -40,6 +40,7 @@ export class NotedefraisService {
     this.http.post(`${this.url}/notedefrais/createnotedefrais`, data)
       .subscribe(
         res => {
+          console.log('create')
           //console.log(res);
           this.toastr.success('Note de frais créée.', 'Success');
           //this.router.navigateByUrl('/notedefrais');
@@ -52,6 +53,7 @@ export class NotedefraisService {
   }
 
   getNotedefraisMonthYear(data){
+    console.log("get")
     return this
       .http
       .get(`${this.url}/notedefrais/getnotedefraismonthyear`, { params : data });

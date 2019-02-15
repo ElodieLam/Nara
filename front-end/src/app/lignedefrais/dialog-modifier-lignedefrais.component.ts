@@ -79,7 +79,6 @@ import { FormControl, Validators } from '@angular/forms';
       // verification de la validité de la note de frais 
       // avec les champs missions, libellé et montant
       if(this._ldfValide) {
-        console.log('valid ldf')
         this.data.comp.valide = true;
         // query SQL pour l'ajout de la ligne de frais
         this.lignedefraisService.updateLignedefrais({
@@ -106,7 +105,6 @@ import { FormControl, Validators } from '@angular/forms';
     }
     
     montantValid(montant : String) : boolean {
-      console.log('check ' + montant);
       if(String(montant).match('\\d+(\.\\d{1,2})?'))
         return (montant != '') && (String(montant).match('\\d+(\.\\d{1,2})?')[0] == montant);
       else

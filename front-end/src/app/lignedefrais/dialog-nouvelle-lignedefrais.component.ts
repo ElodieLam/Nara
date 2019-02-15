@@ -45,8 +45,7 @@ export class DialogNouvelleLignedefrais implements OnInit{
         this.lignedefraisService
         .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
         .subscribe( (data : IMission[]) => {
-            console.log(data);
-            this.missions = data;
+                this.missions = data;
             });
     }
 
@@ -55,7 +54,6 @@ export class DialogNouvelleLignedefrais implements OnInit{
         // verification de la validité de la note de frais 
         // avec les champs missions, libellé et montant
         if(this._ldfValide) {
-        console.log('valid ldf')
         this.data.comp.valide = true;
         // query SQL pour l'ajout de la ligne de frais
         this.lignedefraisService.createLignedefrais({
@@ -67,17 +65,15 @@ export class DialogNouvelleLignedefrais implements OnInit{
         });
         }
         else {
-        this.data.comp.valide = false;
-        console.log('refus ldf')
-
+            this.data.comp.valide = false;
         }
     }
 
     onChange(value : any) {
         if(this.montantControl.value)
-        this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
+            this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
         else
-        this._ldfValide = false;
+            this._ldfValide = false;
     }
 
     montantValid(montant : String) : boolean {

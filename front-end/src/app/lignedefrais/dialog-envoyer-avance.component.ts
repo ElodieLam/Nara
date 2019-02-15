@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA, MatListSubheaderCssMatStyler } from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 
 import { ILignedefrais } from './lignedefrais.interface';
@@ -23,17 +23,16 @@ export class DialogEnvoyerAvance implements OnInit{
     private lignedefraisService : LignedefraisService) {}
     
   ngOnInit() {
-    console.log(this.data)
-    console.log('avance')
     this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
     this.dataSource.paginator = this.paginator;
   }
 
   onClick(): void {
+    var liste = [];
+    var listeCds = [];
     this.data.liste.forEach(element => {
-      console.log(element);
-      this.lignedefraisService.deleteLignedefrais({id : element.id_ldf});
-      this.lignedefraisService.createAvance({
+      liste.push( {
+        id : element.id_ldf,
         id_ndf : this.data.ndf,
         id_mission : element.id_mission,
         libelle : element.libelle,
@@ -41,6 +40,15 @@ export class DialogEnvoyerAvance implements OnInit{
         montant_avance : element.montant_avance,
         commentaire : element.commentaire
       });
+      var isIn = false;
+      listeCds.forEach( cds =>  {
+        if(cds == element.id_chef)
+        isIn = true
+      });
+      isIn ? {} : listeCds.push(element.id_chef);
+    });
+    this.lignedefraisService.deleteAndCreateAvance( {
+      liste : liste, listeCds : listeCds
     });
   }
 
