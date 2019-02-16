@@ -10,6 +10,7 @@ export interface MissionInterface {
   nom_mission: string;
   date_mission: string;
   ouverte : number;
+  mois : number;
 }
 
 @Component({
@@ -20,15 +21,24 @@ export interface MissionInterface {
 
 export class MissionsComponent implements OnInit {
 
+months = [
+  { name: "Janvier", value: 1 },
+  { name: "Février", value: 2 },
+  { name: "Mars", value: 3 },
+  { name: "Avril", value: 4 },
+  { name: "Mai", value: 5 },
+  { name: "Juin", value: 6 },
+  { name: "Juillet", value: 7 },
+  { name: "Août", value: 8 },
+  { name: "Septembre", value: 9 },
+  { name: "Octobre", value: 10 },
+  { name: "Novembre", value: 11 },
+  { name: "Décembre", value: 12 },]
+  
 
 infoMissions : MissionInterface[]
-test: MissionInterface = {id_mission: null, id_chef: null, nom_mission: null, date_mission: null, ouverte: 1}
 dataSource;
 
- ELEMENT_DATA: MissionInterface[] = [
-  {id_mission:2, id_chef: 4, nom_mission: "Mission MBDA", date_mission: "test", ouverte : 1},
-  {id_mission:2, id_chef: 4, nom_mission: "Mission MBDA", date_mission: "test", ouverte : 1}
-];
 
 
 constructor(private missionService: MissionService , private router: Router) {}
@@ -41,11 +51,24 @@ ngOnInit()
       console.log(data);
       this.infoMissions = data;
     this.dataSource = new MatTableDataSource<MissionInterface>(this.infoMissions);
-    
 
   });
 
 }
+
+switchMissions(month) : void
+{
+  this.months = month; 
+  this.missionService
+  .getMissionsByMonth({ mois : month })
+    .subscribe( (data : MissionInterface[]) => {
+      console.log(data);
+      this.infoMissions = data;
+    this.dataSource = new MatTableDataSource<MissionInterface>(this.infoMissions);
+
+  });
+}
+
   displayedColumns: string[] = ['id_mission', 'nom_mission', 'id_chef', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
 }
 

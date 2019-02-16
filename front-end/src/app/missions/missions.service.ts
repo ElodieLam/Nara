@@ -14,5 +14,11 @@ export class MissionService
       .http
       .get(`${this.url}/missions/missionsid`, { params : data });
   }
+
+  getMissionsByMonth(data){
+    return this
+      .http
+      .get(`${this.url}/missions/missionsidmonths`, { params : data });
+  }
 }
 

@@ -19,4 +19,20 @@ router.get('/missionsid', function (req, res)
     });
 });
 
+
+router.get('/missionsidmonths', function (req, res) 
+{
+    Mission.getMissionsByMonth(req.query, function(err, rows)
+    {
+        if(err) 
+        {
+            res.status(400).json(err);
+        }
+        else
+        {
+            res.json(rows);
+        }
+    });
+});
+
 module.exports = router;

@@ -5,21 +5,24 @@
   Sélectionner le mois
   <br>
 
-  <!-- Menu déroulant -->
-  <mat-form-field>
-    <mat-select placeholder="Mars 2019">
-      <mat-option value="option">Mars 2019</mat-option>
-      <mat-option value="option">Avril 2019</mat-option>
-      <mat-option value="option">Mai 2019</mat-option>
-      <mat-option value="option">Juin 2019</mat-option>
-      <mat-option value="option">Juillet 2019</mat-option>
-      <mat-option value="option">Août 2019</mat-option>
-      <mat-option value="option">Septembre 2019</mat-option>
-      <mat-option value="option">Octobre 2019</mat-option>
-      <mat-option value="option">Novembre 2019</mat-option>
-      <mat-option value="option">Décembre 2019</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div  ng-controller="monthCtrl">
+        <mat-form-field>
+            <mat-select [(value)]="selected" (selectionChange)="switchMissions(selected)"> 
+              <mat-option value="1">Janvier</mat-option>
+              <mat-option value="2">Février</mat-option>
+              <mat-option value="3">Mars</mat-option>
+              <mat-option value="4">Avril</mat-option>
+              <mat-option value="5">Mai</mat-option>
+              <mat-option value="6">Juin</mat-option>
+              <mat-option value="7">Juillet</mat-option>
+              <mat-option value="8">Août</mat-option>
+              <mat-option value="9">Septembre</mat-option>
+              <mat-option value="10">Octobre</mat-option>
+              <mat-option value="11">Novembre</mat-option>
+              <mat-option value="12">Décembre</mat-option>
+            </mat-select>
+          </mat-form-field>
+  </div>
 
   <!-- Bouton pour création d'une nouvelle mission -->
   <br>
@@ -81,6 +84,8 @@
       <td mat-cell *matCellDef="let element">  <button mat-flat-button color="warn">Supprimer</button>  </td>
     </ng-container>
 
+    <p>Selected option: {{ selectedOption }}</p>
+    <p>Button output: {{ printedOption }}</p>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
