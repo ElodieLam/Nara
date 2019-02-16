@@ -45,6 +45,7 @@ export interface ILibelle {
 
 export interface IAvance {
     id_ldf: Number;
+    id_ndf:Number;
     id_mission: Number;
     id_chef: Number;
     nom_mission: String;

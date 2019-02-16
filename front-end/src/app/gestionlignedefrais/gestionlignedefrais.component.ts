@@ -96,24 +96,31 @@ export class GestionlignedefraisComponent implements OnInit {
     });
   }
 
-  accepterLdf(id : number, avance : boolean, statut : String) {
+  accepterLdf(id : number, avance : boolean, statut_ldf : String) {
     this.isDisabled = true;
     var stat = '';
-    if(avance && statut == 'avattCds')
-      stat = 'avattF';
+    var statut = 0;
+    if(avance && statut_ldf == 'avattCds')
+      statut = 2;
     else
-      stat = 'attF';
+      statut = 8;
     if(avance) {
-      console.log('accepter avance ' + stat)
-      this.gestionnotedefraisService.updateStatutAvance(
-        { id : id, motif : '', statut : stat }
-      );
+      console.log('accepter avance ' + statut)
+      // this.gestionnotedefraisService.updateStatutAvance(
+      //   { id : id, motif : '', statut : stat }
+      //   );
+      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+      });
     }
     else {
-      console.log('accepter ldf ' + stat)
-      this.gestionnotedefraisService.updateStatutLignedefrais(
-        { id : id, motif : '', statut : stat }
-      );
+      console.log('accepter ldf ' + statut)
+      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+      });
+      // this.gestionnotedefraisService.updateStatutLignedefrais(
+      //   { id : id, motif : '', statut : stat }
+      // );
     }
     this.delay(1500).then(any => {
       this.refreshLignes();

@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Nouvelle ligne de frais</h1>
-<div mat-dialog-content>
+<div mat-dialog-conent *ngIf="hasMiss" >
   <mat-form-field>
     <mat-select placeholder="Mission" [(ngModel)]="data.comp.id_mission" (ngModelChange)="onChange()" required>
       <mat-option *ngFor="let miss of missions" [value]="miss.id_mission">
@@ -28,7 +28,10 @@
   </mat-form-field>
   
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions *ngIf="hasMiss" >
   <button mat-button (click)="onNoClick()">Annuler</button>
   <button mat-button [disabled]="!_ldfValide" (click)="onClick()" [mat-dialog-close]="data">Ajouter</button>
+</div>
+<div  *ngIf="!hasMiss" >
+  <p>Aucune missions possible pour une ligne de frais</p>
 </div>

@@ -45,6 +45,128 @@ var Gestionndf = {
             [data.statut, data.motif, data.id], callback);
     },
 
+    updateLignedefraisAndNotifToAndFromCompta: function(data, callback)
+    {
+        console.log(data)
+        date = new Date();
+        switch (data.stat) {
+            // en attente du service Compta
+            case 8:
+                console.log('att compta')
+                return db.query(
+                    'UPDATE t_ligne_de_frais SET id_statut = ? WHERE id_ldf = ? ; \
+                    INSERT INTO t_notif_ndf_to_compta(id_ndf, date, avance, nb_lignes) \
+                    VALUES(?, ?, 0, ( \
+                        SELECT COUNT(*) as nb \
+                        FROM t_ligne_de_frais as ldf WHERE ldf.id_statut = 8 AND ldf.id_ndf = ?) ) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;', 
+                    [data.stat, data.id_ldf, data.id_ndf, date, data.id_ndf],
+                    callback);
+
+            // Refusée
+            case 9:
+            case 10:
+                console.log('refusée')
+                return db.query(
+                    'UPDATE t_ligne_de_frais SET id_statut = ?, motif_refus = ? WHERE id_ldf = ? ; \
+                    INSERT INTO t_notif_ndf_from_compta(id_ndf, date, avance, nb_lignes, acceptee) \
+                    VALUES(?, ?, 0, ( \
+                        SELECT COUNT(*) as nb \
+                        FROM t_ligne_de_frais as ldf WHERE (ldf.id_statut = 9 OR ldf.id_statut = 10) \
+                        AND ldf.id_ndf = ?), 0) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;', 
+                    [data.stat, data.motif, data.id_ldf, data.id_ndf, date, data.id_ndf],
+                    callback);
+            
+            // validée
+            case 11:
+                console.log('validée')
+                return db.query(
+                    'UPDATE t_ligne_de_frais SET id_statut = ? WHERE id_ldf = ? ; \
+                    INSERT INTO t_notif_ndf_from_compta(id_ndf, date, avance, nb_lignes, acceptee) \
+                    VALUES(?, ?, 0, ( \
+                        SELECT COUNT(*) as nb \
+                        FROM t_ligne_de_frais as ldf WHERE ldf.id_statut = 11 AND ldf.id_ndf = ?), 1) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;', 
+                    [data.stat, data.id_ldf, data.id_ndf, date, data.id_ndf],
+                    callback);
+                
+        }
+    },
+
+    updateAvanceAndNotifToAndFromCompta: function(data, callback)
+    {
+        console.log(data)
+        date = new Date();
+        switch (data.stat) {
+            // en attente du service Compta
+            case 2:
+                console.log('av')
+            case 8:
+                console.log('att compta')
+                return db.query(
+                    'UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ? ; \
+                    INSERT INTO t_notif_ndf_to_compta(id_ndf, date, avance, nb_lignes) \
+                    VALUES(?, ?, 1, ( \
+                        SELECT COUNT(*) as nb \
+                        FROM t_ligne_de_frais_avance as ldf WHERE \
+                        (ldf.id_statut = 8 OR ldf.id_statut = 2) AND ldf.id_ndf = ?) ) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;', 
+                    [data.stat, data.id_ldf, data.id_ndf, date, data.id_ndf],
+                    callback);
+
+            // Refusée
+            case 4:
+            case 5:
+                console.log('av')
+            case 9:
+            case 10:
+                console.log('refusée')
+                return db.query(
+                    'UPDATE t_ligne_de_frais_avance SET id_statut = ?, motif_refus = ? WHERE id_ldf = ? ; \
+                    INSERT INTO t_notif_ndf_from_compta(id_ndf, date, avance, nb_lignes, acceptee) \
+                    VALUES(?, ?, 1, ( \
+                        SELECT COUNT(*) as nb \
+                        FROM t_ligne_de_frais_avance as ldf WHERE \
+                        (ldf.id_statut = 9 OR ldf.id_statut = 10 OR ldf.id_statut = 4 OR ldf.id_statut = 5) \
+                        AND ldf.id_ndf = ?), 0) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;', 
+                    [data.stat, data.motif, data.id_ldf, data.id_ndf, date, data.id_ndf],
+                    callback);
+            
+            // validée
+            case 6: 
+                return db.query('UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ?',
+                    [data.stat, data.id_ldf], callback);
+            
+            // validée
+            case 11:
+                console.log('validée')
+                return db.query(
+                    'UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ? ; \
+                    INSERT INTO t_notif_ndf_from_compta(id_ndf, date, avance, nb_lignes, acceptee) \
+                    VALUES(?, ?, 1, ( \
+                        SELECT COUNT(*) as nb \
+                        FROM t_ligne_de_frais_avance as ldf WHERE ldf.id_statut = 11 AND ldf.id_ndf = ?), 1) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;', 
+                    [data.stat, data.id_ldf, data.id_ndf, date, data.id_ndf],
+                    callback);
+                
+        }
+    },
+
 }
 
 module.exports = Gestionndf;

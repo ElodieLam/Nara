@@ -94,24 +94,30 @@ export class ServicecomptandfComponent implements OnInit {
       });
     }
   
-    accepterLdf(id : number, avance : boolean, statut : String) {
+    accepterLdf(id : number, avance : boolean, statut_ldf : String) {
       this.isDisabled = true;
-      var stat = '';
-      if(avance && statut == 'avattF')
-        stat = 'noSent';
+      var statut = 0;
+      if(avance && statut_ldf == 'avattF')
+        statut = 6;
       else
-        stat = 'val';
+        statut = 11;
       if(avance) {
-        console.log('accepter avance ' + stat)
-        this.gestionnotedefraisService.updateStatutAvance(
-          { id : id, motif : '', statut : stat }
-        );
+        console.log('accepter avance ' + statut)
+        // this.gestionnotedefraisService.updateStatutAvance(
+        //   { id : id, motif : '', statut : stat }
+        // );
+        this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
+          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+        });
       }
       else {
-        console.log('accepter ldf ' + stat)
-        this.gestionnotedefraisService.updateStatutLignedefrais(
-          { id : id, motif : '', statut : stat }
-        );
+        console.log('accepter ldf ' + statut)
+        this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
+          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+        });
+        // this.gestionnotedefraisService.updateStatutLignedefrais(
+        //   { id : id, motif : '', statut : stat }
+        // );
       }
       this.delay(1500).then(any => {
         this.refreshLignes();

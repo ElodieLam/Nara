@@ -36,14 +36,21 @@ export class DialogEnvoyerLignes implements OnInit{
           liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : true, stat : 3 })
         }
         else {
-          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 7 })
+          console.log(element.id_chef)
+          console.log(this.data.id_collab)
+          if(element.id_chef == this.data.id_collab)
+            liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 8 })
+          else
+            liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 7 })
         }
-        var isIn = false;
-        listeCds.forEach( cds =>  {
-          if(cds == element.id_chef)
-          isIn = true
-        });
-        isIn ? {} : listeCds.push(element.id_chef);
+        if(element.id_chef != this.data.id_collab) {
+          var isIn = false;
+          listeCds.forEach( cds =>  {
+            if(cds == element.id_chef)
+            isIn = true
+          });
+          isIn ? {} : listeCds.push(element.id_chef);
+        }
     });
     this.lignedefraisService.updateLignedefraisGlobal( {
       liste : liste, listeCds : listeCds

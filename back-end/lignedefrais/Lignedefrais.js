@@ -68,6 +68,7 @@ var Lignedefrais = {
     },
     updateStatutGlobal: function(data, callback) {
         var id_ndf = data.liste[0].id_ndf;
+        console.log(data);
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -78,6 +79,7 @@ var Lignedefrais = {
 
         date =  [year, month, day].join('-');
         var sql = '';
+        var isCds = false;
         if(data.liste.length > 0) {
             data.liste.forEach(element => {
                 if(element.avance) {
@@ -85,6 +87,8 @@ var Lignedefrais = {
                         ' WHERE id_ldf = ' + element.id + ';\n';
                 }
                 else {
+                    if(element.stat == 8)
+                        isCds = true;
                     sql += 'UPDATE t_ligne_de_frais SET id_statut = ' + element.stat +
                         ' WHERE id_ldf = ' + element.id + ';\n';
                 }
@@ -92,7 +96,7 @@ var Lignedefrais = {
             if(data.listeCds.length > 0) {
                 data.listeCds.forEach( element => {
                     sql += 'INSERT INTO t_notif_ndf(id_ndf, id_cds, date, nb_lignes, avance) \
-                    VALUES( ' + id_ndf + ', ' + element + ', \'' + date + '\', ( \
+                        VALUES( ' + id_ndf + ', ' + element + ', \'' + date + '\', ( \
                         SELECT COUNT(*) as nb \
                         FROM t_ligne_de_frais_avance as ldf, t_mission as miss \
                         WHERE ldf.id_ndf = ' + id_ndf + ' AND (ldf.id_statut = 3 OR ldf.id_statut = 7) \
@@ -101,7 +105,7 @@ var Lignedefrais = {
                         nb_lignes = VALUES(nb_lignes), \
                         date = VALUES(date) ;'
                     sql += 'INSERT INTO t_notif_ndf(id_ndf, id_cds, date, nb_lignes, avance) \
-                    VALUES( ' + id_ndf + ', ' + element + ', \'' + date + '\', ( \
+                        VALUES( ' + id_ndf + ', ' + element + ', \'' + date + '\', ( \
                         SELECT COUNT(*) as nb \
                         FROM t_ligne_de_frais as ldf, t_mission as miss \
                         WHERE ldf.id_ndf = ' + id_ndf + ' AND ldf.id_statut = 7 \
@@ -111,7 +115,28 @@ var Lignedefrais = {
                         date = VALUES(date) ;'
                 })
             }
+            if(isCds) {
+                sql += 'INSERT INTO t_notif_ndf_to_compta(id_ndf, date, avance, nb_lignes) \
+                    VALUES( ' + id_ndf + ', \'' + date + '\', 1, ( \
+                    SELECT COUNT(*) as nb \
+                    FROM t_ligne_de_frais_avance as ldf \
+                    WHERE id_ndf = ' + id_ndf + ' \
+                    AND (ldf.id_statut = 8 OR ldf.id_statut = 2) ) ) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ; \
+                    \
+                    INSERT INTO t_notif_ndf_to_compta(id_ndf, date, avance, nb_lignes) \
+                    VALUES( ' + id_ndf + ', \'' + date + '\', 0, ( \
+                    SELECT COUNT(*) as nb \
+                    FROM t_ligne_de_frais as ldf \
+                    WHERE  ldf.id_statut = 8 AND id_ndf = ' + id_ndf + ') ) \
+                    ON DUPLICATE KEY UPDATE \
+                    nb_lignes = VALUES(nb_lignes), \
+                    date = VALUES(date) ;'
+            }
         }
+        console.log(sql)
         return db.query(sql, callback);
     },
     deleteAndCreateAvance: function(data, callback) {

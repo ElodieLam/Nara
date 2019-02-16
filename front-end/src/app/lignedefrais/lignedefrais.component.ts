@@ -252,6 +252,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         for(var i = 0 ; i < this.listlignedefrais.length ; ++i) {
           if(this.listlignedefrais[i].id_ldf == num && !this.listlignedefrais[i].avance)
             listLdf.push({ 'id_ldf' : this.listlignedefrais[i].id_ldf,
+              'id_ndf' : this.listlignedefrais[i].id_ndf,
               'id_mission' : this.listlignedefrais[i].id_mission,
               'id_chef' : this.listlignedefrais[i].id_chef,
               'nom_mission' : this.listlignedefrais[i].mission, 
@@ -262,15 +263,12 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         }
       });
       const dialogRef = this.dialog.open(DialogEnvoyerAvance, {
-        data: { liste : listLdf, ndf : this.id_ndf, id : this.id_collab  }
+        data: { liste : listLdf, id_collab : this.id_collab  }
       });
       dialogRef.afterClosed().subscribe(result => {
         var temp = result;
         if(temp) {
           this.delay(1500).then(any => {
-            // this.lignedefraisService.createOrUpdateNotifNdfAvance(
-            //   { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            // );
             this.refreshLignesdefrais();
             this.openSnackBar('Avances créés et envoyées');
           });
@@ -314,21 +312,12 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       });
     if(listLdf.length > 0) {
       const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
-        data: { liste : listLdf, id_collab : this.id_collab , id_ndf : this.id_ndf }
+        data: { liste : listLdf, id_collab : this.id_collab }
       });
       dialogRef.afterClosed().subscribe(result => {
         var temp = result;
         if(temp) {
           this.delay(3000).then(any => {
-            // this.lignedefraisService.createOrUpdateNotifNdf(
-            //   { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            // );
-            // if(avance) {
-            //   //console.log('avance')
-            //   this.lignedefraisService.createOrUpdateNotifNdfAvance(
-            //     { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            //   );
-            // }
             this.refreshLignesdefrais();
             this.openSnackBar('Lignes envoyées');
           });
@@ -396,7 +385,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
-}
+  }
 
   transformStatus(status : String) : String {
     for(var i = 0; i < this.status.length ; i ++){

@@ -10,7 +10,7 @@ var Servicecompta = {
             t_service as se \
             WHERE noti.id_ndf = ndf.id_ndf AND ndf.id_collab = col.id_collab AND \
             se.id_service = col.id_serviceCollab AND col.id_collab != ? AND \
-            col.id_collab != se.id_chefDeService', 
+            col.id_collab != ( SELECT id_chefDeService FROM t_service WHERE id_service = 2 )', 
             [data.id], callback);
     },
     getNdfToComptaIdNdf:function(data, callback) 

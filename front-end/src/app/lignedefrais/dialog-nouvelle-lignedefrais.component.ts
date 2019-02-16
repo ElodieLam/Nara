@@ -33,7 +33,8 @@ export class DialogNouvelleLignedefrais implements OnInit{
         {value: 'Autre'}
     ];
 
-    missions : IMission[];
+    missions : IMission[] = [];
+    hasMiss: boolean = true;
     _ldfValide : boolean = false;
 
     constructor(
@@ -46,6 +47,13 @@ export class DialogNouvelleLignedefrais implements OnInit{
         .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
         .subscribe( (data : IMission[]) => {
                 this.missions = data;
+                if (this.missions.length == 0 ) {
+                    this.hasMiss = false;
+                    this.delay(2000).then(any => {
+                        this.data = null;
+                        this.dialogRef.close();
+                    });
+                }
             });
     }
 
@@ -82,5 +90,9 @@ export class DialogNouvelleLignedefrais implements OnInit{
 
     onNoClick(): void {
         this.dialogRef.close();
+    }
+
+    async delay(ms: number) {
+        await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
     }
 }

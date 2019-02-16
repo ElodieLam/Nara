@@ -33,7 +33,7 @@ export class DialogEnvoyerAvance implements OnInit{
     this.data.liste.forEach(element => {
       liste.push( {
         id : element.id_ldf,
-        id_ndf : this.data.ndf,
+        id_ndf : element.id_ndf,
         id_mission : element.id_mission,
         libelle : element.libelle,
         montant_estime : element.montant_estime,

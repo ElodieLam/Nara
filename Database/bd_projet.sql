@@ -228,7 +228,7 @@ CREATE TABLE `t_ligne_de_frais` (
   `commentaire_ldf` varchar(255) NOT NULL,
   `motif_refus` varchar(128) NOT NULL,
   `justif_ldf` BLOB,
-  `id_statut` int(2) NOT NULL
+  `id_statut` int(2) NOT NULL,
   PRIMARY KEY (`id_ldf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -392,8 +392,7 @@ ALTER TABLE `t_notif_ndf_from_compta`
 COMMIT;
 
 
-SELECT miss.id_chef, stat.libelle, COUNT(stat.libelle) as cnt
-FROM t_statut as stat
-LEFT JOIN t_ligne_de_frais as ldf ON stat.id_statut = ldf.id_statut AND ldf.id_ndf = 15 AND stat.id_statut = 7
-LEFT JOIN t_mission as miss ON ldf.id_mission = miss.id_mission
-GROUP BY miss.id_chef, stat.libelle;
+
+SELECT av.id_ldf, av.libelle_ldf, miss.nom_mission, miss.date_mission
+from t_ligne_de_frais_avance as av, t_note_de_frais as ndf, t_mission as miss
+where av.id_ndf = ndf.id_ndf AND ndf.id_ndf = 15 AND av.id_mission = miss.id_mission AND miss.date_mission >= '2019-02-01'
