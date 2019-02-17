@@ -78,7 +78,7 @@ export class GestionnotedefraisService {
     }
 
     /**
-     * @param data : id_ldf, motif, stat, id_ndf 
+     * @param data : id_ldf, id_cds, motif, stat, id_ndf 
      * @description maj d'une ligne de frais, avec maj de la notif fromCompta : oui / non 
      */
     updateLdfnotifToAndFromCompta(data) {

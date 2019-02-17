@@ -107,13 +107,13 @@ export class ServicecomptandfComponent implements OnInit {
         //   { id : id, motif : '', statut : stat }
         // );
         this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : 0
         });
       }
       else {
         console.log('accepter ldf ' + statut)
         this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : 0
         });
         // this.gestionnotedefraisService.updateStatutLignedefrais(
         //   { id : id, motif : '', statut : stat }

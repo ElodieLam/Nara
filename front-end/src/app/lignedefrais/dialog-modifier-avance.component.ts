@@ -148,7 +148,8 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
       else if (this.myGroup.get('montantAvanceControl').value && this.myGroup.get('montantEstimeControl').value && !this._apresMiss)
         this._ldfValide = this.montantValid(this.myGroup.get('montantEstimeControl').value) &&
           this.montantValid(this.myGroup.get('montantAvanceControl').value) && 
-          this.data.comp.libelle != '';
+          this.data.comp.libelle != '' && 
+          this.myGroup.get('montantAvanceControl').value <= this.myGroup.get('montantEstimeControl').value;
       else
         this._ldfValide = false;
       return this._ldfValide && this._modif;

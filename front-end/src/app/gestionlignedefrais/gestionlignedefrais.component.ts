@@ -110,13 +110,13 @@ export class GestionlignedefraisComponent implements OnInit {
       //   { id : id, motif : '', statut : stat }
       //   );
       this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
       });
     }
     else {
       console.log('accepter ldf ' + statut)
       this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id 
+        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
       });
       // this.gestionnotedefraisService.updateStatutLignedefrais(
       //   { id : id, motif : '', statut : stat }
@@ -129,7 +129,7 @@ export class GestionlignedefraisComponent implements OnInit {
 
   refuserLdf(id : number, avance : boolean, statut : string) {
     const dialogRef = this.dialog.open(DialogRefuserLigne, {
-      data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf }
+      data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf, id_cds : this.id_cds }
     });
     dialogRef.afterClosed().subscribe(res => {
       this.delay(1500).then(any => {
@@ -138,25 +138,46 @@ export class GestionlignedefraisComponent implements OnInit {
     });
   }
 
-  annulerLdf(id : number, avance : boolean, statut : String) {
+  annulerLdf(id : number, avance : boolean, statut_ldf : String) {
     this.isDisabled = true;
-    var stat = '';
-    console.log(statut)
-    if(avance && (statut == 'avnoCds' || statut == 'avattF')) 
-      stat = 'avattCds';
-    else
-      stat = 'attCds';
-    if(avance) {
-      console.log('annuler avance ' + stat)
-      this.gestionnotedefraisService.updateStatutAvance(
-        { id : id, motif : '', statut : stat }
-      );       
+    var statut = 0;
+    var statutOld = 0;
+    console.log(statut_ldf)
+    if(avance && statut_ldf == 'avnoCds') {
+      statut = 3;
+      statutOld = 4;
+    } 
+    else if(avance && statut_ldf == 'avattF') {
+      statut = 3;
+      statutOld = 2;
+    }
+    else if(statut_ldf == 'attF') {
+      statut = 7;
+      statutOld = 8;
     }
     else {
-      console.log('annuler ldf ' + stat)
-      this.gestionnotedefraisService.updateStatutLignedefrais(
-        { id : id, motif : '', statut : stat }
-      );
+      statut = 7;
+      statutOld = 9;
+    }
+    if(avance) {
+      console.log('annuler avance ' + statut)
+      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut, 
+        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
+      });
+      // this.gestionnotedefraisService.updateStatutAvance(
+      //   { id : id, motif : '', statut : stat }
+      // );       
+    }
+    else {
+      console.log('annuler ldf ' + statut)
+      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut,
+        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
+      });
+      // this.gestionnotedefraisService.updateStatutLignedefrais(
+      //   { id : id, motif : '', statut : statut }
+      // );
     }
     this.delay(1500).then(any => {
       this.refreshLignes();

@@ -43,14 +43,14 @@ export class DialogRefuserLigne implements OnInit{
             // );
             this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
                 id_ndf : this.data.id_ndf, motif : this.motifControl.value,
-                 stat : statut, id_ldf : this.data.id 
+                 stat : statut, id_ldf : this.data.id, id_cds : this.data.id_cds
             });
         }
         else {
             console.log('refuser ldf statut ' + statut)
             this.gestionnotedefraisService.updateLdfnotifToAndFromCompta({
                 id_ldf : this.data.id, motif : this.motifControl.value,
-                stat : statut, id_ndf : this.data.id_ndf
+                stat : statut, id_ndf : this.data.id_ndf, id_cds : this.data.id_cds
             })
             // this.gestionnotedefraisService.updateStatutLignedefrais(
             //     { id : this.data.id, motif : this.motifControl.value, statut : stat }

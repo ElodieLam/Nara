@@ -12,19 +12,19 @@
       
       <!-- Mission Column -->
       <ng-container matColumnDef="nom_mission">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mission </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="max-width: 100px"> Mission </th>
         <td mat-cell *matCellDef="let element"> {{element.nom_mission}} </td>
       </ng-container>
       
       <!-- Libelle Column -->
       <ng-container matColumnDef="libelle_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Libellé </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="max-width: 100px"> Libellé </th>
         <td mat-cell *matCellDef="let element"> {{element.libelle_ldf}} </td>
       </ng-container>
       
       <!-- Avance Column -->
       <ng-container matColumnDef="avance">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Avance </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="max-width: 10px"> Avance </th>
         <td mat-cell *matCellDef="let element">
             <mat-icon *ngIf="element.avance">check_circle_outline</mat-icon>
         </td>
@@ -32,13 +32,12 @@
 
       <!-- Status Column -->
       <ng-container matColumnDef="statut_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="max-width: 10px"> Statut </th>
         <td mat-cell *matCellDef="let element"> 
           <mat-icon *ngIf="element.val">check</mat-icon>
           <mat-icon *ngIf="element.no">close</mat-icon>
           <mat-icon *ngIf="element.wait">hourglass_empty</mat-icon>
-          <mat-icon *ngIf="element.nosent">more_horiz</mat-icon>
-          
+          <mat-icon *ngIf="element.nosent">more_horiz</mat-icon>        
         </td>
       </ng-container>
       
