@@ -10,23 +10,13 @@
   </mat-form-field>
   <mat-form-field>
     <mat-select placeholder="Libellé " [(ngModel)]="data.comp.libelle" (ngModelChange)="onChange()" required>
-      <mat-option *ngFor="let lib of libelles" [value]="lib.viewValue">
-        {{lib.viewValue}}
+      <mat-option *ngFor="let lib of libelles" [value]="lib.value">
+        {{lib.value}}
       </mat-option>
     </mat-select>
     <mat-error *ngIf="libelleControl.hasError('required')">Sélectionner un libellé</mat-error>
   </mat-form-field>
   <mat-form-field>
-    <!-- <div [formGroup]="myGroup">
-      <input matInput placeholder="Montant " formControlName="montantControl" (change)="onChange()" required>
-      <mat-error *ngIf="myGroup.get('montantControl').hasError('pattern') && !myGroup.get('montantControl').hasError('required')">
-        Montant invalide
-      </mat-error>
-      <mat-error *ngIf="myGroup.get('montantControl').hasError('required')">
-        Montant manquant
-      </mat-error>
-    </div> -->
-    <!-- <input matInput placeholder="Montant" [(ngModel)]="data.comp.montant" (ngModelChange)="onChange()" [formControl]="montantControl" required> -->
     <input matInput placeholder="Montant" (ngModelChange)="onChange()" [formControl]="montantControl" required>
     <mat-error *ngIf="montantControl.invalid"> 
       {{ getErrorMessage() }}

@@ -48,9 +48,9 @@ export class LignedefraisService {
         .subscribe(
             res => {
             //this.ldf.refreshLignesdefrais();
-            // console.log('service suppr');
+            // console.log('service suppr ldf');
             // console.log(res);
-            this.toastr.success('Ligne de frais supprimé.', 'Success');
+            this.toastr.success('Ligne de frais supprimée.', 'Success');
 
             },
             err => {
@@ -58,6 +58,143 @@ export class LignedefraisService {
             this.toastr.error(err.message, 'Error occured');
             }
         );
+  }
+
+  updateLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefrais`, data)
+        .subscribe(
+            res => {
+            //this.ldf.refreshLignesdefrais();
+            // console.log('service suppr');
+            // console.log(res);
+            this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+            },
+            err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+        );
+  }
+
+  updateLignedefraisAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisavance`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+
+  deleteAvance(data) {
+    this.http.delete(`${this.url}/lignedefrais/suppravance/${data.id}`)
+      .subscribe(
+        res => {
+        this.toastr.success('Avance supprimée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  updateStatutLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/updatestatutlignedefrais`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+  updateStatutAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/updatestatutavance`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+
+  createOrUpdateNotifNdf(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndf`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  createOrUpdateNotifNdfAvance(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndfavance`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  updateLignedefraisGlobal(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisglobal`, data)
+      .subscribe(
+        res => {
+        console.log('Update global');
+        // console.log(res);
+        this.toastr.success('global success.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+    }
+    
+    deleteAndCreateAvance(data) {
+      this.http.post(`${this.url}/lignedefrais/deletecreateavance`, data)
+        .subscribe(
+          res => {
+          console.log('delete create avance');
+          // console.log(res);
+          this.toastr.success('d c success.', 'Success');
+  
+          },
+          err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+          }
+      );
+
   }
 
 }

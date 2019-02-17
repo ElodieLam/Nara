@@ -7,11 +7,30 @@ var Notedefrais = {
     },
     getLignesdefraisresumeFromIdNdf:function(data, callback)
     {
-        return db.query('SELECT miss.nom_mission, ldf.libelle_ldf, ldf.status_ldf from t_ligne_de_frais as ldf, t_mission as miss WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission', [data.id], callback);
+        return db.query('SELECT ldf.id_ldf, miss.nom_mission, ldf.libelle_ldf, stat.libelle as statut_ldf, \
+            FALSE as avance \
+            from t_ligne_de_frais as ldf, t_mission as miss, t_statut as stat \
+            WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission AND ldf.id_statut = stat.id_statut\
+            UNION \
+            SELECT ldf.id_ldf, miss.nom_mission, ldf.libelle_ldf, stat.libelle as statut_ldf, TRUE as avance \
+            from t_ligne_de_frais_avance as ldf, t_mission as miss, t_statut as stat \
+            WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission AND ldf.id_statut = stat.id_statut',
+            [data.id, data.id], callback);
     },
     createNotedefraisWithMonth: function (data, callback) 
     {
         return db.query('Insert into t_note_de_frais(id_collab, mois) values(?, ?)',[data.id_collab, data.mois], callback);
+    },
+    createNotedefrais: function (data, callback) 
+    {
+        return db.query('Insert into t_note_de_frais(id_collab, mois, annee, total) values(?, ?, ?, 0)',
+        [data.id_collab, data.mois, data.annee], callback);
+    },
+    getNotedefraisMonthYear: function(data, callback)
+    {
+        console.log(data)
+        return db.query('SELECT id_ndf FROM t_note_de_frais WHERE id_collab = ? AND mois = ? AND annee = ?',
+        [data.id_collab, parseInt(data.mois), data.annee], callback);
     },
     getNotedefraisFromIdCollabAndMonth: function(id_collab, month, callback)
     {

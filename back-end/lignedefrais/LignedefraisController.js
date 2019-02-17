@@ -51,4 +51,89 @@ router.delete('/supprlignedefrais/:id', function (req, res) {
     });
 });
 
+router.post('/updatelignedefrais', function (req, res) {
+    Lignedefrais.updateLignedefrais(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/updatelignedefraisavance', function (req, res) {
+    Lignedefrais.updateLignedefraisAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+
+router.delete('/suppravance/:id', function (req, res) {
+    Lignedefrais.deleteAvance(req.params, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/updatestatutlignedefrais', function (req, res) {
+    Lignedefrais.updateStatutLignedefrais(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/updatestatutavance', function (req, res) {
+    Lignedefrais.updateStatutAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/updatelignedefraisglobal', function (req, res) {
+    Lignedefrais.updateStatutGlobal(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/deletecreateavance', function (req, res) {
+    Lignedefrais.deleteAndCreateAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
 module.exports = router;
