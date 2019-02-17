@@ -1,23 +1,23 @@
 <div class="example-container mat-elevation-z8">
-  <mat-table #table [dataSource]="dataSource" matSort>
-
-    <!-- Date-Heure Column -->
-    <ng-container matColumnDef="date_heure">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Date - Heure </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.date_heure}} </mat-cell>
-    </ng-container>
-
-    <!-- Notification Column -->
-    <ng-container matColumnDef="notif">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Notifications </mat-header-cell>
-      <mat-cell *matCellDef="let element"> 
-        <app-notif-msg  id_demande="{{element.id_action}}" id_collab="{{element.id_collab}}"></app-notif-msg> 
-      </mat-cell>
-    </ng-container>
-
- 
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
-</div>
+    <mat-table #table [dataSource]="dataSource" matSort>
+  
+      <!-- Date-Heure Column -->
+      <ng-container matColumnDef="date_heure" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:200px;" > Date - Heure </th>
+        <td mat-cell *matCellDef="let element" style="min-width:200px;"> {{element.date_heure}} </td>
+      </ng-container>
+  
+      <!-- Notification Column -->
+      <ng-container matColumnDef="notif" >
+        <mat-header-cell *matHeaderCellDef mat-sort-header > Notifications </mat-header-cell>
+        <mat-cell *matCellDef="let element"> 
+          <app-notif-msg  type="{{element.type}}" date="{{element.date}}" statut="{{element.statut}}" ></app-notif-msg> 
+        </mat-cell>
+      </ng-container> 
+  
+   
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns" ></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>

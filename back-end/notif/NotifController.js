@@ -5,8 +5,20 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: true}));
 var Notif = require('./Notif');
 
-router.get('/demConge', function (req, res) {
-    Notif.getNotifDemCongeFromIdCollab(req.query, function (err, rows) {
+//Chef de service
+router.get('/demCongeService', function (req, res) {
+    Notif.getNotifDemCongeFromIdCds(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+}); 
+
+router.get('/ndfService', function (req, res) {
+    Notif.getNotifNdfFromIdCds(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }
@@ -16,8 +28,10 @@ router.get('/demConge', function (req, res) {
     });
 });
 
-router.get('/modConge', function (req, res) {
-    Notif.getNotifModCongeFromIdCollab(req.query, function (err, rows) {
+//Utilisateur simple
+
+router.get('/demConge', function (req, res) {
+    Notif.getNotifDemCongeFromId(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }
@@ -28,7 +42,19 @@ router.get('/modConge', function (req, res) {
 });
 
 router.get('/ndf', function (req, res) {
-    Notif.getNotifNdfFromIdCollab(req.query, function (err, rows) {
+    Notif.getNotifNdfFromId(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
+//Compta
+router.get('/ndfCompta', function (req, res) {
+    Notif.getNotifNdfFromIdCompta(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }

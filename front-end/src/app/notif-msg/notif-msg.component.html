@@ -1,8 +1,9 @@
-<div>
-  <p>{{componentData.typeNotif}} du : {{componentData.date}} 
-    <button mat-stroked-button color="warn" style="position: absolute; right: 0;">Voir</button>
-    <br>
-    Statut : {{componentData.statut}} 
+<div class = "relative">
+  <p class = "absolute" id="divColor" [ngStyle]="{ 'background-color': componentData.color }">{{componentData.type}} : {{componentData.date}} 
+      <br>
+    {{componentData.statut}} 
   </p>
+  <button mat-stroked-button color="warn" class="btnVoir ">Voir</button>
+    <br>
 </div>
 

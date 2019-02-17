@@ -1,7 +1,4 @@
 import { Component, OnInit , Input} from '@angular/core';
-import { IDemandeconge} from '../demandeconge/demandeconge.interface';
-import { NotifMsgService } from './notif-msg.service';
-import { INotedefrais } from '../notedefrais/notedefrais.interface';
 
 @Component({
   selector: 'app-notif-msg',
@@ -11,74 +8,61 @@ import { INotedefrais } from '../notedefrais/notedefrais.interface';
 export class NotifMsgComponent implements OnInit {
 
   private sub : any;
-  @Input() id_demande = 0;
-  @Input() id_collab = 0;
+  @Input() type;
+  @Input() date;
+  @Input() statut;
+  @Input() color;
 
-  demandeConge: IDemandeconge[];
-  demandeNdf: INotedefrais[];
-
-  status : any[] = [
-    {key: 'noSent', value : 'Non envoyée'},
-    {key: 'attCds', value : 'Attente CDS'},
-    {key: 'attRh', value : 'Attente RH'},
-    {key: 'noCds', value : 'Refusée CDS'},
-    {key: 'noRh', value : 'Refusée RH'},
-    {key: 'val', value : 'Validée'}
-  ];
 
   componentData : any = {
-    typeNotif : "",
+    type : "",
     date : "",
     statut: "",
-    commentaire : ""
+    color: ""
   }
 
-  constructor(private notifMsgService: NotifMsgService) { 
+  constructor() { 
   }
  
   ngOnInit() {
 
-    //Récupère la demande de congé correspondant à l'id
-    this.sub = this.notifMsgService
-    .getDemCongeFromIdNotif({id : this.id_demande, collab: this.id_collab})
-    .subscribe( (data : IDemandeconge[]) => {
-      this.demandeConge = data;
-
       //infos à afficher dans le tableau
-      this.componentData.typeNotif = "Demande de congé";
-      this.componentData.date = this.demandeConge[0].date_debut;
-      this.componentData.date = this.componentData.date.substring(0, 10);
-      this.componentData.statut = this.transformStatus(this.demandeConge[0].status_conge);
-      this.componentData.commentaire = this.demandeConge[0].motif_refus;
+      this.componentData.type = this.type;
+      this.componentData.date = this.date;
+      this.componentData.statut = this.statut;
+      this.componentData.color = this.color;
       console.log(this.componentData);
-    })
-
-    //TODO, chercher toutes les lignes de frais correspondant à la id_ndf
-    //statut = Lignes validées OU Lignes refusées
-
-    /*this.sub = this.notifMsgService
-    .getNdfFromIdNotif({id : this.id_demande})
-    .subscribe( (data : INotedefrais[]) => {
-      this.demandeNdf = data;
-      console.log("Msg dem ndf id=" + this.id_demande + ": " + this.demandeNdf[0]);
-
-      //infos à afficher dans le tableau
-      this.componentData.typeNotif = "Demande de note de frais";
-      this.componentData.date = this.demandeNdf[0].mois;
-      //this.componentData.date = this.componentData.date.substring(0, 10);
-      //this.componentData.statut = this.transformStatus(this.demandeConge[0].status_conge);
-      //this.componentData.commentaire = this.demandeConge[0].motif_refus;
-      console.log(this.componentData);
-    })*/
-
+      
+      
   }
 
-  transformStatus(status : String) : String {
-    for(var i = 0; i < this.status.length ; i ++){
-      if(this.status[i].key == status)
-        return this.status[i].value;
+  ngAfterViewInit() {
+    /*if (this.componentData.type == "Demande de congé") {
+      console.log(this.componentData.type);
+      //document.getElementById("divColor").classList.remove('make-blue');
+      document.getElementById("divColor").classList.add("make-orange");
+      //document.getElementById("divColor").style.backgroundColor = "orange";
+      this.color = "orange";
+    } 
+    else if (this.componentData.type == "Note de frais") {
+      console.log(this.componentData.type);
+     // document.getElementById("divColor").classList.remove('make-orange');
+      document.getElementById("divColor").classList.add("make-blue");
+      //document.getElementById("divColor").style.backgroundColor = "cyan";
+      this.color = "cyan";
+    }*/
+  }
+
+  getTrColor(type){
+    if (type == "Demande de congé") {
+      console.log(type);
+      this.color = "orange";
+      return this.color;
+    } 
+    else if (type == "Note de frais") {
+      this.color = "cyan";
+      return this.color;
     }
-    return 'statut undefined'
   }
 
 }

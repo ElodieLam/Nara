@@ -1,84 +1,107 @@
 import { Component, ViewChild } from '@angular/core';
-import {MatTableDataSource, MatSort} from '@angular/material';
-import { NotifService } from './notif.service';
-import { INotif} from './notif.interface';
-import { LoginComponent } from '/Users/Elodie/Nara/front-end/src/app/login/login.component';
-
+import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
+import { NotifService } from '../notif-service/notif.service';
+import { INotifDemFull2, INotifNdfFull2, INotifDisplay} from '../notif-service/notif.interface';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-notif',
   templateUrl: './notif.component.html',
-  styleUrls: ['./notif.component.css']
+  styleUrls: ['../notif-service/notif-service.component.css']
 })
 export class NotifComponent{
 
   ELEMENT_DATA: Element[] = [];
 
   private sub : any;
-  lDemConge: INotif[];
-  lNdf: INotif[];
-  lModConge: INotif[];
   displayedColumns = ['date_heure', 'notif'];
-  dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-  listIdDem: Number[];
-  
-  
+  dataSource; //= new MatTableDataSource(this.ELEMENT_DATA);
+  lDemCongeFull: INotifDemFull2[];
+  lNdfFull: INotifNdfFull2[];
+  lNotifDisplay: INotifDisplay[];
+  mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+  status : any[] = [
+    {key: 'validee', value : 'Validée'},
+    {key: 'refusee', value : 'Refusée'}
+  ];
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private notifService: NotifService, private login: LoginComponent) { 
     }
 
   ngOnInit() {
+    this.lNotifDisplay = [];  
 
-    //TODO fix
+    //Récupération des notifs "Demande de congé"
     this.sub = this.notifService
-    .getNotifDemCongeFromIdCollab({id : this.login.user.id_collab})
-    .subscribe( (data : INotif[]) => {
-      // récupération des données de la query
-      this.lDemConge = data;
-      
-      console.log("ngOnInit: " + this.lDemConge[0].id_action);
-      
+    .getNotifDemCongeFromId({id : this.login.user.id_collab})
+    .subscribe( (data : INotifDemFull2[]) => {
+      if (data != null){
+        this.lDemCongeFull = data;
+        //Récupérations des infos à mettre dans le tableau
+        this.lDemCongeFull.forEach( dem => {
+          if (dem.statut == "validee" || dem.statut == "refusee"){
+            this.lNotifDisplay.push(
+              { 
+                'date' : dem.dateD.substring(0, 10) + " au " + dem.dateF.substring(0, 10), 
+                'type' : (dem.dem == 1) ? "Demande de congé" : "Modification de congé", 
+                'statut' : "Statut: " + this.transformStatus(dem.statut), 
+                'color': "orange", 
+              });   
+          }      
+        });
+      }
     })
 
-    /*this.sub = this.notifService
-    .getNotifModCongeFromIdCollab({id : this.login.user.id_collab})
-    .subscribe( (data : INotif[]) => {
-      // récupération des données de la query
-      this.lModConge = data;
-      console.log("Notif mod conge: " + this.lModConge);
+    //Récupération des notifs "Note de frais"
+    this.sub = this.notifService
+    .getNotifNdfFromId({id : this.login.user.id_collab})
+    .subscribe( (data : INotifNdfFull2[]) => {
+      this.lNdfFull = data;
+
+      //Récupérations des infos à mettre dans le tableau
+      this.lNdfFull.forEach( ndf => {
+        this.lNotifDisplay.push(
+          { 
+            'date' : this.mois[parseInt(ndf.mois, 10)],
+            'type' : (ndf.avance == 1) ? "Avance de note de frais" : "Note de frais", 
+            'statut' : (ndf.acceptee == 1) ? "Lignes validées" : "Lignes refusées",
+            'color': "cyan", 
+        })
+      });
+    
+    //Affiche les éléments dans le tableau
+    this.dataSource = new MatTableDataSource <INotifDisplay> (this.lNotifDisplay);
     })
 
-    this.sub = this.notifService
-    .getNotifNdfFromIdCollab({id : this.login.user.id_collab})
-    .subscribe( (data : INotif[]) => {
-      // récupération des données de la query
-      this.lNdf = data;
-      console.log("Notif ndf: " + this.lNdf);
-    })*/
-
-    //TODO Store notif infos to display
-    var test = [1,2]; 
-    for ( let c of test ) {
-      this.ELEMENT_DATA.push({date_heure: "00/00/00", id_action: c, id_collab: 6})
-    }
   }
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+
+  }
+
+
+  transformStatus(status : String) : String {
+    for(var i = 0; i < this.status.length ; i ++){
+      if(this.status[i].key == status)
+        return this.status[i].value;
+    }
+    return 'statut undefined'
   }
   
 }
 
 export interface Element {
-  date_heure: string,
-  id_action: Number,
-  id_collab: Number
+  date_heure: String,
+  nom: String,
+  prenom: String,
+  date: String,
+  type: String,
+  color: String
 }
-
-
-
 
 
 

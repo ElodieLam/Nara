@@ -47,8 +47,8 @@ import { CongeComponent } from './conge/conge.component';
 
 
 
-
 import { NotifComponent } from './notif/notif.component';
+import { Notif_ServiceComponent } from './notif-service/notif-service.component';
 import { NotifMsgComponent } from './notif-msg/notif-msg.component';
 import { LoginComponent } from './login/login.component';
 import { LoginService } from "./login/login.service";
@@ -56,8 +56,7 @@ import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { CreateDemandecongeComponent } from './create-demandeconge/create-demandeconge.component';
-import { NotifService } from './notif/notif.service';
-import { NotifMsgService } from './notif-msg/notif-msg.service';
+import { NotifService } from './notif-service/notif.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -66,6 +65,7 @@ const appRoutes: Routes = [
     {path: 'notedefrais', component: NotedefraisComponent},
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
+    {path: 'notifications/service', component: Notif_ServiceComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
@@ -83,12 +83,13 @@ const appRoutes: Routes = [
     CongeComponent,
     DemandecongeComponent,
 
-    NotifComponent,
+    Notif_ServiceComponent,
     LoginComponent,
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
-    NotifMsgComponent
+    NotifMsgComponent,
+    NotifComponent
   ],
   imports: [
     BrowserModule,
@@ -136,8 +137,7 @@ const appRoutes: Routes = [
     CongeService,
     LoginService,
     {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
-    NotifService,
-    NotifMsgService
+    NotifService
 
   ],
   bootstrap: [AppComponent]
