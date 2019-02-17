@@ -6,6 +6,7 @@
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item (click)="goToNotif()">Notifications</a>
+      <a mat-list-item (click)="goToNotifService()">Notifications Service</a>
       <a mat-list-item (click)="goToConge()">Congés</a>
       <a mat-list-item (click)="goToNDF()">Note de frais</a>
       <a mat-list-item *ngIf="isCDS" (click)="goToGestionConge()">Gestion congés</a>
