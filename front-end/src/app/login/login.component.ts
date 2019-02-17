@@ -83,9 +83,9 @@ export class LoginComponent implements OnInit {
 
   setUserNull(){
     this.user.id_collab = null;
-    this.user.id_serviceCollab = null;
+    this.user.id_service = null;
     this.user.nom_collab = null;
-    this.user.password = null;
+    //this.user.password = null;
     this.user.prenom_collab = null;
   }
 

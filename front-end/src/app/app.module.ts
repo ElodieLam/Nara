@@ -27,7 +27,6 @@ import {
   MatSelectModule,
   MatNativeDateModule,
   MatFormField,
-  MAT_DATE_LOCALE,
   MatProgressSpinnerModule,
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
