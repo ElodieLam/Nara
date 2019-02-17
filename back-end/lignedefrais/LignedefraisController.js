@@ -27,8 +27,31 @@ router.get('/missionsidcollab', function (req, res) {
     });
 });
 
+router.get('/missionscollabavanceldf', function (req, res) {
+    Lignedefrais.getMissionsCollabAvanceOrLignedefrais(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
 router.post('/ajoutlignedefrais', function (req, res) {
     Lignedefrais.createLignedefrais(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/ajoutavance', function (req, res) {
+    Lignedefrais.createAvance(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }

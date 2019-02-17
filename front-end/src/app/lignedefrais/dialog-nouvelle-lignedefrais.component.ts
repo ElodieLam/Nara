@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
-import { ILibelle, IMission } from './lignedefrais.interface';
+import { ILibelle, IMission, IMissionOld } from './lignedefrais.interface';
 import { FormControl, Validators } from '@angular/forms';
 
 
@@ -33,9 +33,13 @@ export class DialogNouvelleLignedefrais implements OnInit{
         {value: 'Autre'}
     ];
 
+    missionsold : IMissionOld[] = [];
     missions : IMission[] = [];
     hasMiss: boolean = true;
     _ldfValide : boolean = false;
+    isAvance : boolean = false;
+    dateAvance : String = '';
+    nbJours : number = 0;
 
     constructor(
         public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
@@ -43,10 +47,12 @@ export class DialogNouvelleLignedefrais implements OnInit{
         private lignedefraisService : LignedefraisService) {}
         
     ngOnInit() {
+        
         this.lignedefraisService
-        .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
+        .getMissionsCollab({id : this.data.comp.id_collab.toString()})
         .subscribe( (data : IMission[]) => {
                 this.missions = data;
+                console.log(this.missions);
                 if (this.missions.length == 0 ) {
                     this.hasMiss = false;
                     this.delay(2000).then(any => {
@@ -55,6 +61,18 @@ export class DialogNouvelleLignedefrais implements OnInit{
                     });
                 }
             });
+        // this.lignedefraisService
+        // .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
+        // .subscribe( (data : IMissionOld[]) => {
+        //         this.missionsold = data;
+        //         if (this.missionsold.length == 0 ) {
+        //             this.hasMiss = false;
+        //             this.delay(2000).then(any => {
+        //                 this.data = null;
+        //                 this.dialogRef.close();
+        //             });
+        //         }
+        //     });
     }
 
     onClick(): void {
@@ -62,15 +80,27 @@ export class DialogNouvelleLignedefrais implements OnInit{
         // verification de la validité de la note de frais 
         // avec les champs missions, libellé et montant
         if(this._ldfValide) {
-        this.data.comp.valide = true;
-        // query SQL pour l'ajout de la ligne de frais
-        this.lignedefraisService.createLignedefrais({
-            id_ndf : this.data.comp.id_ndf,
-            id_mission : this.data.comp.id_mission,
-            libelle : this.data.comp.libelle,
-            montant : this.data.comp.montant,
-            commentaire : this.data.comp.commentaire
-        });
+            this.data.comp.valide = true;
+            if(this.isAvance) {
+                this.lignedefraisService.createAvance({
+                    id_ndf : this.data.comp.id_ndf,
+                    id_mission : this.data.comp.id_mission,
+                    libelle : this.data.comp.libelle,
+                    montant : this.data.comp.montant,
+                    commentaire : this.data.comp.commentaire
+                })
+            }
+            else {
+
+                // query SQL pour l'ajout de la ligne de frais
+                this.lignedefraisService.createLignedefrais({
+                    id_ndf : this.data.comp.id_ndf,
+                    id_mission : this.data.comp.id_mission,
+                    libelle : this.data.comp.libelle,
+                    montant : this.data.comp.montant,
+                    commentaire : this.data.comp.commentaire
+                });
+            }
         }
         else {
             this.data.comp.valide = false;
@@ -78,10 +108,32 @@ export class DialogNouvelleLignedefrais implements OnInit{
     }
 
     onChange(value : any) {
+        if(this.idIsAvance(this.data.comp.id_mission)) {
+            console.log('is avance')
+            this.isAvance = true;
+        }
         if(this.montantControl.value)
             this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
         else
             this._ldfValide = false;
+    }
+
+    idIsAvance(id : number) : boolean {
+        this.dateAvance = '';
+        this.isAvance = false;
+        var is = false;
+        this.missions.forEach( miss => {
+            if(id == miss.id_mission && miss.avance) {
+                is = true;
+                this.dateAvance = miss.date_mission;
+                var dateone = new Date(miss.date_mission.toString()); 
+                var datetwo = new Date();
+                datetwo.setHours(0,0,0,0);
+                var oneDay = 24*60*60*1000; // Calculates milliseconds in a day
+                this.nbJours = Math.abs((dateone.getTime() - datetwo.getTime())/(oneDay));
+            }
+        });
+        return is;
     }
 
     montantValid(montant : String) : boolean {

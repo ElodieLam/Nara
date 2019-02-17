@@ -6,13 +6,13 @@ var Lignedefrais = {
         return db.query(
             'SELECT av.id_ldf, av.id_ndf, av.id_mission, miss.id_chef, miss.nom_mission, av.libelle_ldf, av.montant_ldf, \
             av.date_ldf, stat.libelle as statut_ldf, av.commentaire_ldf, av.motif_refus, av.justif_ldf, \
-            av.mission_passee, av.montant_estime, av.montant_avance \
+            miss.date_mission, av.mission_passee, av.montant_estime, av.montant_avance \
             FROM t_ligne_de_frais_avance as av, t_mission as miss, t_statut as stat \
             WHERE av.id_ndf = ? AND av.id_mission = miss.id_mission AND av.id_statut = stat.id_statut \
             UNION \
             SELECT ldf.id_ldf, ldf.id_ndf, ldf.id_mission, miss.id_chef, miss.nom_mission, ldf.libelle_ldf, ldf.montant_ldf, \
             ldf.date_ldf, stat.libelle as statut_ldf, ldf.commentaire_ldf, ldf.motif_refus, ldf.justif_ldf, \
-            Null as mission_passee, Null as montant_estime, Null as montant_avance \
+            miss.date_mission, Null as mission_passee, Null as montant_estime, Null as montant_avance \
             FROM t_ligne_de_frais as ldf, t_mission as miss, t_statut as stat \
             WHERE ldf.id_ndf = ? AND ldf.id_mission = miss.id_mission AND ldf.id_statut = stat.id_statut', 
             [data.id, data.id], callback);
@@ -23,6 +23,23 @@ var Lignedefrais = {
             WHERE missC.id_collab = ? AND missC.id_mission = miss.id_mission AND miss.ouverte = TRUE',
             [data.id], callback);
     },
+    getMissionsCollabAvanceOrLignedefrais: function(data, callback)
+    {
+        date = new Date()
+        return db.query('\
+            SELECT miss.id_mission, miss.nom_mission, miss.date_mission, miss.ouverte, col.nom_collab, \
+            col.prenom_collab, miss.id_chef, 1 as avance \
+            FROM t_mission as miss, t_missionCollab as missc, t_collaborateur as col \
+            WHERE miss.id_mission = missc.id_mission AND missc.id_collab = col.id_collab \
+            AND miss.date_mission >= ? AND miss.ouverte = 1 AND col.id_collab = ? \
+            UNION \
+            SELECT miss.id_mission, miss.nom_mission, miss.date_mission, miss.ouverte, col.nom_collab, \
+            col.prenom_collab, miss.id_chef, 0 as avance \
+            FROM t_mission as miss, t_missionCollab as missc, t_collaborateur as col \
+            WHERE miss.id_mission = missc.id_mission AND missc.id_collab = col.id_collab \
+            AND miss.date_mission < ? AND miss.ouverte = 1 AND col.id_collab = ?;',
+            [date, data.id, date, data.id], callback);
+    },
     createLignedefrais: function (data, callback) {
         date = new Date();
         return db.query('INSERT INTO t_ligne_de_frais(id_ndf, id_mission, libelle_ldf, montant_ldf, \
@@ -31,24 +48,30 @@ var Lignedefrais = {
                 (SELECT id_statut FROM t_statut WHERE libelle = ?), \'\', NULL)', 
             [data.id_ndf, data.id_mission, data.libelle, data.montant, data.commentaire, date, 'noSent'], callback);
     },
+    createAvance: function (data, callback) {
+        date = new Date();
+        return db.query('INSERT INTO t_ligne_de_frais_avance(id_ndf, id_mission, libelle_ldf, \
+            montant_ldf, montant_estime, montant_avance, commentaire_ldf, date_ldf, id_statut, \
+            motif_refus, justif_ldf, mission_passee) \
+            VALUES(?, ?, ?, 0, ?, ?, ?, ?, 1, \'\', NULL, FALSE)', 
+            [data.id_ndf, data.id_mission, data.libelle, data.montant, data.montant, data.commentaire, date], callback);
+    },
     deleteLignedefrais: function (data, callback) {
         return db.query('DELETE from t_ligne_de_frais WHERE id_ldf = ?', [data.id], callback);
     },
     updateLignedefrais: function (data, callback) {
-        var sql = 'UPDATE t_ligne_de_frais SET id_mission = ?, \
-        libelle_ldf = ?, montant_ldf = ?, id_statut = \
+        var sql = 'UPDATE t_ligne_de_frais SET libelle_ldf = ?, montant_ldf = ?, id_statut = \
         (SELECT id_statut FROM t_statut WHERE libelle = ?), commentaire_ldf = ?, \
         motif_refus = ? WHERE id_ldf = ?';
-        return db.query(sql, [data.id_mission, data.libelle, data.montant, "noSent", data.commentaire, "", data.id_ldf], callback);
+        return db.query(sql, [data.libelle, data.montant, "noSent", data.commentaire, "", data.id_ldf], callback);
     },
     updateLignedefraisAvance: function (data, callback) {
-        var sql = 'UPDATE t_ligne_de_frais_avance SET id_mission = ?, \
-        libelle_ldf = ?, montant_ldf = ?, id_statut =  \
+        var sql = 'UPDATE t_ligne_de_frais_avance SET libelle_ldf = ?, montant_ldf = ?, id_statut =  \
         (SELECT id_statut FROM t_statut WHERE libelle = ?), commentaire_ldf = ?, \
         motif_refus = ?, montant_estime = ?, montant_avance = ? \
         WHERE id_ldf = ?';
         return db.query(sql, 
-            [data.id_mission, data.libelle, data.montant, data.status, data.commentaire, "",
+            [data.libelle, data.montant, data.status, data.commentaire, "",
             data.montant_estime, data.montant_avance, data.id_ldf], callback);
     },
     deleteAvance: function(data, callback) {
@@ -83,13 +106,22 @@ var Lignedefrais = {
         if(data.liste.length > 0) {
             data.liste.forEach(element => {
                 if(element.avance) {
-                    sql += 'UPDATE t_ligne_de_frais_avance SET id_statut = ' + element.stat +
+                    if(element.stat == 2 || element.stat == 8)
+                        isCds = true;
+                    if(element.stat > 5) {
+                        sql += 'UPDATE t_ligne_de_frais_avance SET id_statut = ' + element.stat +
                         ' WHERE id_ldf = ' + element.id + ';\n';
+                    }
+                    else {
+                        sql += 'UPDATE t_ligne_de_frais_avance SET id_statut = ' + element.stat +
+                        ', montant_avance = ' + element.montant_avance + 
+                        ' WHERE id_ldf = ' + element.id + ';\n';
+                    }
                 }
                 else {
                     if(element.stat == 8)
                         isCds = true;
-                    sql += 'UPDATE t_ligne_de_frais SET id_statut = ' + element.stat +
+                    sql += 'UPDATE t_ligne_de_frais SET id_statut = ' + element.stat + 
                         ' WHERE id_ldf = ' + element.id + ';\n';
                 }
             });
@@ -136,6 +168,14 @@ var Lignedefrais = {
                     date = VALUES(date) ;'
             }
         }
+        sql += 'UPDATE t_note_de_frais as ndf SET ndf.total = \
+        (SELECT SUM(av.montant_ldf - av.montant_avance) \
+            FROM t_ligne_de_frais_avance as av \
+            WHERE av.id_ndf = ' + id_ndf + ' ) \
+        + (SELECT SUM(av.montant_ldf) \
+            FROM t_ligne_de_frais as av \
+            WHERE av.id_ndf = ' + id_ndf + ') \
+        WHERE ndf.id_ndf = ' + id_ndf + ';';
         console.log(sql)
         return db.query(sql, callback);
     },

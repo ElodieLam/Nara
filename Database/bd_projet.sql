@@ -390,9 +390,3 @@ ALTER TABLE `t_notif_ndf_from_compta`
 
 
 COMMIT;
-
-
-
-SELECT av.id_ldf, av.libelle_ldf, miss.nom_mission, miss.date_mission
-from t_ligne_de_frais_avance as av, t_note_de_frais as ndf, t_mission as miss
-where av.id_ndf = ndf.id_ndf AND ndf.id_ndf = 15 AND av.id_mission = miss.id_mission AND miss.date_mission >= '2019-02-01'

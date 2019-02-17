@@ -11,6 +11,7 @@ export interface ILignedefraisFull {
     commentaire_ldf: String;
     motif_refus: String;
     justif_ldf: Blob;
+    date_mission: String;
     mission_passe: boolean;
     montant_estime: Number;
     montant_avance: Number;
@@ -32,11 +33,23 @@ export interface ILignedefrais {
     commentaire: String;
     commentaire_refus: String;
     justificatif: Blob;
+    date_mission: String;
  }
 
-export interface IMission { 
+export interface IMissionOld { 
     id_mission : number;
     nom_mission : string 
+}
+
+export interface IMission {
+    id_mission : Number;
+    nom_mission : String;
+    date_mission: String;
+    ouverte: Boolean;
+    nom_collab: String;
+    prenom_collab: String;
+    id_chef: Number;
+    avance: Boolean;
 }
 
 export interface ILibelle {
@@ -55,6 +68,16 @@ export interface IAvance {
     commentaire: String;
   }
 
+export interface IAvanceShort {
+    id_ndf: Number;
+    id_ldf: Number;
+    id_chef: Number;
+    nom_mission: String;
+    libelle: String;
+    montant_estime: Number;
+    montant_avance: Number;
+}
+
 export interface ILignedefraisShort {
     id_ldf: Number;
     id_ndf: Number;
@@ -63,7 +86,6 @@ export interface ILignedefraisShort {
     nom_mission: String;
     libelle: String;
     avance: Boolean;
-    apres_mission: Boolean;
     montant: Number;
 
 }

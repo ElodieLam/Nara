@@ -26,7 +26,25 @@
   <mat-form-field>
       <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire">
   </mat-form-field>
-  
+  <br>
+  <div *ngIf="isAvance">
+    <p>
+      Cette mission n'est pas encore passée, la mission commencera le {{ dateAvance | date : 'dd/MM/yyyy' }}
+      <br>
+    </p>  
+    <div *ngIf="nbJours > 10; else elseBlock">
+      <p>
+        Nombre de jour(s) restant(s) avant la mission : <strong>{{ nbJours }}</strong> 
+      </p>
+    </div>
+    <ng-template #elseBlock>
+      <p>
+        Nombre de jour(s) restant(s) avant la mission : <strong>{{ nbJours }}</strong>
+        <br>
+        La demande passera en statut URGENT. 
+      </p>
+    </ng-template>
+  </div>
 </div>
 <div mat-dialog-actions *ngIf="hasMiss" >
   <button mat-button (click)="onNoClick()">Annuler</button>
