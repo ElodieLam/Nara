@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { FlatpickrModule } from 'angularx-flatpickr';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
@@ -25,9 +26,10 @@ import {
   MatDialogModule,
   MatSelectModule,
   MatNativeDateModule,
+  MatFormField,
   MatProgressSpinnerModule,
 } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotedefraisComponent } from './notedefrais/notedefrais.component';
@@ -35,32 +37,36 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from "@angular/common/http";
 import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
-import { CongeService } from "./conge/conge.service"
-import { ToastrModule } from "ngx-toastr"
+import { CongeService } from "./conge/conge.service";
+import { ToastrModule } from "ngx-toastr";
 import { LignedefraisComponent, LignedefraisAjoutComponent } from './lignedefrais/lignedefrais.component';
-import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.component'
-import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component'
-import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component'
-import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component'
-import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component'
-import { CongeComponent } from './conge/conge.component'
+import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.component';
+import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component';
+import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component';
+import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component';
+import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component';
+import { CongeComponent } from './conge/conge.component';
 
-import { NotifComponent } from './notif/notif.component'
-import { LoginComponent } from './login/login.component'
-import { LoginService } from "./login/login.service"
-import { DemandecongeComponent } from './demandeconge/demandeconge.component'
-import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component'
-import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component'
+import { NotifComponent } from './notif/notif.component';
+import { Notif_ServiceComponent } from './notif-service/notif-service.component';
+import { NotifMsgComponent } from './notif-msg/notif-msg.component';
+import { NotifService } from './notif-service/notif.service';
+import { LoginComponent } from './login/login.component';
+import { LoginService } from "./login/login.service";
+import { DemandecongeComponent } from './demandeconge/demandeconge.component';
+import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
+import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { CreateDemandecongeComponent, DemandeRefuseeComponent } from './create-demandeconge/create-demandeconge.component';
-import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedefrais.component'
-import { GestionnotedefraisService } from './gestionnotedefrais/gestionnotedefrais.service'
-import { GestionlignedefraisComponent } from './gestionlignedefrais/gestionlignedefrais.component'
-import { DialogRefuserLigne } from './gestionlignedefrais/dialog-refuser-ligne.component'
-import { DialogEnvoyer } from './gestionlignedefrais/dialog-envoyer.component'
-import { ServicecomptaComponent } from './servicecompta/servicecompta.component'
+import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedefrais.component';
+import { GestionnotedefraisService } from './gestionnotedefrais/gestionnotedefrais.service';
+import { GestionlignedefraisComponent } from './gestionlignedefrais/gestionlignedefrais.component';
+import { DialogRefuserLigne } from './gestionlignedefrais/dialog-refuser-ligne.component';
+import { DialogEnvoyer } from './gestionlignedefrais/dialog-envoyer.component';
+import { ServicecomptaComponent } from './servicecompta/servicecompta.component';
 import { ServicecomptaService } from './servicecompta/servicecompta.service';
-import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component'
-import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-ligne.component'
+import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component';
+import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-ligne.component';
+
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -73,6 +79,7 @@ const appRoutes: Routes = [
     {path: 'servicecompta/:id', component: ServicecomptandfComponent},
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
+    {path: 'notifications/service', component: Notif_ServiceComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
@@ -97,11 +104,13 @@ const appRoutes: Routes = [
     CongeComponent,
     DemandecongeComponent,
 
-    NotifComponent,
+    Notif_ServiceComponent,
     LoginComponent,
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
+    NotifMsgComponent,
+    NotifComponent,
     DemandeRefuseeComponent,
     GestionnotedefraisComponent,
     GestionlignedefraisComponent,
@@ -163,6 +172,8 @@ const appRoutes: Routes = [
     ServicecomptaService,
     CongeService,
     LoginService,
+    {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
+    NotifService,
     GestionnotedefraisService,
     {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'}
 

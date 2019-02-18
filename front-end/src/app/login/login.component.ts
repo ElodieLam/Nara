@@ -81,7 +81,13 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/notifications']); 
   }
 
-
+  setUserNull(){
+    this.user.id_collab = null;
+    this.user.id_service = null;
+    this.user.nom_collab = null;
+    //this.user.password = null;
+    this.user.prenom_collab = null;
+  }
 
 
 }

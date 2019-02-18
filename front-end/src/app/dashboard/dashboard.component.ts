@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit{
   isOn: boolean = false;
   date: Date
 
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)
@@ -48,6 +49,10 @@ export class DashboardComponent implements OnInit{
     this.router.navigate(['/notifications/']); 
   }
 
+  goToNotifService(){
+    this.router.navigate(['/notifications/service']); 
+  }
+
   goToConge(){
     this.router.navigate(['/conge']); 
   }
@@ -55,7 +60,7 @@ export class DashboardComponent implements OnInit{
   goToNDF(){
     this.router.navigate(['/notedefrais']); 
   }
-  
+
   goToGestionConge(){
 
   }
@@ -71,8 +76,6 @@ export class DashboardComponent implements OnInit{
   goToGestionCompta(){
     this.router.navigate(['/servicecompta']); 
   }
-  
-
 
   logout(){
     console.log("logged out");
@@ -81,9 +84,8 @@ export class DashboardComponent implements OnInit{
     this.lastname = '';
     this.isCDS = false;
     this.router.navigate(['/login']); 
-    //this.param = "";
-    
   }
+
 
   
 
