@@ -102,7 +102,7 @@ const appRoutes: Routes = [
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
-    DemandeRefuseeComponent
+    DemandeRefuseeComponent,
     GestionnotedefraisComponent,
     GestionlignedefraisComponent,
     ServicecomptaComponent,

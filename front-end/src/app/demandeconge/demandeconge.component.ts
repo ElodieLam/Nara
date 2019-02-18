@@ -3,7 +3,7 @@ import { DemandecongeService } from './demandeconge.service';
 import {Router} from "@angular/router";
 import { IDemandeconge } from './demandeconge.interface';
 import { CalendarEvent, CalendarDateFormatter, DAYS_OF_WEEK } from 'angular-calendar';
-import {MatSort, MatTableDataSource} from '@angular/material';
+import {MatSort, MatTableDataSource, MatDialog} from '@angular/material';
 
 import { CustomDateFormatter } from './custom-date-formatter.provider';
 
@@ -17,6 +17,7 @@ import {
   isSameMonth,
   addHours
 } from 'date-fns';
+import { LoginComponent } from '../login/login.component';
 
 const colors: any = {
   red: {
@@ -59,6 +60,7 @@ export class DemandecongeComponent implements OnInit
   activeDayIsOpen: boolean = true;
 
   listeDemande : IDemandeconge[];
+  user = "0";
   test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null};
   test2: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: new Date(), date_fin: new Date(), motif_refus: "", debut_matin: true, duree: 2, fin_aprem: true, type_demande_conge: "rtt", status_conge: "attCds"};
   dataSource;
@@ -151,13 +153,16 @@ export class DemandecongeComponent implements OnInit
       
     }
   }
-  constructor(private demandecongeService: DemandecongeService , private router: Router) { }
+  constructor(private demandecongeService: DemandecongeService , private router: Router, private login : LoginComponent) 
+  {
+    this.user = login.user.id_collab.toString();
+  }
 
   ngOnInit() 
   
   {
     this.demandecongeService
-    .getDemandecongesFromIdCollab(this.test)
+    .getDemandecongesFromIdCollab({id : this.user})
       .subscribe( (data : IDemandeconge[]) => {
       this.listeDemande = data;
       this.dataSource = new MatTableDataSource(this.listeDemande); 

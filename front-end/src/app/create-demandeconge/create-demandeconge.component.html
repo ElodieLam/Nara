@@ -1,19 +1,5 @@
-<table class="table table-bordered">
-
-  <thead>
-    <tr>
-      <th>Type de congé</th>
-      <th>Date début</th>
-      <th>Heure début</th>
-      <th>Date fin</th>
-      <th>Heure fin</th>
-      <th>Durée</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr>
-      <td>
+<h1 mat-dialog-title>Nouvelle demande de congé</h1>
+<div mat-dialog-content>
         <mat-form-field *ngIf = "infoConge.length > 0">
             <mat-label>Type demande congé</mat-label>
           <mat-select [(value)]="newDemande.type_demande_conge" (selectionChange) = "fill(0)">
@@ -30,8 +16,7 @@
             <mat-option value="css">Congé sans Solde</mat-option>
           </mat-select>
         </mat-form-field>
-      </td>
-      <td>
+
           <mat-form-field>
               <mat-label>Date début congé</mat-label>
               <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker3" placeholder="Date début congé" 
@@ -39,9 +24,7 @@
               <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
               <mat-datepicker #picker3 [disabled]="!isFilled.type"></mat-datepicker>
             </mat-form-field>
-      
-      </td>
-      <td>
+
           <mat-form-field>
               <mat-label>Début Congé</mat-label>
               <mat-select [(value)]="newDemande.debut_matin" (selectionChange) = "fill(2)">
@@ -49,8 +32,7 @@
                 <mat-option value=0>Après-Midi</mat-option>
               </mat-select>
             </mat-form-field>
-      </td>
-      <td>
+
           <mat-form-field>
               <mat-label>Date fin congé</mat-label>
               <input matInput [matDatepickerFilter]="myFilter" [matDatepicker]="picker2" placeholder="Date fin congé" 
@@ -59,26 +41,23 @@
               <mat-datepicker #picker2 [disabled]="!isFilled.am"></mat-datepicker>
             </mat-form-field>
 
-      </td>
-      <td>
+
           <mat-form-field>
               <mat-label>Fin Congé</mat-label>
               <mat-select [(value)]="newDemande.fin_aprem" (selectionChange) = "fill(4)" [disabled] = "!isFilled.end">
-                <mat-option value=0>Matin</mat-option>
+                <mat-option value=0 [disabled] = "forcedPm">Matin</mat-option>
                 <mat-option value=1 [disabled] = "forcedAm">Après-Midi</mat-option>
               </mat-select>
             </mat-form-field>
-      </td>
-      <td>{{calculDuree(newDemande)}} demi-journées</td>
-
-      <td>
-        <button
-          class="btn btn-success"
-          (click) = "createDemande(newDemande)"
-          [disabled] = "!isFilled.pm">
-          Valider
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      <p *ngIf = "calculDuree(newDemande) >= 0">{{calculDuree(newDemande)}} demi-journées</p>
+      <p *ngIf = "calculDuree(newDemande) < 0">0 demi-journées</p>
+</div>
+<div>
+<button
+class="btn btn-success"
+(click) = "createDemande(newDemande)"
+[disabled] = "!isFilled.pm">
+Valider
+</button>
+<button mat-button (click)="onCancel()">Annuler</button>
+</div>

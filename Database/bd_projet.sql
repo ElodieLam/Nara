@@ -228,7 +228,7 @@ CREATE TABLE `t_ligne_de_frais` (
   `commentaire_ldf` varchar(255) NOT NULL,
   `motif_refus` varchar(128) NOT NULL,
   `justif_ldf` BLOB,
-  `id_statut` int(2) NOT NULL
+  `id_statut` int(2) NOT NULL,
   PRIMARY KEY (`id_ldf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
