@@ -60,12 +60,6 @@ export class LoginComponent implements OnInit {
 
   //Save user infos and go to dashboard
   saveIdentity(){
-/*    this.user.id_collab = data.id_collab;
-    this.user.id_service = data.id_service;
-    this.user.nom_service = data.nom_service;
-    this.user.id_chefDeService = data.id_chefDeService;
-    this.user.nom_collab = data.nom_collab;
-    this.user.prenom_collab = data.prenom_collab;*/
     if(this.user.id_collab == this.user.id_chefDeService) {
       this.user.isCDS = true;
     }

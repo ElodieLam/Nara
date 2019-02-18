@@ -61,18 +61,6 @@ export class DialogNouvelleLignedefrais implements OnInit{
                     });
                 }
             });
-        // this.lignedefraisService
-        // .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-        // .subscribe( (data : IMissionOld[]) => {
-        //         this.missionsold = data;
-        //         if (this.missionsold.length == 0 ) {
-        //             this.hasMiss = false;
-        //             this.delay(2000).then(any => {
-        //                 this.data = null;
-        //                 this.dialogRef.close();
-        //             });
-        //         }
-        //     });
     }
 
     onClick(): void {

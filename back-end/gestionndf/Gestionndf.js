@@ -148,23 +148,23 @@ var Gestionndf = {
         console.log(data)
         var sql = ''
         if(data.id_cds != 0) {
-            sql += 'UPDATE t_notif_ndf SET \
+            sql += ' UPDATE t_notif_ndf SET \
             nb_lignes = ( \
                 SELECT COUNT(*) as nb \
                     FROM t_ligne_de_frais_avance as ldf, t_mission as miss \
                     WHERE (ldf.id_statut = 7 OR ldf.id_statut = 3) \
                     AND miss.id_mission = ldf.id_mission AND miss.id_chef = ' + data.id_cds + ' AND \
                     ldf.id_ndf = ' + data.id_ndf + ') \
-            WHERE id_ndf = + ' + data.id_ndf + ' AND id_cds = ' + data.id_cds + ' AND \
+            WHERE id_ndf = ' + data.id_ndf + ' AND id_cds = ' + data.id_cds + ' AND \
             avance = 1 ; ';
         }
         else {
-            sql += 'UPDATE t_notif_ndf_to_compta SET \
+            sql += ' UPDATE t_notif_ndf_to_compta SET \
                 nb_lignes = ( \
                     SELECT COUNT(*) as nb \
                     FROM t_ligne_de_frais_avance as ldf WHERE (ldf.id_statut = 8 OR ldf.id_statut = 2) \
                     AND ldf.id_ndf = ' + data.id_ndf + ') \
-                WHERE id_ndf = + ' + data.id_ndf + ' AND avance = 1 ; ';
+                WHERE id_ndf = ' + data.id_ndf + ' AND avance = 1 ; ';
         }
         date = new Date();
         switch (data.stat) {
@@ -173,7 +173,7 @@ var Gestionndf = {
                 console.log('att cds')
                 if(data.statOld == 4 || data.statOld == 9) {
                     return db.query(
-                        'UPDATE t_ligne_de_frais_avance SET id_statut = ?, motif_refus = \'\' WHERE id_ldf = ? ;' + sql +
+                        'UPDATE t_ligne_de_frais_avance SET id_statut = ?, motif_refus = \'\' WHERE id_ldf = ? ; ' + sql +
                         'UPDATE t_notif_ndf_from_compta SET \
                         nb_lignes = ( \
                             SELECT COUNT(*) as nb \
@@ -238,14 +238,14 @@ var Gestionndf = {
             
             // validée
             case 6: 
-                return db.query('UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ?' + sql,
+                return db.query('UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ? ; ' + sql,
                     [data.stat, data.id_ldf], callback);
             
             // validée
             case 11:
                 console.log('validée')
                 return db.query(
-                    'UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ? ;' + sql +
+                    'UPDATE t_ligne_de_frais_avance SET id_statut = ? WHERE id_ldf = ? ; ' + sql +
                     'INSERT INTO t_notif_ndf_from_compta(id_ndf, date, avance, nb_lignes, acceptee) \
                     VALUES(?, ?, 1, ( \
                         SELECT COUNT(*) as nb \

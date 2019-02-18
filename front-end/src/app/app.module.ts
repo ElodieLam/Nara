@@ -50,7 +50,7 @@ import { CongeComponent } from './conge/conge.component';
 import { NotifComponent } from './notif/notif.component';
 import { Notif_ServiceComponent } from './notif-service/notif-service.component';
 import { NotifMsgComponent } from './notif-msg/notif-msg.component';
-import { NotifService } from './notif-service/notif.service';
+import { NotifService } from './notif/notif.service';
 import { LoginComponent } from './login/login.component';
 import { LoginService } from "./login/login.service";
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
@@ -66,6 +66,7 @@ import { ServicecomptaComponent } from './servicecompta/servicecompta.component'
 import { ServicecomptaService } from './servicecompta/servicecompta.service';
 import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component';
 import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-ligne.component';
+import { NotifMsgServiceComponent } from './notif-msg-service/notif-msg-service.component';
 
 
 const appRoutes: Routes = [
@@ -116,6 +117,7 @@ const appRoutes: Routes = [
     GestionlignedefraisComponent,
     ServicecomptaComponent,
     ServicecomptandfComponent,
+    NotifMsgServiceComponent,
   ],
   imports: [
     BrowserModule,

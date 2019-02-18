@@ -90,6 +90,6 @@
   </div>
   <div class="button-row">
     <button mat-raised-button [disabled]="!currentNdf || isDisabled" (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
-    <button mat-flat-button [disabled]="!currentNdf || isDisabled" (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances</button>
-    <button mat-flat-button [disabled]="isDisabled" (click)="openDialogEnvoyerLignes()" color="warn">Envoyer</button>
+    <button mat-flat-button [disabled]="!currentNdf || isDisabled" (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances ({{ cntAvance }})</button>
+    <button mat-flat-button [disabled]="isDisabled" (click)="openDialogEnvoyerLignes()" color="warn">Envoyer les lignes de frais ({{ cntLdf }})</button>
   </div>

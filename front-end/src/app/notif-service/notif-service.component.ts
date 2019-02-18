@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
-import { NotifService } from './notif.service';
-import { INotifDemFull, INotifNdfFull, INotifServiceDisplay} from '../notif-service/notif.interface';
+import { NotifService } from '../notif/notif.service';
+import { INotifService, INotifServiceDisplay} from '../notif/notif.interface';
 import { LoginComponent } from '../login/login.component';
 
 
@@ -12,16 +12,14 @@ import { LoginComponent } from '../login/login.component';
 })
 export class Notif_ServiceComponent{
 
-  ELEMENT_DATA: Element[] = [];
+  
 
   private sub : any;
   displayedColumns = ['date_heure', 'collaborateur', 'notif'];
   dataSource; //= new MatTableDataSource(this.ELEMENT_DATA);
-  lDemCongeFull: INotifDemFull[];
-  lNdfFull: INotifNdfFull[];
+  lNotifService : INotifService[] = [];
   lNotifDisplay: INotifServiceDisplay[];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -33,89 +31,62 @@ export class Notif_ServiceComponent{
     this.lNotifDisplay = [];  
     //Récupération des notifs "Demande de congé"
     console.log("ID= " + this.login.user.id_collab);
-    this.sub = this.notifService
-    .getNotifDemCongeFromIdCds({id : this.login.user.id_collab})
-    .subscribe( (data : INotifDemFull[]) => {
-      if (data != null){
-        this.lDemCongeFull = data;
-      
-        //Récupérations des infos à mettre dans le tableau
-        this.lDemCongeFull.forEach( dem => {
-          this.lNotifDisplay.push(
-            { 'nom' : dem.nom, 
-              'prenom' : dem.prenom, 
-              'date' : dem.dateD.substring(0, 10) + " au " + dem.dateF.substring(0, 10), 
-              'type' : (dem.dem == 1) ? "Demande de congé" : "Modification de congé", 
-              'color': "orange", 
-            });  
-        });
-      }
+    this.notifService
+    .getNotifFromIdCollabAndIdService({
+      id_cds : this.login.user.id_collab, id_service : this.login.user.id_service
     })
-
-    //Récupération des notifs "Note de frais"
-    this.sub = this.notifService
-    .getNotifNdfFromIdCds({id : this.login.user.id_collab})
-    .subscribe( (data : INotifNdfFull[]) => {
-    if (data != null){
-      this.lNdfFull = data;
-
-      //Récupérations des infos à mettre dans le tableau
-      this.lNdfFull.forEach( ndf => {
-        this.lNotifDisplay.push(
-          { 'nom' : ndf.nom, 
-            'prenom' : ndf.prenom, 
-            'date' : this.mois[parseInt(ndf.mois, 10)],
-            'type' : (ndf.avance == 1) ? "Demande d'avance" : "Note de frais", 
-            'color': "cyan", 
-        })
-      });
-    }
-
-
-    //TODO Récupération des notifs COMPTA "Note de frais" 
-    /*this.sub = this.notifService
-    .getNotifNdfFromIdCompta({id : this.login.user.id_collab})
-    .subscribe( (data : INotifNdfFull[]) => {
-    if (data != null){
-      this.lNdfFull = data;
-
-      //Récupérations des infos à mettre dans le tableau
-      this.lNdfFull.forEach( ndf => {
-        this.lNotifDisplay.push(
-          { 'nom' : ndf.nom, 
-            'prenom' : ndf.prenom, 
-            'date' : this.mois[parseInt(ndf.mois, 10)],
-            'type' : (ndf.avance == 1) ? "Demande d'avance" : "Note de frais", 
-        })
-      });
-    }*/
-    
-    //Affiche les éléments dans le tableau
-    this.dataSource = new MatTableDataSource <INotifServiceDisplay> (this.lNotifDisplay);
+    .subscribe( (data : INotifService[]) => {
+      this.lNotifService = data;
+      console.log(this.lNotifService);
+      if(this.lNotifService.length > 0) {
+        this.lNotifService.forEach( element => {
+          if(element.ndfforcds == true) {
+            this.lNotifDisplay.push({ 
+              'ndfforcds' : element.ndfforcds,
+              'service' : "",
+              'id' : element.id_ndf,
+              'id_collab' : element.id_collab,
+              'nom' : element.nom_collab,
+              'prenom' : element.prenom_collab,
+              'date_notif' : new Date(element.date.toString()),
+              'date' : this.mois[+element.mois] + ' ' + element.annee,
+              'type' : element.avance ? "Avance de note de frais" : "Note de frais", 
+              'statut' : "En attente de validation Chef de service",
+              'color': 'orange', 
+            })
+          }
+          else if(element.ndfforcds == false) {
+            this.lNotifDisplay.push({ 
+              'ndfforcds' : element.ndfforcds,
+              'service' : element.nom_service,
+              'id' : element.id_ndf,
+              'id_collab' : element.id_collab,
+              'nom' : element.nom_collab,
+              'prenom' : element.prenom_collab,
+              'date_notif' : new Date(element.date.toString()),
+              'date' : this.mois[+element.mois] + ' ' + element.annee,
+              'type' : element.avance ? "Avance de note de frais" : "Note de frais", 
+              'statut' : "En attente de validation Comptabilité",
+              'color': 'orange', 
+            })
+          }
+          else if(element.ndfforcds == null) {
+            /*this.lNotifDisplay.push(
+            { 
+              'ndf' : false,
+              'id' : element.id_dem,
+              'date_notif' : new Date(),
+              'date' : element.dateD.substring(0, 10) + " au " + element.dateF.substring(0, 10),
+              'type' : element.dem ? "Demande de congé" : "Modification de congé", 
+              'statut' : "Statut: " + this.transformStatus(element.statut),
+              'color': 'cyan', 
+              })*/
+          }
+              //Affiche les éléments dans le tableau
+       this.dataSource = new MatTableDataSource <INotifServiceDisplay> (this.lNotifDisplay);
+       this.dataSource.paginator = this.paginator;
     })
-
-    
-    
-
   }
-
-  ngAfterViewInit() {
-
+  })
   }
-  
 }
-
-export interface Element {
-  date_heure: String,
-  nom: String,
-  prenom: String,
-  date: String,
-  type: String,
-  color: String,
-}
-
-
-
-
-
-

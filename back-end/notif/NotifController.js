@@ -6,7 +6,7 @@ router.use(bodyParser.urlencoded({extended: true}));
 var Notif = require('./Notif');
 
 //Chef de service
-router.get('/demCongeService', function (req, res) {
+/*router.get('/demCongeService', function (req, res) {
     Notif.getNotifDemCongeFromIdCds(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
@@ -55,6 +55,28 @@ router.get('/ndf', function (req, res) {
 //Compta
 router.get('/ndfCompta', function (req, res) {
     Notif.getNotifNdfFromIdCompta(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});*/
+
+router.get('/notifcollab', function (req, res) {
+    Notif.getNotifCollab(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
+router.get('/notifservice', function (req, res) {
+    Notif.getNotifService(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }

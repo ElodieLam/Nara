@@ -1,9 +1,11 @@
 <div class = "relative">
-  <p class = "absolute" id="divColor" [ngStyle]="{ 'background-color': componentData.color }">{{componentData.type}} : {{componentData.date}} 
+  <p class = "absolute" id="divColor" [ngStyle]="{ 'background-color': componentData.color }">
+    {{componentData.type}} : {{componentData.date}} 
       <br>
     {{componentData.statut}} 
   </p>
-  <button mat-stroked-button color="warn" class="btnVoir ">Voir</button>
-    <br>
+  <button mat-stroked-button *ngIf="componentData.ndf" (click)="goToNdf()" class="btnVoir ">Voir note de frais</button>
+  <button mat-stroked-button *ngIf="!componentData.ndf" color="warn" (click)="goToConge()" class="btnVoir ">Voir congé</button>
+  <br>
 </div>
 

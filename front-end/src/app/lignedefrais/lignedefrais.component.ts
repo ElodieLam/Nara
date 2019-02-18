@@ -68,6 +68,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   'libelle', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
   isDisabled: boolean = true;
+  cntAvance: number = 0;
+  cntLdf: number = 0;
   //Variable pour encrypt/decrypt
   keySize: number = 256;
   ivSize : number = 128;
@@ -112,6 +114,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   
   refreshLignesdefrais(){
     this.montantTotal = 0;
+    this.cntLdf = 0;
+    this.cntAvance = 0;
     // vide la liste affichee dans le tableau 
     this.listlignedefrais = [];    
     // requete SQL pour avoir toutes les lignes de frais de la note de frais
@@ -121,6 +125,10 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         this.listlignedefraisfull = data;
         // transformation de la liste pour afficher les informations dans le tableau
         this.listlignedefraisfull.forEach( ldf => {
+          if(ldf.statut_ldf == 'avnoSent')
+            this.cntAvance += 1;
+          if(ldf.statut_ldf == 'noSent')
+            this.cntLdf += 1;
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
               'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 

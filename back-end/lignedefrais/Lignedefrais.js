@@ -176,6 +176,18 @@ var Lignedefrais = {
             FROM t_ligne_de_frais as av \
             WHERE av.id_ndf = ' + id_ndf + ') \
         WHERE ndf.id_ndf = ' + id_ndf + ';';
+        sql += 'UPDATE t_notif_ndf_from_compta SET nb_lignes = \
+        (SELECT COUNT(*) as nb \
+        FROM t_ligne_de_frais_avance as ldf \
+        WHERE ldf.id_ndf = ' + id_ndf + ' \
+        AND (ldf.id_statut = 4 OR ldf.id_statut = 5 OR ldf.id_statut = 9 OR ldf.id_statut = 10) ) \
+        WHERE id_ndf = ' + id_ndf + ' AND acceptee = 0 AND avance = 1 ; '
+        sql += 'UPDATE t_notif_ndf_from_compta SET nb_lignes = \
+        (SELECT COUNT(*) as nb \
+        FROM t_ligne_de_frais as ldf \
+        WHERE ldf.id_ndf = ' + id_ndf + ' \
+        AND (ldf.id_statut = 9 OR ldf.id_statut = 10) ) \
+        WHERE id_ndf = ' + id_ndf + ' AND acceptee = 0 AND avance = 0 ; '
         console.log(sql)
         return db.query(sql, callback);
     },

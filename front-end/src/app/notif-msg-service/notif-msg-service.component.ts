@@ -3,22 +3,27 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 
 @Component({
-  selector: 'app-notif-msg',
-  templateUrl: './notif-msg.component.html',
-  styleUrls: ['./notif-msg.component.css']
+  selector: 'app-notif-msg-service',
+  templateUrl: './notif-msg-service.component.html',
+  styleUrls: ['./notif-msg-service.component.css']
 })
-export class NotifMsgComponent implements OnInit {
+export class NotifMsgServiceComponent implements OnInit {
 
   private sub : any;
+  @Input() ndfforcds;
+  @Input() service;
   @Input() ndf;
   @Input() id;
   @Input() type;
   @Input() date;
   @Input() statut;
+  @Input() prenom;
+  @Input() nom;
   @Input() color;
 
 
   componentData : any = {
+    ndfforcds : false,
     ndf : false,
     id: 0,
     type : "",
@@ -37,7 +42,9 @@ export class NotifMsgComponent implements OnInit {
   }
  
   ngOnInit() {
+    console.log(this.ndfforcds)
       //infos à afficher dans le tableau
+      this.componentData.ndfforcds = (this.ndfforcds == 1) ? true : false;
       this.componentData.ndf = (this.ndf == 'true') ? true : false;
       this.componentData.id = this.id;
       this.componentData.type = this.type;
@@ -49,26 +56,7 @@ export class NotifMsgComponent implements OnInit {
       
   }
 
-  ngAfterViewInit() {
-    /*if (this.componentData.type == "Demande de congé") {
-      console.log(this.componentData.type);
-      //document.getElementById("divColor").classList.remove('make-blue');
-      document.getElementById("divColor").classList.add("make-orange");
-      //document.getElementById("divColor").style.backgroundColor = "orange";
-      this.color = "orange";
-    } 
-    else if (this.componentData.type == "Note de frais") {
-      console.log(this.componentData.type);
-     // document.getElementById("divColor").classList.remove('make-orange');
-      document.getElementById("divColor").classList.add("make-blue");
-      //document.getElementById("divColor").style.backgroundColor = "cyan";
-      this.color = "cyan";
-    }*/
-  }
-
-
   goToConge() {
-    //this.router.navigate(['/notedefrais']); 
   }
 
   getTrColor(type){
@@ -83,30 +71,20 @@ export class NotifMsgComponent implements OnInit {
     }
   }
 
-  goToNdf () {
-    var str = this.date.split(" ", 2)
-    var mois = (str[0] == 'Janvier') ? 1 :
-    (str[0] == 'Février') ? 2 :
-    (str[0] == 'Mars') ? 3 :
-    (str[0] == 'Avril') ? 4 :
-    (str[0] == 'Mai') ? 5 :
-    (str[0] == 'Juin') ? 6 :
-    (str[0] == 'Juillet') ? 7 :
-    (str[0] == 'Aout') ? 8 :
-    (str[0] == 'Septembre') ? 9 :
-    (str[0] == 'Octobre') ? 10 :
-    (str[0] == 'Novembre') ? 11 :
-    (str[0] == 'Décembre') ? 12 : 0;
-
-    var hiddenParam = this.id + "-" + str[1] + "-" + mois;
-    //Encrypt-Decrypt
+  goToNdfCDS () {
+    var str = this.date.split(" ", 2);
+    var hiddenParam = this.ndf + '-' + this.prenom + '-' + this.nom + '-' 
+      + str[0] + '-' + str[1] + '-' + this.id;
     var encrypted = this.encrypt(hiddenParam, this.key);
-    //console.log("Param encrypted: " + encrypted);
-    //var decrypted = this.decrypt(encrypted, this.key);
-    //var param = encrypted;
-    //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
-    this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
-    
+    this.router.navigate(['/gestionnotedefrais', encrypted.toString()]);
+  }
+
+  goToNdfCompta () {
+    var str = this.date.split(" ", 2);
+    var hiddenParam = this.ndf + '-' + this.service + '-' + this.prenom + 
+      '-' + this.nom + '-' + str[0] + '-' + str[1];
+    var encrypted = this.encrypt(hiddenParam, this.key);
+    this.router.navigate(['/servicecompta',  encrypted.toString()  ]);
   }
 
   encrypt (msg, key) {
