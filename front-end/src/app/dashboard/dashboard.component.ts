@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit{
   isRH: boolean = false;
   //param: string;
   isOn: boolean = false;
+  date: Date
 
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -28,6 +29,7 @@ export class DashboardComponent implements OnInit{
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private activatedRoute: ActivatedRoute, private login: LoginComponent) {
     this.isOn = true;
+    this.date = new Date();
     //Récupère les paramètres passés dans l'URL
     this.activatedRoute.queryParams.subscribe(params => {
       //this.param = params['param'];

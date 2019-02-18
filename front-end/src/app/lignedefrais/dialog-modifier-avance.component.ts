@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
-import { ILibelle, IMission } from './lignedefrais.interface';
+import { ILibelle, IMissionOld, IMission } from './lignedefrais.interface';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 @Component({
@@ -24,7 +24,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
         Validators.required,
         Validators.pattern('^\\d+(\.\\d{1,2})?$')
       ]),
-      missionControl : new FormControl('', [Validators.required]),
       libelleControl : new FormControl('', [Validators.required])
     });
     getErrorMessage() {
@@ -45,7 +44,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
       {value: 'Fourniture'},{value: 'Essence'}, {value: 'Autre'}
     ];
   
-    missions : IMission[];
+    missions : IMissionOld[];
     _missModif : boolean = false;
     _libModif : boolean = true;
     _apresMiss : boolean = false;
@@ -94,14 +93,14 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
       if(this.data.stat == 'Refusée Compta' || this.data.stat == 'Avance refusée Compta' )
         this._refusCompta = true;
       // cas ou la mission est modifiable
-      if(this._avance && this.data.stat == 'Avance non envoyée'){
-          this.lignedefraisService
-          .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-          .subscribe( (data : IMission[]) => {
-            this._missModif = true;
-            this.missions = data;
-          });
-      }
+      // if(this._avance && this.data.stat == 'Avance non envoyée'){
+      //     this.lignedefraisService
+      //     .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
+      //     .subscribe( (data : IMissionOld[]) => {
+      //       this._missModif = true;
+      //       this.missions = data;
+      //     });
+      // }
     }
   
     onClick(): void {
@@ -114,7 +113,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
         this.data.comp.valide = true;
         if(this._apresMiss) {
           this.lignedefraisService.updateLignedefraisAvance({
-            id_mission : this.data.comp.id_mission,
             id_ldf : this.data.comp.id_ldf,
             libelle : this.data.comp.libelle,
             montant : this.data.comp.montant,
@@ -126,7 +124,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
         }
         else {
           this.lignedefraisService.updateLignedefraisAvance({
-            id_mission : this.data.comp.id_mission,
             id_ldf : this.data.comp.id_ldf,
             libelle : this.data.comp.libelle,
             montant : 0,
@@ -141,8 +138,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
     }
   
     onChange() {
-      this._modif = (this.valuesAtStart.id_mission != this.data.comp.id_mission) || 
-        (this.valuesAtStart.libelle != this.data.comp.libelle) || 
+      this._modif = (this.valuesAtStart.libelle != this.data.comp.libelle) || 
         (this.valuesAtStart.montant != this.myGroup.get('montantControl').value) ||
         (this.valuesAtStart.montant_estime != this.myGroup.get('montantAvanceControl').value) ||
         (this.valuesAtStart.montant_avance != this.myGroup.get('montantEstimeControl').value) ||
@@ -152,7 +148,8 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
       else if (this.myGroup.get('montantAvanceControl').value && this.myGroup.get('montantEstimeControl').value && !this._apresMiss)
         this._ldfValide = this.montantValid(this.myGroup.get('montantEstimeControl').value) &&
           this.montantValid(this.myGroup.get('montantAvanceControl').value) && 
-          this.data.comp.id_mission != '' && this.data.comp.libelle != '';
+          this.data.comp.libelle != '' && 
+          this.myGroup.get('montantAvanceControl').value <= this.myGroup.get('montantEstimeControl').value;
       else
         this._ldfValide = false;
       return this._ldfValide && this._modif;

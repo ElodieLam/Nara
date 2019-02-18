@@ -29,22 +29,28 @@ export class DialogEnvoyerLignes implements OnInit{
     var liste = []
     var listeCds = [];
     this.data.liste.forEach(element => {
-        if(element.avance && !element.apres_mission) {
-          liste.push({id : element.id_ldf, id_ndf : element.id_ndf ,avance : true, stat : 3 })
-        }
-        else if(element.avance){
-          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : true, stat : 3 })
+        if(element.avance) {
+          if(element.id_chef == this.data.id_collab)
+            liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : true, stat : 8 })
+          else
+            liste.push({id : element.id_ldf, id_ndf : element.id_ndf ,avance : true, stat : 7 })
         }
         else {
-          liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 7 })
+          if(element.id_chef == this.data.id_collab)
+            liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 8 })
+          else
+            liste.push({id : element.id_ldf, id_ndf : element.id_ndf, avance : false, stat : 7 })
         }
-        var isIn = false;
-        listeCds.forEach( cds =>  {
-          if(cds == element.id_chef)
-          isIn = true
-        });
-        isIn ? {} : listeCds.push(element.id_chef);
+        if(element.id_chef != this.data.id_collab) {
+          var isIn = false;
+          listeCds.forEach( cds =>  {
+            if(cds == element.id_chef)
+            isIn = true
+          });
+          isIn ? {} : listeCds.push(element.id_chef);
+        }
     });
+    console.log(listeCds)
     this.lignedefraisService.updateLignedefraisGlobal( {
       liste : liste, listeCds : listeCds
     });    

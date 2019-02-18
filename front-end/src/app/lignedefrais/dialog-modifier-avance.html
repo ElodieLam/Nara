@@ -1,13 +1,7 @@
 <h1 mat-dialog-title>Modifier Avance</h1>
 <div mat-dialog-content>
     <mat-form-field>
-        <input matInput *ngIf="!_missModif" placeholder="Mission" [(ngModel)]="data.comp.nom_mission" disabled>
-        <mat-select *ngIf="_missModif" placeholder="Mission" [(ngModel)]="data.comp.id_mission" (ngModelChange)="onChange()" required>
-            <mat-option *ngFor="let miss of missions" [value]="miss.id_mission">
-                {{miss.nom_mission}}
-            </mat-option>
-        </mat-select>
-        <mat-error *ngIf="myGroup.get('missionControl').hasError('required')">Sélectionner une mission</mat-error>
+        <input matInput placeholder="Mission" [(ngModel)]="data.comp.nom_mission" disabled>
     </mat-form-field>
     <mat-form-field>
         <input matInput *ngIf="!_libModif" placeholder="Libellé" [(ngModel)]="data.comp.libelle" disabled>
