@@ -17,6 +17,7 @@ export class NotifComponent{
   lNotifDisplay: INotifDisplay[];
   lNotif: INotif[] = [];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  values:boolean = true;
 
   status : any[] = [
     {key: 'validee', value : 'Validée'},
@@ -62,6 +63,7 @@ export class NotifComponent{
               'color': 'cyan', 
               })
           }
+
         });
       
       }
@@ -79,9 +81,5 @@ export class NotifComponent{
     }
     return 'statut undefined'
   }
-  
+
 }
-
-
-
-

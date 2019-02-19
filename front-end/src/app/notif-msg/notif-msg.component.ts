@@ -16,6 +16,7 @@ export class NotifMsgComponent implements OnInit {
   @Input() date;
   @Input() statut;
   @Input() color;
+  @Input() dateNotif;
 
 
   componentData : any = {
@@ -24,7 +25,8 @@ export class NotifMsgComponent implements OnInit {
     type : "",
     date : "",
     statut: "",
-    color: ""
+    color: "",
+    dateNotif: "",
   }
 
   //Variable pour encrypt/decrypt
@@ -44,6 +46,7 @@ export class NotifMsgComponent implements OnInit {
       this.componentData.date = this.date;
       this.componentData.statut = this.statut;
       this.componentData.color = this.color;
+      this.componentData.dateNotif = this.dateNotif;
       console.log(this.componentData);
       
       

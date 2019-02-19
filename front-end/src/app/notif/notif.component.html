@@ -1,5 +1,5 @@
 <div class="example-container mat-elevation-z8">
-    <mat-table #table [dataSource]="dataSource" matSort>
+    <mat-table #table *ngIf="values" [dataSource]="dataSource" matSort>
   
       <!-- Date-Heure Column -->
       <ng-container matColumnDef="date_heure" >
@@ -9,7 +9,7 @@
   
       <!-- Notification Column -->
       <ng-container matColumnDef="notif" >
-        <mat-header-cell *matHeaderCellDef mat-sort-header > Notifications </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef  > Notifications </mat-header-cell>
         <mat-cell *matCellDef="let element"> 
           <app-notif-msg  ndf="{{element.ndf}}"
           id="{{element.id}}" 
@@ -23,6 +23,7 @@
   
       <mat-header-row *matHeaderRowDef="displayedColumns" ></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+     
     </mat-table>
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>

@@ -1,10 +1,10 @@
 <div class="example-container mat-elevation-z8">
-  <mat-table #table [dataSource]="dataSource" matSort>
+  <mat-table #table *ngIf="values" [dataSource]="dataSource" matSort>
 
     <!-- Date-Heure Column -->
     <ng-container matColumnDef="date_heure">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:150px;"> Date </th>
-      <td mat-cell *matCellDef="let element" style="min-width:150px;"> {{element.data_notif}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:150px;"> Date - Heure </th>
+      <td mat-cell *matCellDef="let element" style="min-width:150px;"> {{element.date_notif}} </td>
     </ng-container>
 
     <!-- Collaborateur Column -->
@@ -30,11 +30,10 @@
       </mat-cell>
     </ng-container> 
 
- 
-
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
   </mat-table>
   <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+
 </div>
