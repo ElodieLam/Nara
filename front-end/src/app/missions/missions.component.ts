@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 import { MissionService } from './missions.service';
 import {Router} from "@angular/router";
+import {DialogCreerMission} from './dialog-creer-mission.component';
 
 
 export interface MissionInterface {
@@ -21,27 +22,13 @@ export interface MissionInterface {
 
 export class MissionsComponent implements OnInit {
 
-months = [
-  { name: "Janvier", value: 1 },
-  { name: "Février", value: 2 },
-  { name: "Mars", value: 3 },
-  { name: "Avril", value: 4 },
-  { name: "Mai", value: 5 },
-  { name: "Juin", value: 6 },
-  { name: "Juillet", value: 7 },
-  { name: "Août", value: 8 },
-  { name: "Septembre", value: 9 },
-  { name: "Octobre", value: 10 },
-  { name: "Novembre", value: 11 },
-  { name: "Décembre", value: 12 },]
   
-
 infoMissions : MissionInterface[]
 dataSource;
+listeCollaboteurs;
 
-
-
-constructor(private missionService: MissionService , private router: Router) {}
+constructor(private missionService: MissionService , private router: Router,
+  public dialog: MatDialog) {}
 
 ngOnInit() 
 {
@@ -56,9 +43,18 @@ ngOnInit()
 
 }
 
+openDialogCreerMission(): void {
+  const dialogRef = this.dialog.open(DialogCreerMission, {
+    width: '500px'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+  });
+}
+
 switchMissions(month) : void
 {
-  this.months = month; 
   this.missionService
   .getMissionsByMonth({ mois : month })
     .subscribe( (data : MissionInterface[]) => {
@@ -70,6 +66,11 @@ switchMissions(month) : void
 }
 
   displayedColumns: string[] = ['id_mission', 'nom_mission', 'id_chef', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
+
+
 }
+
+
+
 
 

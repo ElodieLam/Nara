@@ -3,8 +3,9 @@ import { NgModule } from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
-import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import {CalendarModule, DateAdapter} from 'angular-calendar';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 
 import {
   MatToolbarModule,
@@ -20,7 +21,10 @@ import {
   MatSortModule,
   MatGridListModule,
   MatCardModule,
-  MatMenuModule
+  MatMenuModule,
+  MatNativeDateModule,
+  MatDialogModule,
+  MatInputModule,
 } from '@angular/material';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -40,7 +44,8 @@ import { LoginComponent } from './login/login.component';
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
 import { ChefdeserviceComponent } from './chefdeservice/chefdeservice.component';
-import { MissionsComponent } from './missions/missions.component';
+import { MissionsComponent} from './missions/missions.component';
+import { DialogCreerMission } from './missions/dialog-creer-mission.component';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: 'notifications', pathMatch: 'full'},
@@ -65,6 +70,7 @@ const appRoutes: Routes = [
 
     NotifComponent,
     LoginComponent,
+    DialogCreerMission,
     HistoriquecongeComponent,
     ChefdeserviceComponent,
     MissionsComponent
@@ -85,8 +91,12 @@ const appRoutes: Routes = [
     MatPaginatorModule,
     MatSortModule,
     MatGridListModule,
+    MatDatepickerModule,
     MatCardModule,
     MatMenuModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatDialogModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot(),
@@ -95,10 +105,16 @@ const appRoutes: Routes = [
       useFactory: adapterFactory
     })
   ],
+
+  entryComponents: [
+    DialogCreerMission
+  ],
+  
   providers: [
     NotedefraisService,
     CongeService,
-    MissionService
+    MissionService,
+    
   ],
   bootstrap: [AppComponent]
 })

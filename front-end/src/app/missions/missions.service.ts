@@ -20,5 +20,13 @@ export class MissionService
       .http
       .get(`${this.url}/missions/missionsidmonths`, { params : data });
   }
+
+  getAllCollaborateurs(){
+    return this
+      .http
+      .get(`${this.url}/missions/collaborateurs`);
+  }
+
+
 }
 

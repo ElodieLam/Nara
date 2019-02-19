@@ -12,6 +12,12 @@ var Mission =
         return db.query('SELECT * FROM t_mission WHERE MONTH(date_mission) = ?', [data.mois] ,callback);
     },
 
+    getAllCollaborateurs: function(callback)
+    {
+        return db.query('SELECT nom_collab, prenom_collab FROM t_collaborateur');
+    }
+    
+
 
 }
 

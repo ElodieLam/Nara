@@ -1,5 +1,7 @@
-import {Component, Inject} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import {MatDialogRef} from '@angular/material';
+import { MissionsComponent } from './missions.component';
+
 
 export interface DialogData {
     nomMission: string;
@@ -10,18 +12,29 @@ export interface DialogData {
     selector: 'dialog-overview-example-dialog',
     templateUrl: 'dialog-creer-mission.html',
   })
-  export class DialogCreerMission {
-    dialogRef: any;
-  
-    constructor(public dialog: MatDialog) {}
+
+  export class DialogCreerMission implements OnInit{
+    constructor(public dialogRef: MatDialogRef<DialogCreerMission>) {}
+
+
     
-    openDialog(): void {
-        const dialogRef = this.dialog.open(DialogCreerMission)
-        };
-  
+    ngOnInit() 
+    {
+
+    }
+
+    onChange()
+    {
+
+    }
+
+    onClick(): void 
+    {
+
+    }
+
     onNoClick(): void 
     {
-        const dialogRef = this.dialog.open(DialogCreerMission)
         this.dialogRef.close();
     }
   
