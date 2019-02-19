@@ -21,7 +21,8 @@ export class Notif_ServiceComponent{
   lNdfFull: INotifNdfFull[];
   lNotifDisplay: INotifServiceDisplay[];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-
+  values:boolean = true;
+  filterData;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -47,6 +48,7 @@ export class Notif_ServiceComponent{
               'date' : dem.dateD.substring(0, 10) + " au " + dem.dateF.substring(0, 10), 
               'type' : (dem.dem == 1) ? "Demande de congé" : "Modification de congé", 
               'color': "orange", 
+              'dateNotif': "not defined yet"
             });  
         });
       }
@@ -61,12 +63,14 @@ export class Notif_ServiceComponent{
 
       //Récupérations des infos à mettre dans le tableau
       this.lNdfFull.forEach( ndf => {
+        var date = new Date(ndf.date);
         this.lNotifDisplay.push(
           { 'nom' : ndf.nom, 
             'prenom' : ndf.prenom, 
             'date' : this.mois[parseInt(ndf.mois, 10)],
             'type' : (ndf.avance == 1) ? "Demande d'avance" : "Note de frais", 
             'color': "cyan", 
+            'dateNotif': date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getMinutes() + ":" + date.getHours()
         })
       });
     }
@@ -92,6 +96,12 @@ export class Notif_ServiceComponent{
     
     //Affiche les éléments dans le tableau
     this.dataSource = new MatTableDataSource <INotifServiceDisplay> (this.lNotifDisplay);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    if(this.lNotifDisplay.length == 0) {
+      this.values = false;
+    }
+
     })
 
     
@@ -106,12 +116,12 @@ export class Notif_ServiceComponent{
 }
 
 export interface Element {
-  date_heure: String,
   nom: String,
   prenom: String,
   date: String,
   type: String,
   color: String,
+  dateNotif: string,
 }
 
 

@@ -20,6 +20,7 @@ export class NotifComponent{
   lNdfFull: INotifNdfFull2[];
   lNotifDisplay: INotifDisplay[];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  values:boolean = true;
 
   status : any[] = [
     {key: 'validee', value : 'Validée'},
@@ -50,6 +51,7 @@ export class NotifComponent{
                 'type' : (dem.dem == 1) ? "Demande de congé" : "Modification de congé", 
                 'statut' : "Statut: " + this.transformStatus(dem.statut), 
                 'color': "orange", 
+                'dateNotif': "not defined yet"
               });   
           }      
         });
@@ -64,17 +66,25 @@ export class NotifComponent{
 
       //Récupérations des infos à mettre dans le tableau
       this.lNdfFull.forEach( ndf => {
+        var date = new Date(ndf.date);
         this.lNotifDisplay.push(
           { 
             'date' : this.mois[parseInt(ndf.mois, 10)],
             'type' : (ndf.avance == 1) ? "Avance de note de frais" : "Note de frais", 
             'statut' : (ndf.acceptee == 1) ? "Lignes validées" : "Lignes refusées",
             'color': "cyan", 
+            'dateNotif': date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear() + " - " + date.getMinutes() + ":" + date.getHours()
         })
       });
     
     //Affiche les éléments dans le tableau
     this.dataSource = new MatTableDataSource <INotifDisplay> (this.lNotifDisplay);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    if(this.lNotifDisplay.length == 0) {
+      this.values = false;
+    }
+
     })
 
   }
@@ -91,16 +101,16 @@ export class NotifComponent{
     }
     return 'statut undefined'
   }
-  
+
 }
 
 export interface Element {
-  date_heure: String,
   nom: String,
   prenom: String,
   date: String,
   type: String,
-  color: String
+  color: String,
+  dateNotif: string,
 }
 
 
