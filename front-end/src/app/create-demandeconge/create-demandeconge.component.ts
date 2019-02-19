@@ -52,13 +52,14 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
     }
     if (type === "rtt" || type === "cp")
     {
-      if (congerestants == 2)
+      if (congerestants == 2 && Number(this.newDemande.debut_matin) || congerestants == 1)
       {
+        console.log("maispqçamarchyepas")
         dateMax.setDate(this.newDemande.date_debut.getDate());
       }
       
       
-      if (congerestants % 2 == 0)
+      else if (congerestants % 2 == 0)
       {
         addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, congerestants/2);
         dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
