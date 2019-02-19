@@ -7,4 +7,6 @@ export interface Collaborateur
     nom_collab: string;
     prenom_collab: string;
     isCDS: boolean;
+    isCompta: boolean;
+    isRH: boolean;
 }

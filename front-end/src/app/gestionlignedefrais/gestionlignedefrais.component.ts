@@ -6,8 +6,6 @@ import { LoginComponent } from '../login/login.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { DialogRefuserLigne } from './dialog-refuser-ligne.component';
-import { LignedefraisService } from '../lignedefrais/lignedefrais.service';
-import { DialogEnvoyer } from './dialog-envoyer.component';
 
 @Component({
   selector: 'app-gestionlignedefrais',
@@ -27,7 +25,7 @@ export class GestionlignedefraisComponent implements OnInit {
   isDisabled:boolean = true;
 
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
   listNotedefrais: ILignedefraisListe[] = [];
   dataSource;
   sub : any;
@@ -41,7 +39,6 @@ export class GestionlignedefraisComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   constructor(private gestionnotedefraisService : GestionnotedefraisService,
-    private lignedefraisService : LignedefraisService,
     private login : LoginComponent, private route : ActivatedRoute,
     private dialog: MatDialog, private router : Router) { }
 
@@ -96,24 +93,25 @@ export class GestionlignedefraisComponent implements OnInit {
     });
   }
 
-  accepterLdf(id : number, avance : boolean, statut : String) {
+  accepterLdf(id : number, avance : boolean, statut_ldf : String) {
     this.isDisabled = true;
     var stat = '';
-    if(avance && statut == 'avattCds')
-      stat = 'avattF';
+    var statut = 0;
+    if(avance && statut_ldf == 'avattCds')
+      statut = 2;
     else
-      stat = 'attF';
+      statut = 8;
     if(avance) {
-      console.log('accepter avance ' + stat)
-      this.gestionnotedefraisService.updateStatutAvance(
-        { id : id, motif : '', statut : stat }
-      );
+      console.log('accepter avance ' + statut)
+      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
+      });
     }
     else {
-      console.log('accepter ldf ' + stat)
-      this.gestionnotedefraisService.updateStatutLignedefrais(
-        { id : id, motif : '', statut : stat }
-      );
+      console.log('accepter ldf ' + statut)
+      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
+      });
     }
     this.delay(1500).then(any => {
       this.refreshLignes();
@@ -122,7 +120,7 @@ export class GestionlignedefraisComponent implements OnInit {
 
   refuserLdf(id : number, avance : boolean, statut : string) {
     const dialogRef = this.dialog.open(DialogRefuserLigne, {
-      data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf }
+      data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf, id_cds : this.id_cds }
     });
     dialogRef.afterClosed().subscribe(res => {
       this.delay(1500).then(any => {
@@ -131,48 +129,46 @@ export class GestionlignedefraisComponent implements OnInit {
     });
   }
 
-  annulerLdf(id : number, avance : boolean, statut : String) {
+  annulerLdf(id : number, avance : boolean, statut_ldf : String) {
     this.isDisabled = true;
-    var stat = '';
-    console.log(statut)
-    if(avance && (statut == 'avnoCds' || statut == 'avattF')) 
-      stat = 'avattCds';
-    else
-      stat = 'attCds';
-    if(avance) {
-      console.log('annuler avance ' + stat)
-      this.gestionnotedefraisService.updateStatutAvance(
-        { id : id, motif : '', statut : stat }
-      );       
+    var statut = 0;
+    var statutOld = 0;
+    console.log(statut_ldf)
+    if(avance && statut_ldf == 'avnoCds') {
+      statut = 3;
+      statutOld = 4;
+    } 
+    else if(avance && statut_ldf == 'avattF') {
+      statut = 3;
+      statutOld = 2;
+    }
+    else if(statut_ldf == 'attF') {
+      statut = 7;
+      statutOld = 8;
     }
     else {
-      console.log('annuler ldf ' + stat)
-      this.gestionnotedefraisService.updateStatutLignedefrais(
-        { id : id, motif : '', statut : stat }
-      );
+      statut = 7;
+      statutOld = 9;
+    }
+    if(avance) {
+      console.log('annuler avance ' + statut)
+      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut, 
+        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
+      });
+    }
+    else {
+      console.log('annuler ldf ' + statut)
+      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
+        id_ndf : this.id_ndf, motif : '', stat : statut,
+        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
+      });
     }
     this.delay(1500).then(any => {
       this.refreshLignes();
     });
   }
 
-  retourGestionNdf() {
-    var toCompta = false;
-    var fromCompta = false;
-    this.listNotedefrais.forEach( element => {
-      if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF')
-        toCompta = true;
-      if(element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
-        fromCompta = true;
-    })
-    console.log('to ' + toCompta + ' from ' + fromCompta)
-    this.gestionnotedefraisService.createOrUpdateAllNotifications(
-      { id_ndf : this.id_ndf, id_cds : this.id_cds }
-    )
-    // TODO use router as soon the query success
-    const dialogRef = this.dialog.open(DialogEnvoyer);
-    dialogRef.afterClosed().subscribe(() => {});
-  }
   async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
   }

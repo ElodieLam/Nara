@@ -2,7 +2,7 @@ import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, I
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute } from '@angular/router';
-import { ILignedefraisFull, ILignedefrais, IAvance, ILignedefraisShort } from './lignedefrais.interface';
+import { ILignedefraisFull, ILignedefrais, IAvance, ILignedefraisShort, IAvanceShort } from './lignedefrais.interface';
 import { DatePipe } from '@angular/common';
 
 import { DialogEnvoyerAvance } from './dialog-envoyer-avance.component';
@@ -68,6 +68,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   'libelle', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
   isDisabled: boolean = true;
+  cntAvance: number = 0;
+  cntLdf: number = 0;
   //Variable pour encrypt/decrypt
   keySize: number = 256;
   ivSize : number = 128;
@@ -89,13 +91,15 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
       
       var decrypted = this.decrypt(params['id'], this.key);
-      //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+      console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
       var str = decrypted.toString(CryptoJS.enc.Utf8).split("-",3);
       
       this.id_ndf = +str[0]
       this.annee = +str[1];
       this.mois = +str[2];
       var stri = this.datePipe.transform(new Date(), 'yyyy-MM-dd').split("-",2);
+      console.log(this.annee + ' ' + this.mois)
+      console.log(+stri[0] + ' ' + +stri[1])
       if(+stri[0] == this.annee && +stri[1] == this.mois) {
         this.currentNdf = true;
       }
@@ -110,6 +114,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   
   refreshLignesdefrais(){
     this.montantTotal = 0;
+    this.cntLdf = 0;
+    this.cntAvance = 0;
     // vide la liste affichee dans le tableau 
     this.listlignedefrais = [];    
     // requete SQL pour avoir toutes les lignes de frais de la note de frais
@@ -119,6 +125,10 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         this.listlignedefraisfull = data;
         // transformation de la liste pour afficher les informations dans le tableau
         this.listlignedefraisfull.forEach( ldf => {
+          if(ldf.statut_ldf == 'avnoSent')
+            this.cntAvance += 1;
+          if(ldf.statut_ldf == 'noSent')
+            this.cntLdf += 1;
           this.listlignedefrais.push(
             { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
               'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
@@ -126,7 +136,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
               'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
               'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
-              'justificatif' : ldf.justif_ldf})
+              'justificatif' : ldf.justif_ldf, 'date_mission' : ldf.date_mission})
           //console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
           this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
           //console.log(this.montantTotal)
@@ -246,31 +256,28 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
 
   openDialogEnvoyerAvance() {
-    if(this.listAvance.length > 0) {
-      var listLdf : IAvance[] = [];
-      this.listAvance.forEach( num => {
-        for(var i = 0 ; i < this.listlignedefrais.length ; ++i) {
-          if(this.listlignedefrais[i].id_ldf == num && !this.listlignedefrais[i].avance)
-            listLdf.push({ 'id_ldf' : this.listlignedefrais[i].id_ldf,
-              'id_mission' : this.listlignedefrais[i].id_mission,
-              'id_chef' : this.listlignedefrais[i].id_chef,
-              'nom_mission' : this.listlignedefrais[i].mission, 
-              'libelle' : this.listlignedefrais[i].libelle, 
-              'montant_estime' : this.listlignedefrais[i].montant, 
-              'montant_avance' : this.listlignedefrais[i].montant, 
-              'commentaire' : this.listlignedefrais[i].commentaire})
-        }
-      });
+    var listAvance : IAvanceShort[] = [];
+    this.listlignedefrais.forEach(element => {
+      if(element.status == 'Avance non envoyée') {
+        listAvance.push({
+          'id_ndf' : element.id_ndf,
+          'id_ldf' : element.id_ldf,
+          'id_chef' : element.id_chef,
+          'nom_mission' : element.mission,
+          'libelle' : element.libelle,
+          'montant_estime' : element.montant_estime,
+          'montant_avance' : element.montant_avance
+        });
+      }
+    });
+    if(listAvance.length != 0) {
       const dialogRef = this.dialog.open(DialogEnvoyerAvance, {
-        data: { liste : listLdf, ndf : this.id_ndf, id : this.id_collab  }
+        data: { liste : listAvance, id_collab : this.id_collab  }
       });
       dialogRef.afterClosed().subscribe(result => {
         var temp = result;
         if(temp) {
           this.delay(1500).then(any => {
-            // this.lignedefraisService.createOrUpdateNotifNdfAvance(
-            //   { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            // );
             this.refreshLignesdefrais();
             this.openSnackBar('Avances créés et envoyées');
           });
@@ -278,7 +285,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       });
     }
     else {
-      this.openSnackBar('Aucune ligne de frais séléctionnée')
+      this.openSnackBar('Aucune avance à envoyer')
     }
   }
 
@@ -286,20 +293,22 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     var avance = false;
     var listLdf : ILignedefraisShort[] = [];
     this.listlignedefrais.forEach( ligne => {
-      if(ligne.avance && ligne.status == 'Avance non envoyée')  {
-        avance = true;
-        listLdf.push({ 
-          'id_ldf' : ligne.id_ldf,
-          'id_ndf' : ligne.id_ndf,
-          'id_mission' : ligne.id_mission,
-          'id_chef' : ligne.id_chef,
-          'nom_mission' : ligne.mission, 
-          'libelle' : ligne.libelle, 
-          'avance' : ligne.avance,
-          'apres_mission' : false,
-          'montant' : ligne.montant_avance})    
+      if(ligne.avance && ligne.status == 'Non envoyée') {
+        if((new Date(ligne.date_mission.toString()) > new Date()) ? false : true) {
+          listLdf.push({ 
+            'id_ldf' : ligne.id_ldf,
+            'id_ndf' : ligne.id_ndf,
+            'id_mission' : ligne.id_mission,
+            'id_chef' : ligne.id_chef,
+            'nom_mission' : ligne.mission, 
+            'libelle' : ligne.libelle, 
+            'avance' : ligne.avance,
+            'montant' : ligne.montant//,
+            //'apres_mission' : (new Date(ligne.date_mission.toString()) > new Date()) ? false : true
+          })
+        }
       }
-      else if(ligne.status == 'Non envoyée' && ligne.montant != 0)
+      else if(!ligne.avance && ligne.status == 'Non envoyée' && ligne.montant != 0)
         listLdf.push({ 
               'id_ldf' : ligne.id_ldf,
               'id_ndf' : ligne.id_ndf,
@@ -308,27 +317,20 @@ export class LignedefraisComponent implements OnInit, OnChanges {
               'nom_mission' : ligne.mission, 
               'libelle' : ligne.libelle, 
               'avance' : ligne.avance,
-              'apres_mission' : true,
-              'montant' : ligne.montant})
+              'montant' : ligne.montant//,
+              //'apres_mission' : (new Date(ligne.date_mission.toString()) > new Date()) ? false : true
+            })
         
       });
+      console.log(listLdf);
     if(listLdf.length > 0) {
       const dialogRef = this.dialog.open(DialogEnvoyerLignes, {
-        data: { liste : listLdf, id_collab : this.id_collab , id_ndf : this.id_ndf }
+        data: { liste : listLdf, id_collab : this.id_collab }
       });
       dialogRef.afterClosed().subscribe(result => {
         var temp = result;
         if(temp) {
           this.delay(3000).then(any => {
-            // this.lignedefraisService.createOrUpdateNotifNdf(
-            //   { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            // );
-            // if(avance) {
-            //   //console.log('avance')
-            //   this.lignedefraisService.createOrUpdateNotifNdfAvance(
-            //     { id_ndf : this.id_ndf , id_collab: this.id_collab }
-            //   );
-            // }
             this.refreshLignesdefrais();
             this.openSnackBar('Lignes envoyées');
           });
@@ -396,7 +398,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
-}
+  }
 
   transformStatus(status : String) : String {
     for(var i = 0; i < this.status.length ; i ++){

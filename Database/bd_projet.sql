@@ -150,7 +150,7 @@ ALTER TABLE `t_demande_conge`
 
 INSERT INTO `t_demande_conge` (`id_demande_conge`, `id_collab`, `type_demande_conge`, `date_debut`, `debut_matin`, `date_fin`, `fin_aprem`, `status_conge`, `motif_refus`, `duree`) VALUES
 (1, 6, 'rtt', '2019-01-22', TRUE, '2019-01-23', TRUE, 'attCds', '', 4),
-(2, 6, 'cp', '2019-01-20', FALSE, '2019-01-21', FALSE, 'attCds', '', 2);
+(2, 6, 'cp', '2019-01-20', FALSE, '2019-01-21', FALSE, 'attRH', '', 2);
 
 -- table t_modification_conge
 
@@ -332,8 +332,8 @@ ALTER TABLE `t_notif_dem_conge`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
 INSERT INTO `t_notif_dem_conge` (`id_demande_conge`, `id_collab`) VALUES
-(1, 5),
-(2, 5);
+(1, 6),
+(2, 6);
 
 -- table t_notif_mod_conge
 
@@ -390,10 +390,3 @@ ALTER TABLE `t_notif_ndf_from_compta`
 
 
 COMMIT;
-
-
-SELECT miss.id_chef, stat.libelle, COUNT(stat.libelle) as cnt
-FROM t_statut as stat
-LEFT JOIN t_ligne_de_frais as ldf ON stat.id_statut = ldf.id_statut AND ldf.id_ndf = 15 AND stat.id_statut = 7
-LEFT JOIN t_mission as miss ON ldf.id_mission = miss.id_mission
-GROUP BY miss.id_chef, stat.libelle;

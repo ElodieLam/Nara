@@ -77,4 +77,40 @@ export class GestionnotedefraisService {
       );
     }
 
+    /**
+     * @param data : id_ldf, id_cds, motif, stat, id_ndf 
+     * @description maj d'une ligne de frais, avec maj de la notif fromCompta : oui / non 
+     */
+    updateLdfnotifToAndFromCompta(data) {
+      this.http.post(`${this.url}/gestionndf/updateldfnotiftoandfromcompta`, data)
+        .subscribe(
+          res => {
+            console.log('maj ldf, maj notif to or from compta')
+            this.toastr.success('Notif from compta avance ref.', 'Success');
+          },
+          err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+      );
+    }
+
+    /**
+     * @param data : id_ldf, motif, stat, id_ndf 
+     * @description maj d'une avance, avec maj de la notif fromCompta : oui / non 
+     */
+    updateAvancenotifToAndFromCompta(data) {
+      this.http.post(`${this.url}/gestionndf/updateavancenotiftoandfromcompta`, data)
+        .subscribe(
+          res => {
+            console.log('maj avance, maj notif to or from compta')
+            this.toastr.success('Notif from compta avance ref.', 'Success');
+          },
+          err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+      );
+    }
+
 }

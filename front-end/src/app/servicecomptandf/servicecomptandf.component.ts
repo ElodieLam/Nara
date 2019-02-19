@@ -30,7 +30,7 @@ export class ServicecomptandfComponent implements OnInit {
     isDisabled:boolean = true;
   
     listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
+    displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
     listNotedefrais: ILignedefraisListe[] = [];
     dataSource;
     sub : any;
@@ -94,24 +94,24 @@ export class ServicecomptandfComponent implements OnInit {
       });
     }
   
-    accepterLdf(id : number, avance : boolean, statut : String) {
+    accepterLdf(id : number, avance : boolean, statut_ldf : String) {
       this.isDisabled = true;
-      var stat = '';
-      if(avance && statut == 'avattF')
-        stat = 'noSent';
+      var statut = 0;
+      if(avance && statut_ldf == 'avattF')
+        statut = 6;
       else
-        stat = 'val';
+        statut = 11;
       if(avance) {
-        console.log('accepter avance ' + stat)
-        this.gestionnotedefraisService.updateStatutAvance(
-          { id : id, motif : '', statut : stat }
-        );
+        console.log('accepter avance ' + statut)
+        this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
+          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : 0
+        });
       }
       else {
-        console.log('accepter ldf ' + stat)
-        this.gestionnotedefraisService.updateStatutLignedefrais(
-          { id : id, motif : '', statut : stat }
-        );
+        console.log('accepter ldf ' + statut)
+        this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
+          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : 0
+        });
       }
       this.delay(1500).then(any => {
         this.refreshLignes();
@@ -129,24 +129,6 @@ export class ServicecomptandfComponent implements OnInit {
       });
     }
   
-  
-    retourGestionNdf() {
-      // var toCompta = false;
-      // var fromCompta = false;
-      // this.listNotedefrais.forEach( element => {
-      //   if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF')
-      //     toCompta = true;
-      //   if(element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
-      //     fromCompta = true;
-      // })
-      // console.log('to ' + toCompta + ' from ' + fromCompta)
-      // this.gestionnotedefraisService.createOrUpdateAllNotifications(
-      //   { id_ndf : this.id_ndf, id_cds : this.id_cds }
-      // )
-      // // TODO use router as soon the query success
-      // const dialogRef = this.dialog.open(DialogEnvoyer);
-      // dialogRef.afterClosed().subscribe(() => {});
-    }
     async delay(ms: number) {
       await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
     }

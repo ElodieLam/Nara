@@ -25,6 +25,14 @@ export class LignedefraisService {
       .get(`${this.url}/lignedefrais/missionsidcollab`, { params : data });
   }
 
+  getMissionsCollab(data){
+    //console.log("service");
+    //console.log(data);
+    return this
+      .http
+      .get(`${this.url}/lignedefrais/missionscollabavanceldf`, { params : data });
+  }
+
   createLignedefrais(data) {
     this.http.post(`${this.url}/lignedefrais/ajoutlignedefrais`, data)
       .subscribe(
@@ -32,6 +40,24 @@ export class LignedefraisService {
         //this.ldf.refreshLignesdefrais();
         // console.log('service ajout');
         // console.log(res);
+        this.toastr.success('Ligne de frais ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  /**
+     * @param data : id_ndf, id_mission, libelle, montant, commentaire 
+     * @description creation d'une ligne de frais avance 
+     */
+  createAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/ajoutavance`, data)
+      .subscribe(
+        res => {
         this.toastr.success('Ligne de frais ajoutée.', 'Success');
 
         },

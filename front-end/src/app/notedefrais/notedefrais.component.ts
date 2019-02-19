@@ -40,6 +40,7 @@ export class NotedefraisComponent implements OnInit {
   id: any;
   route: string;
 
+  
   constructor(private notedefraisService: NotedefraisService , private router: Router,
     private datePipe: DatePipe, private login : LoginComponent) { 
       this.user = login.user.id_collab.toString();

@@ -1,0 +1,16 @@
+<div class = "relative">
+    <p class = "absolute" id="divColor" [ngStyle]="{ 'background-color': componentData.color }">
+      {{componentData.type}} : {{componentData.date}} 
+      <br>
+      {{componentData.statut}} 
+    </p>
+    <button mat-stroked-button *ngIf="componentData.ndfforcds" (click)="goToNdfCDS()" class="btnVoir ">
+      Gestion CDS
+    </button>
+    <button mat-stroked-button *ngIf="!componentData.ndfforcds" color="warn" (click)="goToNdfCompta()" class="btnVoir ">
+      Gestion Compta
+    </button>
+    <br>
+  </div>
+  
+  

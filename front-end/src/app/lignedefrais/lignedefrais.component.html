@@ -18,12 +18,15 @@
       <ng-container matColumnDef="avance">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> avance </th>
         <td mat-cell *matCellDef="let element">
-          <div *ngIf="isAvance(element); else elseBlock">
+          <div *ngIf="isAvance(element)">
+            {{element.montant_avance}}
+          </div>
+          <!-- <div *ngIf="isAvance(element); else elseBlock">
             {{element.montant_avance}}
           </div>
           <ng-template #elseBlock>
             <mat-checkbox *ngIf="isCheckable(element.status) && currentNdf" (change)="onCheck(element)"></mat-checkbox>
-          </ng-template>
+          </ng-template> -->
         </td>
       </ng-container>
   
@@ -86,7 +89,7 @@
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>
   <div class="button-row">
-    <button mat-raised-button [disabled]="!currentNdf && isDisabled" (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
-    <button mat-flat-button [disabled]="!currentNdf && isDisabled" (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances</button>
-    <button mat-flat-button [disabled]="isDisabled" (click)="openDialogEnvoyerLignes()" color="warn">Envoyer</button>
+    <button mat-raised-button [disabled]="!currentNdf || isDisabled" (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
+    <button mat-flat-button [disabled]="!currentNdf || isDisabled" (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances ({{ cntAvance }})</button>
+    <button mat-flat-button [disabled]="isDisabled" (click)="openDialogEnvoyerLignes()" color="warn">Envoyer les lignes de frais ({{ cntLdf }})</button>
   </div>

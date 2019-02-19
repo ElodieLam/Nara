@@ -14,11 +14,15 @@ export class DashboardComponent implements OnInit{
 
   firstname: string = '';
   lastname: string = '';
+  service: string = '';
+  cds: string = '';
   isCDS: boolean = false;
   isCompta: boolean = false;
   isRH: boolean = false;
   //param: string;
   isOn: boolean = false;
+  date: Date
+
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -27,6 +31,7 @@ export class DashboardComponent implements OnInit{
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private activatedRoute: ActivatedRoute, private login: LoginComponent) {
     this.isOn = true;
+    this.date = new Date();
     //Récupère les paramètres passés dans l'URL
     this.activatedRoute.queryParams.subscribe(params => {
       //this.param = params['param'];
@@ -36,6 +41,8 @@ export class DashboardComponent implements OnInit{
     this.isCDS = login.user.isCDS;
     this.isCompta = login.user.id_service == 2 ? true : false;
     this.isRH = login.user.id_service == 1 ? true : false;
+    this.service = login.user.nom_service;
+    this.cds = this.isCDS ? 'Chef de service' : '';
   }
 
   ngOnInit(){
@@ -46,6 +53,10 @@ export class DashboardComponent implements OnInit{
     this.router.navigate(['/notifications/']); 
   }
 
+  goToNotifService(){
+    this.router.navigate(['/notifications/service']); 
+  }
+
   goToConge(){
     this.router.navigate(['/conge']); 
   }
@@ -53,7 +64,7 @@ export class DashboardComponent implements OnInit{
   goToNDF(){
     this.router.navigate(['/notedefrais']); 
   }
-  
+
   goToGestionConge(){
 
   }
@@ -69,8 +80,6 @@ export class DashboardComponent implements OnInit{
   goToGestionCompta(){
     this.router.navigate(['/servicecompta']); 
   }
-  
-
 
   logout(){
     console.log("logged out");
@@ -79,9 +88,8 @@ export class DashboardComponent implements OnInit{
     this.lastname = '';
     this.isCDS = false;
     this.router.navigate(['/login']); 
-    //this.param = "";
-    
   }
+
 
   
 

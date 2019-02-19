@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
-import { ILibelle, IMission } from './lignedefrais.interface';
+import { ILibelle, IMission, IMissionOld } from './lignedefrais.interface';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -31,8 +31,6 @@ import { FormControl, Validators } from '@angular/forms';
       {value: 'Autre'}
     ];
   
-    missions : IMission[];
-    _missModif : boolean = false;
     _libModif : boolean = true;
     _ldfValide : boolean = false;
     _refusCDS :boolean = false;
@@ -40,7 +38,6 @@ import { FormControl, Validators } from '@angular/forms';
     _modif : boolean = false;
   
     valuesAtStart : any = {
-      id_mission : 0,
       libelle : '',
       montant : 0,
       commentaire : ''
@@ -54,23 +51,13 @@ import { FormControl, Validators } from '@angular/forms';
     ngOnInit() {
       this.montantControl.setValue(this.data.comp.montant);
       // valeurs pour la comparaison pour activer le bouton modifier
-      this.valuesAtStart = {id_mission : this.data.comp.id_mission,
-        libelle : this.data.comp.libelle, montant : this.data.comp.montant,
+      this.valuesAtStart = { libelle : this.data.comp.libelle, montant : this.data.comp.montant,
         commentaire : this.data.comp.commentaire };
       // init pour savoir si on affichera le motif de refus dans le dialog
       if(this.data.stat == 'Refusée CDS')
         this._refusCDS = true;
       if(this.data.stat == 'Refusée Compta')
         this._refusCompta = true;
-      // cas ou la mission est modifiable
-      if(this.data.stat == 'Non envoyée') {
-          this.lignedefraisService
-          .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-          .subscribe( (data : IMission[]) => {
-            this._missModif = true;
-            this.missions = data;
-          });
-      }
     }
   
     onClick(): void {
@@ -82,7 +69,6 @@ import { FormControl, Validators } from '@angular/forms';
         this.data.comp.valide = true;
         // query SQL pour l'ajout de la ligne de frais
         this.lignedefraisService.updateLignedefrais({
-          id_mission : this.data.comp.id_mission,
           id_ldf : this.data.comp.id_ldf,
           libelle : this.data.comp.libelle,
           montant : this.data.comp.montant,
@@ -92,12 +78,11 @@ import { FormControl, Validators } from '@angular/forms';
     }
   
     onChange() {
-      this._modif = (this.valuesAtStart.id_mission != this.data.comp.id_mission) || 
-        (this.valuesAtStart.libelle != this.data.comp.libelle) || 
+      this._modif = (this.valuesAtStart.libelle != this.data.comp.libelle) || 
         (this.valuesAtStart.montant != this.montantControl.value) ||
         (this.valuesAtStart.commentaire != this.data.comp.commentaire);
       if(this.montantControl.value)
-        this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
+        this._ldfValide = this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
       else
         this._ldfValide = false;
       return this._ldfValide && this._modif;
