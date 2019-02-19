@@ -91,7 +91,7 @@ var Lignedefrais = {
     },
     updateStatutGlobal: function(data, callback) {
         var id_ndf = data.liste[0].id_ndf;
-        console.log(data);
+        //console.log(data);
         var d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -188,7 +188,7 @@ var Lignedefrais = {
         WHERE ldf.id_ndf = ' + id_ndf + ' \
         AND (ldf.id_statut = 9 OR ldf.id_statut = 10) ) \
         WHERE id_ndf = ' + id_ndf + ' AND acceptee = 0 AND avance = 0 ; '
-        console.log(sql)
+        //console.log(sql)
         return db.query(sql, callback);
     },
     deleteAndCreateAvance: function(data, callback) {

@@ -6,8 +6,6 @@ import { LoginComponent } from '../login/login.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { DialogRefuserLigne } from './dialog-refuser-ligne.component';
-import { LignedefraisService } from '../lignedefrais/lignedefrais.service';
-import { DialogEnvoyer } from './dialog-envoyer.component';
 
 @Component({
   selector: 'app-gestionlignedefrais',
@@ -27,7 +25,7 @@ export class GestionlignedefraisComponent implements OnInit {
   isDisabled:boolean = true;
 
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
   listNotedefrais: ILignedefraisListe[] = [];
   dataSource;
   sub : any;
@@ -41,7 +39,6 @@ export class GestionlignedefraisComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   constructor(private gestionnotedefraisService : GestionnotedefraisService,
-    private lignedefraisService : LignedefraisService,
     private login : LoginComponent, private route : ActivatedRoute,
     private dialog: MatDialog, private router : Router) { }
 
@@ -106,9 +103,6 @@ export class GestionlignedefraisComponent implements OnInit {
       statut = 8;
     if(avance) {
       console.log('accepter avance ' + statut)
-      // this.gestionnotedefraisService.updateStatutAvance(
-      //   { id : id, motif : '', statut : stat }
-      //   );
       this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
         id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
       });
@@ -118,9 +112,6 @@ export class GestionlignedefraisComponent implements OnInit {
       this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
         id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
       });
-      // this.gestionnotedefraisService.updateStatutLignedefrais(
-      //   { id : id, motif : '', statut : stat }
-      // );
     }
     this.delay(1500).then(any => {
       this.refreshLignes();
@@ -165,9 +156,6 @@ export class GestionlignedefraisComponent implements OnInit {
         id_ndf : this.id_ndf, motif : '', stat : statut, 
         id_ldf : id, id_cds : this.id_cds, statOld : statutOld
       });
-      // this.gestionnotedefraisService.updateStatutAvance(
-      //   { id : id, motif : '', statut : stat }
-      // );       
     }
     else {
       console.log('annuler ldf ' + statut)
@@ -175,32 +163,12 @@ export class GestionlignedefraisComponent implements OnInit {
         id_ndf : this.id_ndf, motif : '', stat : statut,
         id_ldf : id, id_cds : this.id_cds, statOld : statutOld
       });
-      // this.gestionnotedefraisService.updateStatutLignedefrais(
-      //   { id : id, motif : '', statut : statut }
-      // );
     }
     this.delay(1500).then(any => {
       this.refreshLignes();
     });
   }
 
-  retourGestionNdf() {
-    var toCompta = false;
-    var fromCompta = false;
-    this.listNotedefrais.forEach( element => {
-      if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF')
-        toCompta = true;
-      if(element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
-        fromCompta = true;
-    })
-    console.log('to ' + toCompta + ' from ' + fromCompta)
-    this.gestionnotedefraisService.createOrUpdateAllNotifications(
-      { id_ndf : this.id_ndf, id_cds : this.id_cds }
-    )
-    // TODO use router as soon the query success
-    const dialogRef = this.dialog.open(DialogEnvoyer);
-    dialogRef.afterClosed().subscribe(() => {});
-  }
   async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
   }

@@ -30,8 +30,11 @@
       <h1 style="position: absolute; left: 100px;">
         {{ firstname }} {{ lastname }}
       </h1>
-      <h1 style="position: absolute; left: 400px;">
+      <h1 style="position: absolute; left: 300px;">
         Date {{ date | date : 'dd/MM/yyyy' }}
+      </h1>
+      <h1 style="position: absolute; left: 600px;">
+        {{ cds }} {{ service }}
       </h1>
       <button class="btn btn-lg btn-primary" style="position: absolute; right: 0;" (click)="logout()">Se déconnecter</button>
     </mat-toolbar>

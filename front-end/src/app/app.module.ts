@@ -61,7 +61,6 @@ import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedef
 import { GestionnotedefraisService } from './gestionnotedefrais/gestionnotedefrais.service';
 import { GestionlignedefraisComponent } from './gestionlignedefrais/gestionlignedefrais.component';
 import { DialogRefuserLigne } from './gestionlignedefrais/dialog-refuser-ligne.component';
-import { DialogEnvoyer } from './gestionlignedefrais/dialog-envoyer.component';
 import { ServicecomptaComponent } from './servicecompta/servicecompta.component';
 import { ServicecomptaService } from './servicecompta/servicecompta.service';
 import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component';
@@ -100,7 +99,6 @@ const appRoutes: Routes = [
     DialogEnvoyerLignes,
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
-    DialogEnvoyer,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -165,7 +163,6 @@ const appRoutes: Routes = [
     DialogEnvoyerLignes,
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
-    DialogEnvoyer,
     LignedefraisAjoutComponent
   ],
   providers: [

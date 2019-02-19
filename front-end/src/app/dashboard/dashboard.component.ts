@@ -14,6 +14,8 @@ export class DashboardComponent implements OnInit{
 
   firstname: string = '';
   lastname: string = '';
+  service: string = '';
+  cds: string = '';
   isCDS: boolean = false;
   isCompta: boolean = false;
   isRH: boolean = false;
@@ -39,6 +41,8 @@ export class DashboardComponent implements OnInit{
     this.isCDS = login.user.isCDS;
     this.isCompta = login.user.id_service == 2 ? true : false;
     this.isRH = login.user.id_service == 1 ? true : false;
+    this.service = login.user.nom_service;
+    this.cds = this.isCDS ? 'Chef de service' : '';
   }
 
   ngOnInit(){
