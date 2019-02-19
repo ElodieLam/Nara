@@ -19,6 +19,7 @@ export interface INotifDemFull {
     prenom: String;
     mois: string;
     avance: Number;
+    date: string;
   }
 
   export interface INotifServiceDisplay {
@@ -26,7 +27,8 @@ export interface INotifDemFull {
     prenom: String;
     date: String;
     type: String;
-    color: string;
+    color: String;
+    dateNotif: string;
   }
 
 //Utilisateur simple
@@ -45,7 +47,7 @@ export interface INotifDemFull2 {
 
 export interface INotifNdfFull2 {
   id_ndf: Number;
-  date: String;
+  date: string;
   avance: Number;
   acceptee: Number;
   id_collab: Number;
@@ -55,7 +57,8 @@ export interface INotifNdfFull2 {
     date: String;
     type: String;
     statut: String;
-    color: string;
+    color: String;
+    dateNotif: string;
   }
 
 
