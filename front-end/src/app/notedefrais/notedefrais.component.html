@@ -1,7 +1,8 @@
 <mat-grid-list cols="3" rowHeight="500px">
   <mat-grid-tile [style.border]="'3px solid gray'">
     <div *ngIf="currentMissing; else elseBlock">
-      <button mat-flat-button (click)="goToNotedefrais()" color="warn">Editer</button>
+      <button mat-flat-button *ngIf="!spinner" (click)="goToNotedefrais()" color="warn">Editer</button>
+      <mat-spinner *ngIf="spinner"></mat-spinner>
     </div>
     <ng-template #elseBlock>
       <app-notedefraisresume [id_notedefrais]=topthreeNdf[0] [moisAnnee]=topthreeMonth[0]></app-notedefraisresume>

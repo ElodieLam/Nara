@@ -10,7 +10,7 @@ export class NotedefraisService {
   
   
   getNotedefraisFromIdCollab(data){
-    return this
+    return this 
       .http
       .get(`${this.url}/notedefrais/notedefraisid`, { params : data });
   }
@@ -34,5 +34,28 @@ export class NotedefraisService {
           this.toastr.error(err.message, 'Error occured');
         }
       );
+  }
+
+  createNotedefrais(data) {
+    this.http.post(`${this.url}/notedefrais/createnotedefrais`, data)
+      .subscribe(
+        res => {
+          console.log('create')
+          //console.log(res);
+          this.toastr.success('Note de frais créée.', 'Success');
+          //this.router.navigateByUrl('/notedefrais');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  getNotedefraisMonthYear(data){
+    console.log("get")
+    return this
+      .http
+      .get(`${this.url}/notedefrais/getnotedefraismonthyear`, { params : data });
   }
 }

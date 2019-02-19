@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import {ToastrService} from "ngx-toastr";
-import {Router} from "@angular/router";
+import { HttpClient } from '@angular/common/http';
+import { ToastrService } from "ngx-toastr";
+import { Router } from "@angular/router";
 
 @Injectable()
 export class LignedefraisService {
@@ -9,11 +9,218 @@ export class LignedefraisService {
   url = 'http://localhost:3000';
 
   getLignesdefraisFromIdNdf(data){
-    console.log("service");
-    console.log(data);
+    //console.log("service");
+    //console.log(data);
+    console.log('service refresh')
     return this
       .http
       .get(`${this.url}/lignedefrais/lignesdefraisidndf`, { params : data });
+  }
+
+  getMissionsFromIdCollab(data){
+    //console.log("service");
+    //console.log(data);
+    return this
+      .http
+      .get(`${this.url}/lignedefrais/missionsidcollab`, { params : data });
+  }
+
+  getMissionsCollab(data){
+    //console.log("service");
+    //console.log(data);
+    return this
+      .http
+      .get(`${this.url}/lignedefrais/missionscollabavanceldf`, { params : data });
+  }
+
+  createLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/ajoutlignedefrais`, data)
+      .subscribe(
+        res => {
+        //this.ldf.refreshLignesdefrais();
+        // console.log('service ajout');
+        // console.log(res);
+        this.toastr.success('Ligne de frais ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  /**
+     * @param data : id_ndf, id_mission, libelle, montant, commentaire 
+     * @description creation d'une ligne de frais avance 
+     */
+  createAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/ajoutavance`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  deleteLignedefrais(data) {
+      
+    this.http.delete(`${this.url}/lignedefrais/supprlignedefrais/${data.id}`)
+        .subscribe(
+            res => {
+            //this.ldf.refreshLignesdefrais();
+            // console.log('service suppr ldf');
+            // console.log(res);
+            this.toastr.success('Ligne de frais supprimée.', 'Success');
+
+            },
+            err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+        );
+  }
+
+  updateLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefrais`, data)
+        .subscribe(
+            res => {
+            //this.ldf.refreshLignesdefrais();
+            // console.log('service suppr');
+            // console.log(res);
+            this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+            },
+            err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+        );
+  }
+
+  updateLignedefraisAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisavance`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+
+  deleteAvance(data) {
+    this.http.delete(`${this.url}/lignedefrais/suppravance/${data.id}`)
+      .subscribe(
+        res => {
+        this.toastr.success('Avance supprimée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  updateStatutLignedefrais(data) {
+    this.http.post(`${this.url}/lignedefrais/updatestatutlignedefrais`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+  updateStatutAvance(data) {
+    this.http.post(`${this.url}/lignedefrais/updatestatutavance`, data)
+      .subscribe(
+        res => {
+        this.toastr.success('Ligne de frais modifiée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+    );
+  }
+
+  createOrUpdateNotifNdf(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndf`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  createOrUpdateNotifNdfAvance(data) {
+    this.http.post(`${this.url}/notifndf/createorupdatenotifndfavance`, data)
+      .subscribe(
+        res => {
+        console.log('service create notif');
+        // console.log(res);
+        this.toastr.success('Avance ajoutée.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  updateLignedefraisGlobal(data) {
+    this.http.post(`${this.url}/lignedefrais/updatelignedefraisglobal`, data)
+      .subscribe(
+        res => {
+        console.log('Update global');
+        // console.log(res);
+        this.toastr.success('global success.', 'Success');
+
+        },
+        err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+        }
+      );
+    }
+    
+    deleteAndCreateAvance(data) {
+      this.http.post(`${this.url}/lignedefrais/deletecreateavance`, data)
+        .subscribe(
+          res => {
+          console.log('delete create avance');
+          // console.log(res);
+          this.toastr.success('d c success.', 'Success');
+  
+          },
+          err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+          }
+      );
+
   }
 
 }

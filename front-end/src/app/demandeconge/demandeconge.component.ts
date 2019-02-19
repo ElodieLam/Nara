@@ -59,10 +59,8 @@ export class DemandecongeComponent implements OnInit
   activeDayIsOpen: boolean = true;
 
   listeDemande : IDemandeconge[];
-  test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null}
-  
-
-  displayedColumn = ['id', 'type', 'datedebut', 'datefin', 'statut', 'duree'];
+  test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null};
+  test2: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: new Date(), date_fin: new Date(), motif_refus: "", debut_matin: true, duree: 2, fin_aprem: true, type_demande_conge: "rtt", status_conge: "attCds"};
   dataSource;
 
   @ViewChild(MatSort) sort: MatSort;
@@ -153,7 +151,6 @@ export class DemandecongeComponent implements OnInit
       
     }
   }
-  
   constructor(private demandecongeService: DemandecongeService , private router: Router) { }
 
   ngOnInit() 

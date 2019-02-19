@@ -11,3 +11,13 @@
     text-align: center;
     font-size: 15px;
 }
+
+.mat-form-field {
+    display: inline-flex;
+    margin: 10px 10px 10px 10px;
+}
+
+.example-button-row button,
+.example-button-row a {
+  margin-right: 8px;
+}

@@ -1,72 +1,84 @@
-<p>
-  Id ndf = {{ id_ndf }}
-</p>
+<div>
+  <p>
+    {{ listemois[mois] }} {{ annee}}
+    Total note de frais = {{ montantTotal | number }}€ 
+  </p>
+  <button mat-icon-button *ngIf="isAble" (click)="refreshLignesdefrais()">
+    <mat-icon>autorenew</mat-icon>
+  <!-- <mat-icon aria-label="Example icon-button with a heart icon" >favorite</mat-icon> -->
+  </button>
+</div>
+
 <div class="mat-elevation-z8">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-  
-      <ng-container matColumnDef="id_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> id ldf </th>
-        <td mat-cell *matCellDef="let element"> {{element.id_ldf}} </td>
+      
+      <ng-container matColumnDef="avance">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> avance </th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="isAvance(element)">
+            {{element.montant_avance}}
+          </div>
+          <!-- <div *ngIf="isAvance(element); else elseBlock">
+            {{element.montant_avance}}
+          </div>
+          <ng-template #elseBlock>
+            <mat-checkbox *ngIf="isCheckable(element.status) && currentNdf" (change)="onCheck(element)"></mat-checkbox>
+          </ng-template> -->
+        </td>
       </ng-container>
   
-      <ng-container matColumnDef="id_ndf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> id ndf </th>
-        <td mat-cell *matCellDef="let element"> {{element.id_ndf}} </td>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
+        <td mat-cell *matCellDef="let element"> {{ element.status }} </td>
       </ng-container>
   
-      <ng-container matColumnDef="id_mission">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> id mission </th>
-        <td mat-cell *matCellDef="let element"> {{element.id_mission}} </td>
+      <ng-container matColumnDef="mission">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mission </th>
+        <td mat-cell *matCellDef="let element"> {{element.mission}} </td>
       </ng-container>
   
-      <ng-container matColumnDef="libelle_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> libellé </th>
-        <td mat-cell *matCellDef="let element"> {{element.libelle_ldf}} </td>
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date d'ajout </th>
+        <td mat-cell *matCellDef="let element"> {{element.date | date : 'dd/MM/yyyy'}} </td>
       </ng-container>
   
-      <ng-container matColumnDef="montant_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> montant </th>
-        <td mat-cell *matCellDef="let element"> {{element.montant_ldf}} </td>
+      <ng-container matColumnDef="libelle">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Libellé </th>
+        <td mat-cell *matCellDef="let element"> {{element.libelle}} </td>
       </ng-container>
   
-      <ng-container matColumnDef="date_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> date </th>
-        <td mat-cell *matCellDef="let element"> {{element.date_ldf | date : 'dd/MM/yyyy'}} </td>
+      <ng-container matColumnDef="montant">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Montant </th>
+        <td mat-cell *matCellDef="let element"> {{element.montant}} </td>
       </ng-container>
   
-      <ng-container matColumnDef="status_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> statut </th>
-        <td mat-cell *matCellDef="let element"> {{element.status_ldf}} </td>
+      <ng-container matColumnDef="commentaire">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Commentaire </th>
+        <td mat-cell *matCellDef="let element"> {{element.commentaire}} </td>
       </ng-container>
-  
-      <ng-container matColumnDef="commentaire_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> commentaire </th>
-        <td mat-cell *matCellDef="let element"> {{element.commentaire_ldf}} </td>
+
+      
+      <ng-container matColumnDef="justificatif">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Justificatif </th>
+        <td mat-cell *matCellDef="let element"> {{element.justificatif}} </td>
       </ng-container>
-  
-      <ng-container matColumnDef="motif_refus">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> motif refus </th>
-        <td mat-cell *matCellDef="let element"> {{element.motif_refus}} </td>
+      
+      <ng-container matColumnDef="modifier">
+          <th mat-header-cell *matHeaderCellDef>Modifier</th>
+          <td mat-cell *matCellDef="let element">
+              <button mat-flat-button [disabled]="isDisabled" *ngIf="modifPossible(element) && !element.avance" (click)="openDialogModifierLignedefrais(element)" color="accent">Modifier</button>    
+              <button mat-flat-button [disabled]="isDisabled" *ngIf="modifPossible(element) && element.avance" (click)="openDialogModifierAvance(element)" color="accent">Modifier</button>    
+          </td>
       </ng-container>
-  
-      <ng-container matColumnDef="justif_ldf">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> justif </th>
-        <td mat-cell *matCellDef="let element"> {{element.justif_ldf}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="mission_passe">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> passé </th>
-        <td mat-cell *matCellDef="let element"> {{element.mission_passe}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="montant_estime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> estimé </th>
-        <td mat-cell *matCellDef="let element"> {{element.montant_estime}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="montant_avance">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> avancé </th>
-        <td mat-cell *matCellDef="let element"> {{element.montant_avance}} </td>
+      
+      <ng-container matColumnDef="supprimer">
+          <th mat-header-cell *matHeaderCellDef>Supprimer</th>
+          <td mat-cell *matCellDef="let element">
+              <button mat-flat-button [disabled]="isDisabled" *ngIf="supprPossible(element)" (click)="supprLignedefrais(element)" color="warn">Supprimer</button>    
+          </td>
       </ng-container>
   
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -75,4 +87,9 @@
   
     <!-- <mat-paginator showFirstLastButtons></mat-paginator> -->
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+  </div>
+  <div class="button-row">
+    <button mat-raised-button [disabled]="!currentNdf || isDisabled" (click)="openDialogNouvelleLignedefrais()">Ajouter une ligne</button>
+    <button mat-flat-button [disabled]="!currentNdf || isDisabled" (click)="openDialogEnvoyerAvance()" color="warn">Envoyer les avances ({{ cntAvance }})</button>
+    <button mat-flat-button [disabled]="isDisabled" (click)="openDialogEnvoyerLignes()" color="warn">Envoyer les lignes de frais ({{ cntLdf }})</button>
   </div>
