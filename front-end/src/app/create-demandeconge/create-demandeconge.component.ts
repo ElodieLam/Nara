@@ -57,11 +57,13 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       else if (congerestants % 2 == 0)
       {
         addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, congerestants/2);
+        console.log(addweekend)
         dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
       }
       else
       {
-        addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2));
+        addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2)+1);
+        console.log(addweekend)
         dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
       }
     }
@@ -389,21 +391,22 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
     var dates = []
     var dateActuelle = new Date(datedebut);
     var datefin = new Date();
-    datefin.setDate(dateActuelle.getDate()+(nbjours-1));
+    datefin.setDate(dateActuelle.getDate()+(nbjours));
+    console.log(datefin)
     dates = this.getEntreDates(dateActuelle, datefin);
     var compteur = 0;
     for(var date of dates)
     {
       if (date.getDay() == 0 || date.getDay() == 6)
       {
-        compteur += 2;
+        compteur ++;
       }
       else
       {
-        compteur++;
+        
       }
     }
-    return compteur;
+    return compteur + (nbjours-1);
 
 
   }

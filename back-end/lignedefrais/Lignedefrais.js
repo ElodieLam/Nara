@@ -169,10 +169,10 @@ var Lignedefrais = {
             }
         }
         sql += 'UPDATE t_note_de_frais as ndf SET ndf.total = \
-        (SELECT SUM(av.montant_ldf - av.montant_avance) \
+        (SELECT COALESCE(SUM(av.montant_ldf - av.montant_avance), 0) \
             FROM t_ligne_de_frais_avance as av \
             WHERE av.id_ndf = ' + id_ndf + ' ) \
-        + (SELECT SUM(av.montant_ldf) \
+        + (SELECT COALESCE(SUM(av.montant_ldf), 0) \
             FROM t_ligne_de_frais as av \
             WHERE av.id_ndf = ' + id_ndf + ') \
         WHERE ndf.id_ndf = ' + id_ndf + ';';
