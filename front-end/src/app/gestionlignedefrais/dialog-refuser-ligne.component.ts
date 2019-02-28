@@ -32,29 +32,22 @@ export class DialogRefuserLigne implements OnInit{
     onClick(): void {
         var statut = 0;
         console.log(this.data.statut)
-        if(this.data.avance && this.data.statut == 'avattCds') 
+        if(this.data.statut == 'avattCds') 
             statut = 4;
         else
             statut = 9;
         if(this.data.avance) {
             console.log('refuser avance ' + statut)
-            // this.gestionnotedefraisService.updateStatutAvance(
-            //     { id : this.data.id , motif : this.motifControl.value, statut : stat }
-            // );
-            this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-                id_ndf : this.data.id_ndf, motif : this.motifControl.value,
-                 stat : statut, id_ldf : this.data.id, id_cds : this.data.id_cds
-            });
+            this.gestionnotedefraisService.refuserAvance({
+                id_ldf : this.data.id, motif : this.motifControl.value, statut : statut,
+                id_cds : this.data.id_cds, id_ndf : this.data.id_ndf
+            })
         }
         else {
             console.log('refuser ldf statut ' + statut)
-            this.gestionnotedefraisService.updateLdfnotifToAndFromCompta({
-                id_ldf : this.data.id, motif : this.motifControl.value,
-                stat : statut, id_ndf : this.data.id_ndf, id_cds : this.data.id_cds
+            this.gestionnotedefraisService.refuserLignedefrais({
+                id_ldf : this.data.id, motif : this.motifControl.value, statut : statut
             })
-            // this.gestionnotedefraisService.updateStatutLignedefrais(
-            //     { id : this.data.id, motif : this.motifControl.value, statut : stat }
-            // );
         }
     }
 

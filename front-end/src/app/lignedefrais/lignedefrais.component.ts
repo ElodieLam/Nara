@@ -12,6 +12,7 @@ import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.compo
 import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
 import { LoginComponent } from '../login/login.component'
 import * as CryptoJS from 'crypto-js'; 
+import { DialogNouvelleAvance } from './dialog-nouvelle-avance.component';
 
 @Component({
   selector: 'app-lignedefrais',
@@ -39,8 +40,10 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   id_ndf: number = 0;
   annee: number = 0;
   mois: number = 0;
+  moisAnnee: string = '';
   id_collab: number = 0;
-  montantTotal: number = 0.00;
+  montantTotalLdf: number = 0.0;
+  heure: Date;
   
   componentData : any = {
     id_ldf : 0,
@@ -61,13 +64,17 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   private sub: any;
   listlignedefraisfull : ILignedefraisFull[] = [];
   listlignedefrais : ILignedefrais[] = [];
-  listAvance : Number[] = [];
+  listavance : ILignedefrais[] = [];
   dataSource;
   currentNdf:boolean = false;
-  displayedColumns: string[] = ['avance', 'status', 'mission', 'date',
-  'libelle', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
+  displayedColumns: string[] = ['status', 'mission', 'date',
+  'libelle', 'avance', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
+  
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
   isDisabled: boolean = true;
+  isOkToSend:boolean = true;
+  isVoidable:boolean = true;
+  sendabled:boolean = true;
   cntAvance: number = 0;
   cntLdf: number = 0;
   //Variable pour encrypt/decrypt
@@ -104,6 +111,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         this.currentNdf = true;
       }
       this.componentData.id_ndf = this.id_ndf;
+      this.moisAnnee = this.listemois[this.mois] + ' ' + this.annee;
     });
     this.refreshLignesdefrais();
   }
@@ -111,36 +119,107 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
+  
   
   refreshLignesdefrais(){
-    this.montantTotal = 0;
+    this.montantTotalLdf = 0;
     this.cntLdf = 0;
     this.cntAvance = 0;
+    this.isOkToSend = false;
+    this.sendabled = true;
     // vide la liste affichee dans le tableau 
     this.listlignedefrais = [];    
-    // requete SQL pour avoir toutes les lignes de frais de la note de frais
+    this.listavance = [];    
+    // requete SQL pour avoir toutes les lignes de frais et avances de la note de frais
     this.lignedefraisService
       .getLignesdefraisFromIdNdf({id : this.id_ndf.toString()})
       .subscribe( (data : ILignedefraisFull[]) => {
         this.listlignedefraisfull = data;
         // transformation de la liste pour afficher les informations dans le tableau
         this.listlignedefraisfull.forEach( ldf => {
+          // cela permet de savoir si la note de frais peut être envoyée,
+          // si il y a une ligne avec un "non" d'un chef de service, 
+          // la note ne peut pas être envoyée
+          if(this.sendabled)
+            (ldf.statut_ldf == 'noCds') ? this.sendabled = false : {} ;
+          // cela permet de savoir si l'envoi de la note de frais peut être annulable,
+          // dans le cas où il y a des lignes en attente de la compta ou validée c'est impossible
+          if(this.isVoidable){
+            (ldf.statut_ldf == 'attF' || ldf.statut_ldf == 'val') ? this.isVoidable = false : {}
+          }
+          //ce n'est pas une avance donc on met la ligne dans les lignes de frais
+          if(ldf.montant_avance == null ) {
+            // on met a jour le montant total de la note de frais
+            this.montantTotalLdf += +ldf.montant_ldf;
+            this.listlignedefrais.push(
+              { 'id_ldf' : ldf.id_ldf, 'avance' : false,
+                'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
+                'id_mission' : ldf.id_mission, 'id_chef' : ldf.id_chef, 'mission' : ldf.nom_mission, 
+                'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
+                'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
+                'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
+                'justificatif' : ldf.justif_ldf, 'date_mission' : ldf.date_mission})
+          }
+          //c'est une avance
+          else {
+            //c'est une demande d'avance, on la met dans la seconde liste
+            if(ldf.statut_ldf == 'avnoSent' || ldf.statut_ldf == 'avattCds' ||
+            ldf.statut_ldf == 'avattF' || ldf.statut_ldf == 'avnoCds' ||
+            ldf.statut_ldf == 'avnoF' ) {
+              // décalage pour obtenir les vraies dates
+              // car on ne peut pas envoyer la note de frais 
+              // TODO fix feature
+              if(this.isOkToSend){
+                var date = new Date(ldf.date_mission.toString())
+                date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
+                var str = this.datePipe.transform(date, 'yyyy-MM-dd').split("-",2);
+                if(+str[0] == this.annee && +str[1] == +this.mois)
+                  this.isOkToSend = false;
+              }
+              // on ajoute la ligne dans les avances qui peuvent être envoyée
+              this.listavance.push(
+                { 'id_ldf' : ldf.id_ldf, 'avance' : true,
+                  'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
+                  'id_mission' : ldf.id_mission, 'id_chef' : ldf.id_chef, 'mission' : ldf.nom_mission, 
+                  'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
+                  'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
+                  'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
+                  'justificatif' : ldf.justif_ldf, 'date_mission' : ldf.date_mission})             
+            }
+            else {
+              // on met à jour le montant de la note de frais
+              this.montantTotalLdf += +ldf.montant_ldf;
+              // on ajoute la ligne dans les avances mais avec le statut validée
+              this.listavance.push(
+                { 'id_ldf' : ldf.id_ldf, 'avance' : true,
+                  'montant_avance' : ldf.montant_avance, 'status' : 'Validée', 
+                  'id_mission' : ldf.id_mission, 'id_chef' : ldf.id_chef, 'mission' : ldf.nom_mission, 
+                  'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
+                  'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
+                  'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
+                  'justificatif' : ldf.justif_ldf, 'date_mission' : ldf.date_mission}) 
+              // on ajoute la ligne dans les lignes de frais
+              this.listlignedefrais.push(
+                { 'id_ldf' : ldf.id_ldf, 'avance' : true,
+                  'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
+                  'id_mission' : ldf.id_mission, 'id_chef' : ldf.id_chef, 'mission' : ldf.nom_mission, 
+                  'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
+                  'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
+                  'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
+                  'justificatif' : ldf.justif_ldf, 'date_mission' : ldf.date_mission})             
+                  
+            }
+          }
+          // on compte le nombre d'avances pouvant être envoyées
           if(ldf.statut_ldf == 'avnoSent')
             this.cntAvance += 1;
-          if(ldf.statut_ldf == 'noSent')
+          // on compte le nombre de lignes pouvant être envoyées
+          if(ldf.statut_ldf == 'noSent' || ldf.statut_ldf == 'noF')
             this.cntLdf += 1;
-          this.listlignedefrais.push(
-            { 'id_ldf' : ldf.id_ldf, 'avance' : (ldf.montant_avance == null) ? false : true,
-              'montant_avance' : ldf.montant_avance, 'status' : this.transformStatus(ldf.statut_ldf), 
-              'id_mission' : ldf.id_mission, 'id_chef' : ldf.id_chef, 'mission' : ldf.nom_mission, 
-              'id_ndf' : ldf.id_ndf, 'date' : ldf.date_ldf, 'libelle' : ldf.libelle_ldf, 
-              'montant_estime' : ldf.montant_estime, 'montant' : ldf.montant_ldf, 
-              'commentaire' : ldf.commentaire_ldf, 'commentaire_refus' : ldf.motif_refus, 
-              'justificatif' : ldf.justif_ldf, 'date_mission' : ldf.date_mission})
-          //console.log(ldf.montant_avance + ' ' + ldf.montant_ldf)
-          this.montantTotal += +ldf.montant_ldf - ((ldf.montant_avance == null) ? 0 : +ldf.montant_avance);
-          //console.log(this.montantTotal)
         });
+        console.log(this.listlignedefrais)
+        console.log(this.listavance)
         // creation du tableau avec les options sort et paginator
         this.dataSource = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
         this.dataSource.paginator = this.paginator;
@@ -148,6 +227,15 @@ export class LignedefraisComponent implements OnInit, OnChanges {
         this.isDisabled = false;
     });
     
+  }
+
+  annulerEnvoi() {
+
+    this.lignedefraisService
+    .cancelSending({id : this.id_ndf });
+    this.delay(1500).then(any => {
+      this.refreshLignesdefrais();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -163,11 +251,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     if(statut == 'Non envoyée')
       return true;
     return false;
-  }
-
-  onCheck(ldf : ILignedefrais) {
-    var idx = this.listAvance.indexOf(ldf.id_ldf);
-    (idx != -1) ? this.listAvance.splice(idx, 1) : this.listAvance.push(ldf.id_ldf);
   }
 
   openDialogNouvelleLignedefrais() {
@@ -196,6 +279,32 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+  openDialogNouvelleAvance() {
+    this.componentData.id_ldf = 0;
+    this.componentData.id_mission = '';
+    this.componentData.id_collab = this.id_collab;
+    this.componentData.nom_mission = '';
+    this.componentData.libelle = '';
+    this.componentData.montant = '';
+    this.componentData.commentaire = '';
+    this.componentData.commentaire_refus = '';
+    this.componentData.valide = false;
+    const dialogRef = this.dialog.open(DialogNouvelleAvance, {
+      data: { comp : this.componentData }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      var temp = result;
+      if(temp){
+        if(temp.comp.valide) {
+          this.delay(1500).then(any => {
+            this.refreshLignesdefrais();
+            this.openSnackBar('Demande d\'avance ajoutée')
+          });
+        }
+      }
+    });
+  }
+
   openDialogModifierLignedefrais(element : ILignedefrais) {
     this.componentData.id_ldf = element.id_ldf;
     this.componentData.id_mission = element.id_mission;
@@ -208,7 +317,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     this.componentData.valide = false;
     const dialogRef = this.dialog.open(DialogModifierLignedefrais, {
       data: { comp : this.componentData , stat : element.status, 
-        avance : element.avance, montant_avance : element.montant_avance
+        avance : element.avance, montant_avance : element.montant_avance,
+        id_cds : element.id_chef, id_ndf : this.id_ndf
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -238,7 +348,8 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     this.componentData.valide = false;
     const dialogRef = this.dialog.open(DialogModifierAvance, {
       data: { comp : this.componentData , stat : element.status, 
-        avance : element.avance
+        avance : element.avance, id_cds : element.id_chef,
+        id_ndf : this.id_ndf
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -257,7 +368,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   openDialogEnvoyerAvance() {
     var listAvance : IAvanceShort[] = [];
-    this.listlignedefrais.forEach(element => {
+    console.log('envoyer avance')
+    console.log(this.listavance)
+    this.listavance.forEach(element => {
       if(element.status == 'Avance non envoyée') {
         listAvance.push({
           'id_ndf' : element.id_ndf,
@@ -290,10 +403,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 
   openDialogEnvoyerLignes() {
-    var avance = false;
     var listLdf : ILignedefraisShort[] = [];
     this.listlignedefrais.forEach( ligne => {
-      if(ligne.avance && ligne.status == 'Non envoyée') {
+      if(ligne.avance && (ligne.status == 'Non envoyée' || ligne.status == 'Refusée Compta')) {
         if((new Date(ligne.date_mission.toString()) > new Date()) ? false : true) {
           listLdf.push({ 
             'id_ldf' : ligne.id_ldf,
@@ -308,7 +420,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
           })
         }
       }
-      else if(!ligne.avance && ligne.status == 'Non envoyée' && ligne.montant != 0)
+      else if(!ligne.avance && (ligne.status == 'Non envoyée' || ligne.status == 'Refusée Compta') && ligne.montant != 0)
         listLdf.push({ 
               'id_ldf' : ligne.id_ldf,
               'id_ndf' : ligne.id_ndf,
@@ -349,14 +461,18 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   supprLignedefrais(ldf : ILignedefrais) {
     this.isDisabled = true;
     if(ldf.avance) {
-      this.lignedefraisService.deleteAvance({id : ldf.id_ldf});
+      this.lignedefraisService.deleteAvance({
+        id_ldf : ldf.id_ldf, id_ndf : this.id_ndf, id_cds : ldf.id_chef
+      });
       this.delay(1500).then(any => {
         this.refreshLignesdefrais();
         this.openSnackBar('Avance supprimée');
       });
     }
     else {
-      this.lignedefraisService.deleteLignedefrais({id : ldf.id_ldf});
+      this.lignedefraisService.deleteLignedefrais({
+        id_ldf : ldf.id_ldf, id_ndf : this.id_ndf, id_cds : ldf.id_chef
+      });
       this.delay(1500).then(any => {
         this.refreshLignesdefrais();
         this.openSnackBar('Ligne de frais supprimée');
@@ -379,7 +495,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
 
   supprPossible(ldf : ILignedefrais) : boolean{
     if( (!ldf.avance &&
-      ldf.status == 'Validée' ) ||
+      (ldf.status == 'Validée' || ldf.status == 'Attente Compta') ) ||
       (ldf.avance && (
         ldf.status == 'Non envoyée' ||
         ldf.status == 'Attente CDS' ||

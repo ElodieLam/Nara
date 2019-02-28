@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { ServicecomptaService } from '../servicecompta/servicecompta.service';
-import { GestionnotedefraisService } from '../gestionnotedefrais/gestionnotedefrais.service'
 import { ILignedefraisListe } from '../gestionnotedefrais/gestionnotedefrais.interface';
 import { LoginComponent } from '../login/login.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { DialogRefuserLigneCompta } from './dialog-refuser-ligne.component';
-import { LignedefraisService } from '../lignedefrais/lignedefrais.service';
+import { DialogAccepterAvanceCompta } from './dialog-accepter-avance.component';
+
 
 
 @Component({
@@ -28,10 +28,18 @@ export class ServicecomptandfComponent implements OnInit {
     id_collab:number = 0;
     str:String[] = [];
     isDisabled:boolean = true;
-  
+    alreadyChecked:boolean = false;
+    possiblendf:boolean = false;
+    possibleavance:boolean = false;
+    ndfalreadysent:boolean = false;
+    newMonth: number = 0;
+    newYear: number = 0;
+
     listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
+    displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'motif_refus'];
     listNotedefrais: ILignedefraisListe[] = [];
+    listlignedefrais: ILignedefraisListe[] = [];
+    listavance: ILignedefraisListe[] = [];
     dataSource;
     sub : any;
   
@@ -44,7 +52,6 @@ export class ServicecomptandfComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
     constructor(private servicecomptaService : ServicecomptaService,
-      private gestionnotedefraisService : GestionnotedefraisService,
       private login : LoginComponent, private route : ActivatedRoute,
       private dialog: MatDialog, private router : Router) { }
   
@@ -67,66 +74,130 @@ export class ServicecomptandfComponent implements OnInit {
     }
   
     refreshLignes() {
+      this.listlignedefrais = [];
+      this.listavance = [];
+      this.alreadyChecked = false;
+      this.possiblendf = false;
+      this.possibleavance = false;
       this.sub = this.servicecomptaService
         .getLignesdefraisFromIdNdf({ id_ndf : this.id_ndf })
         .subscribe( (data : ILignedefraisListe[]) => {
           this.listNotedefrais = data;
-          // console.log(this.listNotedefrais)
+          console.log(this.listNotedefrais)
           this.listNotedefrais.forEach(element => {
-            // le cds peut acceder à accepter et refuser
-            // le cds peut acceder à annuler
-            element.modif = false;
-            if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF')
-              element.modif = true;
-            
-            element.avance = false;
-            if(element.montant_estime)
-              element.avance = true;
-            if(element.montant_ldf > 0)
-              element.montant_display = element.montant_ldf.toString();
+            if(!this.alreadyChecked)
+              (element.statut_ldf == 'noF' || element.statut_ldf == 'val') ? this.alreadyChecked = true : {} ;
+            if(!this.possiblendf)
+              (element.statut_ldf == 'attF') ? this.possiblendf = true : {} ;
+            if(!this.possibleavance)
+              (element.statut_ldf == 'avattF') ? this.possibleavance = true : {} ;
+            if(!this.ndfalreadysent)
+              (element.statut_ldf == 'val') ? this.ndfalreadysent = true : {} ;
+            if(element.statut_ldf == 'avattF') {
+              element.avacceptable = true;
+              element.avrefutable = true;
+            }
+            if(element.statut_ldf == 'avattCds' || element.statut_ldf == 'avnoCds'
+            || element.statut_ldf == 'avattF' || element.statut_ldf == 'avval')
+              this.listavance.push(element);
             else
-              element.montant_display = element.montant_avance + " / " + element.montant_estime;
+              this.listlignedefrais.push(element);
+        
           });
-          this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listNotedefrais);
+          this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.isDisabled = false;
-      });
+          if(+this.mois == 12) {
+            this.newMonth = 1;
+            this.newYear = +this.annee + 1;
+          }
+          else {
+            this.newMonth = this.listemois.indexOf(this.mois.toString()) + 1;
+            this.newYear = +this.annee;
+          }
+          console.log(this.newMonth)
+          console.log(this.newYear)
+          console.log(this.ndfalreadysent)
+       });
     }
-  
-    accepterLdf(id : number, avance : boolean, statut_ldf : String) {
-      this.isDisabled = true;
-      var statut = 0;
-      if(avance && statut_ldf == 'avattF')
-        statut = 6;
-      else
-        statut = 11;
-      if(avance) {
-        console.log('accepter avance ' + statut)
-        this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : 0
+
+    accepterLignes() {
+      this.servicecomptaService
+        .accepterLignes({
+          id_ndf : this.id_ndf
         });
-      }
-      else {
-        console.log('accepter ldf ' + statut)
-        this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-          id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : 0
-        });
-      }
       this.delay(1500).then(any => {
         this.refreshLignes();
       });
     }
-  
-    refuserLdf(id : number, avance : boolean, statut : string) {
+    refuserLignes(id: number) {
       const dialogRef = this.dialog.open(DialogRefuserLigneCompta, {
-        data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf }
+        data: { motif : '' }
+      });
+      dialogRef.afterClosed().subscribe(res => {
+        console.log(res)
+        if(res.motif != '') {
+          console.log('service')
+          this.servicecomptaService
+            .refuserLignes({
+              id_ndf : this.id_ndf, motif : res.motif
+            });
+          this.delay(1500).then(any => {
+            this.refreshLignes();
+          });
+        }
+      });
+    }
+
+    accepterAvance(id : number) {
+      console.log(this.ndfalreadysent)
+      if(this.ndfalreadysent){
+        const dialogRef = this.dialog.open(DialogAccepterAvanceCompta, {
+          data: { id_ldf : id, id_ndf : this.id_ndf, newNdf : this.ndfalreadysent, 
+            newMonth : this.newMonth, newYear : this.newYear, nom_collab : this.nom }
+        });
+        dialogRef.afterClosed().subscribe(res => {
+          this.delay(1500).then(any => {
+            this.refreshLignes();
+          });
+        });
+      }
+      else {
+        this.servicecomptaService
+        .accepterAvance({
+          id_ldf : id, id_ndf : this.id_ndf, newNdf : this.ndfalreadysent, 
+          newMonth : this.newMonth, newYear : this.newYear, nom_collab : this.nom
+        })
+        this.delay(1500).then(any => {
+          this.refreshLignes();
+        });
+      }
+    }
+
+    refuserAvance(id : number) {
+      const dialogRef = this.dialog.open(DialogRefuserLigneCompta, {
+        data: { id_ldf : id, motif : '', id_ndf : this.id_ndf }
       });
       dialogRef.afterClosed().subscribe(res => {
         this.delay(1500).then(any => {
           this.refreshLignes();
         });
       });
+    }
+    
+
+    refuserAllAvance() {
+
+    }
+
+    transfromStatut(statut : string) {
+      if(statut == 'val')
+        return 'Validée'
+      else if(statut == 'attF')
+        return 'Attente compta'
+      else if(statut == 'noF')
+        return 'Refusée compta'
     }
   
     async delay(ms: number) {

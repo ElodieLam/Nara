@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Accepter avance</h1>
+<div mat-dialog-content>
+    <p>
+        La note de frais de ce mois a déjà été validée, <br>
+        cette avance sera décalé au mois suivant.
+    </p>
+</div>
+<div mat-dialog-actions>
+    <button mat-flat-button (click)="onNoClick()">Annuler</button>
+    <button mat-flat-button (click)="onClick()" [mat-dialog-close]="data">Envoyer</button>
+</div>

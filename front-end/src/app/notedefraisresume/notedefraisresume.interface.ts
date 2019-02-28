@@ -7,4 +7,5 @@ export interface INotedefraisresume {
     no: boolean;
     wait: boolean;
     nosent: boolean;
+    isAvance: boolean;
   }

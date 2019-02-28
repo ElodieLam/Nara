@@ -38,18 +38,6 @@ router.get('/nommission', function (req, res) {
     });
 });
 
-router.post('/notedefraiscreate', function (req, res) {
-    Notedefrais.createNotedefraisWithMonth(req.body, function (err, count) {
-        if (err) {
-            res.status(400).json(err);
-        }
-        else {
-            req.body.id = count.insertId;
-            res.json(req.body);
-        }
-    });
-});
-
 router.post('/createnotedefrais', function (req, res) {
     Notedefrais.createNotedefrais(req.body, function (err, count) {
         if (err) {

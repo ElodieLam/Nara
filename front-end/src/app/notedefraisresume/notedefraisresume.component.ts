@@ -31,6 +31,8 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   values:boolean = true;
   lignesValid:number = 0;
   lignesTotal:number = 0;
+  nbAvance:number = 0;
+  ndfValid:boolean = false;
 
   //Variable pour encrypt/decrypt
   keySize: number = 256;
@@ -57,6 +59,13 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
 
         this.lignesTotal = this.listLignedefrais.length;
         this.listLignedefrais.forEach( ligne => {
+          ligne.isAvance = false;
+          if(ligne.statut_ldf == 'avnoCds' || ligne.statut_ldf == 'avnoF' || 
+              ligne.statut_ldf == 'avattCds' || ligne.statut_ldf == 'avnoSent' ||
+              ligne.statut_ldf == 'avattF') {
+                ligne.isAvance = true;
+                this.nbAvance++;
+          }
           ligne.no = false;
           ligne.wait = false;
           ligne.val = false;
@@ -70,7 +79,8 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
         });
         this.mois = +temp[0];
         this.annee = +temp[1];
-
+        if(this.nbAvance == 0 && this.lignesTotal == this.lignesValid)
+          this.ndfValid = true;
         this.dateVerbose = this.listemois[this.mois] + " " + this.annee;
         this.dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
         this.dataSource.paginator = this.paginator;

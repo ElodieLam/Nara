@@ -22,17 +22,10 @@
       </td>
     </ng-container>
     
-    <ng-container matColumnDef="avance">
-      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> is avance </th>
-      <td mat-cell *matCellDef="let element">
-          <mat-icon *ngIf="element.avance">check_circle_outline</mat-icon>
-      </td>
-    </ng-container>
-    
     <ng-container matColumnDef="montant">
-      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Montant /<br>Estimé </th>
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header>Montant</th>
       <td mat-cell *matCellDef="let element">
-          {{ element.montant_display }}
+          {{ element.montant_ldf }}
       </td>
     </ng-container>
 
@@ -56,26 +49,7 @@
           {{ element.statut_ldf }}
       </td>
     </ng-container>
-    <ng-container matColumnDef="accepter">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-flat-button 
-        [disabled]="isDisabled"
-        *ngIf="element.modif"
-        (click)="accepterLdf(element.id_ldf, element.avance, element.statut_ldf)" 
-        style="color:green;">Accepter</button>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="refuser">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-flat-button 
-        [disabled]="isDisabled"
-        *ngIf="element.modif"
-        (click)="refuserLdf(element.id_ldf, element.avance, element.statut_ldf)" 
-        style="color:red;">Refuser</button>
-      </td>
-    </ng-container>
+    
     <ng-container matColumnDef="motif_refus">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Motif refus</th>
       <td mat-cell *matCellDef="let element">
@@ -89,3 +63,16 @@
 
   <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
 </div>
+<button mat-flat-button [disabled]="alreadyChecked || !possiblendf" (click)="refuserLignes()">
+  Refuser la note de frais
+</button>
+<button mat-flat-button [disabled]="alreadyChecked || !possiblendf" (click)="accepterLignes()">
+  Accepter la note de frais
+</button>
+<app-servicecomptaavance [listavance]="listavance"></app-servicecomptaavance>
+<button mat-flat-button [disabled]="!possibleavance" (click)="refuserAllAvance()">
+  Refuser les avances
+</button>
+<button mat-flat-button [disabled]="!possibleavance" (click)="accepterAllAvance()">
+  Accepter les avances
+</button>

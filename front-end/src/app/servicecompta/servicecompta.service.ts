@@ -24,4 +24,61 @@ export class ServicecomptaService {
             .get(`${this.url}/servicecompta/getndftocomptaidndf`, { params : data });
     }
 
+    accepterLignes(data) {
+      this.http.post(`${this.url}/servicecompta/accepterlignes`, data)
+          .subscribe(
+              res => {
+              this.toastr.success('Ligne de frais modifiée.', 'Success');
+  
+              },
+              err => {
+              console.log('Error occured:' , err);
+              this.toastr.error(err.message, 'Error occured');
+              }
+          );
+    }
+
+    refuserLignes(data) {
+      this.http.post(`${this.url}/servicecompta/refuserlignes`, data)
+          .subscribe(
+              res => {
+              this.toastr.success('Ligne de frais modifiée.', 'Success');
+  
+              },
+              err => {
+              console.log('Error occured:' , err);
+              this.toastr.error(err.message, 'Error occured');
+              }
+          );
+    }
+
+    accepterAvance(data) {
+      this.http.post(`${this.url}/servicecompta/accepteravance`, data)
+          .subscribe(
+              res => {
+              this.toastr.success('Ligne de frais modifiée.', 'Success');
+  
+              },
+              err => {
+              console.log('Error occured:' , err);
+              this.toastr.error(err.message, 'Error occured');
+              }
+          );
+    }
+
+
+    refuserAvance(data) {
+      this.http.post(`${this.url}/servicecompta/refuseravance`, data)
+          .subscribe(
+              res => {
+              this.toastr.success('Ligne de frais modifiée.', 'Success');
+  
+              },
+              err => {
+              console.log('Error occured:' , err);
+              this.toastr.error(err.message, 'Error occured');
+              }
+          );
+    }
+
 }

@@ -18,7 +18,6 @@ export class NotedefraisComponent implements OnInit {
 
   private sub : any;
   lnotedefrais: INotedefrais[];
-  //data: Notedefrais = { id_ndf:null, id_collab:6, mois:null, annee:null, total:null, };
   dataS: String = '6';
   user: String = '0';
   date = new Date();
@@ -67,10 +66,11 @@ export class NotedefraisComponent implements OnInit {
 
 
             // vérifie s'il existe une ndf pour le mois courrant
-            if(+this.str[0] == this.lnotedefrais[0].annee 
-              && +this.str[1] == this.lnotedefrais[0].mois){
+            this.lnotedefrais.forEach( ndf => {
+              if(+this.str[0] == ndf.annee && +this.str[1] == ndf.mois){
                 this.currentMissing = false;
               }
+            })
 
             if(this.lnotedefrais.length == 1 && this.currentMissing)
             {

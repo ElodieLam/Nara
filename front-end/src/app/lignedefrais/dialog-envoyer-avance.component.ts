@@ -28,29 +28,6 @@ export class DialogEnvoyerAvance implements OnInit{
   }
 
   onClick(): void {
-    // var liste = [];
-    // var listeCds = [];
-    // this.data.liste.forEach(element => {
-    //   liste.push( {
-    //     id : element.id_ldf,
-    //     id_ndf : element.id_ndf,
-    //     id_mission : element.id_mission,
-    //     libelle : element.libelle,
-    //     montant_estime : element.montant_estime,
-    //     montant_avance : element.montant_avance,
-    //     commentaire : element.commentaire
-    //   });
-    //   var isIn = false;
-    //   listeCds.forEach( cds =>  {
-    //     if(cds == element.id_chef)
-    //       isIn = true
-    //   });
-    //   isIn ? {} : listeCds.push(element.id_chef);
-    // });
-    // this.lignedefraisService.deleteAndCreateAvance( {
-    //   liste : liste, listeCds : listeCds
-    // });
-
     var liste = []
     var listeCds = [];
     this.data.liste.forEach(element => {

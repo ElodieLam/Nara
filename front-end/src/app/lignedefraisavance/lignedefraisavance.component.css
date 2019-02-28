@@ -1,0 +1,22 @@
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 3px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+.mat-cell {
+    padding: 10px 10px 10px 0;
+    text-align: center;
+}
+
+.mat-row {
+    height: auto;
+}
+
+.mat-header-cell {
+    text-align: center;
+    font-size: 15px;
+}

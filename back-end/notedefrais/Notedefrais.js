@@ -17,10 +17,6 @@ var Notedefrais = {
             WHERE ldf.id_ndf = ? and ldf.id_mission = miss.id_mission AND ldf.id_statut = stat.id_statut',
             [data.id, data.id], callback);
     },
-    createNotedefraisWithMonth: function (data, callback) 
-    {
-        return db.query('Insert into t_note_de_frais(id_collab, mois) values(?, ?)',[data.id_collab, data.mois], callback);
-    },
     createNotedefrais: function (data, callback) 
     {
         return db.query('Insert into t_note_de_frais(id_collab, mois, annee, total) values(?, ?, ?, 0)',

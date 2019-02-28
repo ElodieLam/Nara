@@ -5,6 +5,9 @@ var cors = require('cors');
 
 app.use(cors());
 
+var ApplicationController = require('./application/ApplicationController');
+app.use('/application', ApplicationController);
+
 var NotedefraisController = require('./notedefrais/NotedefraisController');
 app.use('/notedefrais', NotedefraisController);
 

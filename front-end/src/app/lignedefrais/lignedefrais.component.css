@@ -5,6 +5,7 @@
 
 .mat-row {
     height: auto;
+    min-width: 60px;
 }
 
 .mat-header-cell {

@@ -44,6 +44,7 @@ import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.compon
 import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component';
+import { DialogNouvelleAvance } from './lignedefrais/dialog-nouvelle-avance.component';
 import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component';
 import { CongeComponent } from './conge/conge.component';
 
@@ -66,7 +67,11 @@ import { ServicecomptaService } from './servicecompta/servicecompta.service';
 import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component';
 import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-ligne.component';
 import { NotifMsgServiceComponent } from './notif-msg-service/notif-msg-service.component';
-
+import { LignedefraisavanceComponent } from './lignedefraisavance/lignedefraisavance.component';
+import { GestionavanceComponent } from './gestionavance/gestionavance.component';
+import { ServicecomptaavanceComponent } from './servicecomptaavance/servicecomptaavance.component';
+import { DialogAccepterAvanceCompta } from './servicecomptandf/dialog-accepter-avance.component'
+ 
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -93,12 +98,14 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     DialogNouvelleLignedefrais,
+    DialogNouvelleAvance,
     DialogModifierLignedefrais,
     DialogModifierAvance,
     DialogEnvoyerAvance,
     DialogEnvoyerLignes,
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
+    DialogAccepterAvanceCompta,
     LignedefraisAjoutComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -116,6 +123,9 @@ const appRoutes: Routes = [
     ServicecomptaComponent,
     ServicecomptandfComponent,
     NotifMsgServiceComponent,
+    LignedefraisavanceComponent,
+    GestionavanceComponent,
+    ServicecomptaavanceComponent,
   ],
   imports: [
     BrowserModule,
@@ -157,12 +167,14 @@ const appRoutes: Routes = [
   entryComponents: [
     DemandeRefuseeComponent,
     DialogNouvelleLignedefrais,
+    DialogNouvelleAvance,
     DialogModifierLignedefrais,
     DialogModifierAvance,
     DialogEnvoyerAvance,
     DialogEnvoyerLignes,
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
+    DialogAccepterAvanceCompta,
     LignedefraisAjoutComponent
   ],
   providers: [

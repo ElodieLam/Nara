@@ -92,15 +92,6 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
         this._refusCDS = true;
       if(this.data.stat == 'Refusée Compta' || this.data.stat == 'Avance refusée Compta' )
         this._refusCompta = true;
-      // cas ou la mission est modifiable
-      // if(this._avance && this.data.stat == 'Avance non envoyée'){
-      //     this.lignedefraisService
-      //     .getMissionsFromIdCollab({id : this.data.comp.id_collab.toString()})
-      //     .subscribe( (data : IMissionOld[]) => {
-      //       this._missModif = true;
-      //       this.missions = data;
-      //     });
-      // }
     }
   
     onClick(): void {
@@ -119,7 +110,9 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
             montant_avance : this.data.comp.montant_avance,
             montant_estime : this.data.comp.montant_estime,
             commentaire : this.data.comp.commentaire,
-            status : 'noSent'
+            status : 'noSent',
+            id_cds : this.data.id_cds,
+            id_ndf : this.data.id_ndf
           });
         }
         else {
@@ -130,7 +123,9 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
             montant_avance : this.data.comp.montant_avance,
             montant_estime : this.data.comp.montant_estime,
             commentaire : this.data.comp.commentaire,
-            status : 'avnoSent'
+            status : 'avnoSent',
+            id_cds : this.data.id_cds,
+            id_ndf : this.data.id_ndf
           });
         }
   

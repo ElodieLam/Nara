@@ -42,6 +42,8 @@ ALTER TABLE `t_service`
 
 ALTER TABLE `t_collaborateur`
   ADD FOREIGN KEY (`id_serviceCollab`) REFERENCES t_service(`id_service`);
+ALTER TABLE `t_collaborateur`
+  ADD UNIQUE `col_unique`(`nom_collab`);
 
 -- ajout des donnees pour les tests
 INSERT INTO `t_service` (`id_service`, `nom_service`, `id_chefDeService`) VALUES
@@ -205,9 +207,11 @@ CREATE TABLE `t_note_de_frais` (
   `total` float(11) NOT NULL,
   `mois` int(2) NOT NULL,
   `annee` int(4) NOT NULL,
-  PRIMARY KEY (`id_ndf`, `mois`, `annee`)
+  PRIMARY KEY (`id_ndf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `t_note_de_frais`
+  ADD UNIQUE `ndf_unique`(`id_collab`, `mois`, `annee`);
 ALTER TABLE `t_note_de_frais`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 

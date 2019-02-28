@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
-import { GestionnotedefraisService } from '../gestionnotedefrais/gestionnotedefrais.service';
+import { ServicecomptaService } from '../servicecompta/servicecompta.service';
 
 
 @Component({
@@ -16,7 +16,7 @@ export class DialogRefuserLigneCompta implements OnInit{
     constructor(
         public dialogRef: MatDialogRef<DialogRefuserLigneCompta>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private gestionnotedefraisService : GestionnotedefraisService) {}
+        private servicecomptaservice : ServicecomptaService) {}
         
     ngOnInit() {
     }
@@ -29,34 +29,18 @@ export class DialogRefuserLigneCompta implements OnInit{
     }
 
     onClick(): void {
-        var statut = 0;
-        console.log(this.data.statut)
-        if(this.data.avance && this.data.statut == 'avattF') 
-            statut = 5;
-        else
-            statut = 10;
-        if(this.data.avance) {
-            console.log('refuser avance ' + statut)
-            // this.gestionnotedefraisService.updateStatutAvance(
-            //     { id : this.data.id , motif : this.motifControl.value, statut : stat }
-            // );
-            this.gestionnotedefraisService.updateAvancenotifToAndFromCompta({
-                id_ldf : this.data.id, motif : this.motifControl.value,
-                stat : statut, id_ndf : this.data.id_ndf, id_cds : 0
-            })
-        }
-        else {
-            console.log('refuser ldf ' + statut)
-            this.gestionnotedefraisService.updateLdfnotifToAndFromCompta({
-                id_ldf : this.data.id, motif : this.motifControl.value,
-                stat : statut, id_ndf : this.data.id_ndf, id_cds : 0
-            })
-            // this.gestionnotedefraisService.updateStatutLignedefrais(
-            //     { id : this.data.id, motif : this.motifControl.value, statut : stat }
-            // );
+        console.log('on fleek')
+        this.data.motif = this.motifControl.value;
+        if(this.data.id_ldf != null){
+            console.log(this.data.id_ldf)
+            this.servicecomptaservice
+            .refuserAvance({
+                id_ldf : this.data.id_ldf, motif : this.motifControl.value,
+                id_ndf : this.data.id_ndf
+            });
         }
     }
-
+                        
     onNoClick(): void {
         this.dialogRef.close();
     }

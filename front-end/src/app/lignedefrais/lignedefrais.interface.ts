@@ -11,7 +11,7 @@ export interface ILignedefraisFull {
     commentaire_ldf: String;
     motif_refus: String;
     justif_ldf: Blob;
-    date_mission: String;
+    date_mission: Date;
     mission_passe: boolean;
     montant_estime: Number;
     montant_avance: Number;
@@ -28,12 +28,12 @@ export interface ILignedefrais {
     status: String;
     mission: String;
     date: Date;
+    date_mission: Date;
     libelle: String;
     montant: Number;
     commentaire: String;
     commentaire_refus: String;
     justificatif: Blob;
-    date_mission: String;
  }
 
 export interface IMissionOld { 
@@ -49,7 +49,6 @@ export interface IMission {
     nom_collab: String;
     prenom_collab: String;
     id_chef: Number;
-    avance: Boolean;
 }
 
 export interface ILibelle {

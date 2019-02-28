@@ -26,8 +26,8 @@ export interface ILignedefraisListe {
     montant_estime: Number;
     montant_avance: Number;
     avance: Boolean;
-    montant_display: String;
-    modif: Boolean;
-    annuler: Boolean;
+    refutable: Boolean;
+    avrefutable: Boolean;
+    avacceptable: Boolean;
 
 }

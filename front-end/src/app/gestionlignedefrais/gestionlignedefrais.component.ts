@@ -25,8 +25,14 @@ export class GestionlignedefraisComponent implements OnInit {
   isDisabled:boolean = true;
 
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'refuser', 'motif_refus'];
   listNotedefrais: ILignedefraisListe[] = [];
+  listavance: ILignedefraisListe[] = [];
+  listlignedefrais: ILignedefraisListe[] = [];
+  cancel:boolean = false;
+  accept:boolean = true;
+  cancelAv:boolean = false;
+  acceptAv:boolean = false;
   dataSource;
   sub : any;
 
@@ -62,57 +68,65 @@ export class GestionlignedefraisComponent implements OnInit {
   }
 
   refreshLignes() {
+    this.listavance = [];
+    this.listlignedefrais = [];
     this.sub = this.gestionnotedefraisService
       .getLignesdefraisFromIdNdfIdCds({ id_ndf : this.id_ndf , id_cds : this.id_cds})
       .subscribe( (data : ILignedefraisListe[]) => {
         this.listNotedefrais = data;
         // console.log(this.listNotedefrais)
         this.listNotedefrais.forEach(element => {
-          // le cds peut acceder à accepter et refuser
-          element.modif = false;
-          if(element.statut_ldf == 'attCds' || element.statut_ldf == 'avattCds')
-            element.modif = true;
-          // le cds peut acceder à annuler
-          element.annuler = false;
-          if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF' ||
-            element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
-            element.annuler = true;
-
-          element.avance = false;
-          if(element.montant_estime)
+          if(!this.cancel)
+            element.statut_ldf == 'noCds' ? this.cancel = true : {} ;
+          if(this.accept)
+            element.statut_ldf == 'noCds' ? this.accept = false : {} ;
+          if(!this.acceptAv)
+            element.statut_ldf == 'avattCds' ? this.acceptAv = true : {} ;
+          if(!this.cancelAv)
+            element.statut_ldf == 'avattCds' ? this.cancelAv = true : {} ;
+          if(element.montant_avance != null)
             element.avance = true;
-          if(element.montant_ldf > 0)
-            element.montant_display = element.montant_ldf.toString();
+          element.refutable = false;
+          if(element.statut_ldf == 'attCds')
+            element.refutable = true;
+          if(element.statut_ldf == 'avattCds') {
+            element.avacceptable = true;
+            element.avrefutable = true;
+          }
+          if(element.statut_ldf == 'avattCds' || element.statut_ldf == 'avnoCds'
+            || element.statut_ldf == 'avattF')
+            this.listavance.push(element);
           else
-            element.montant_display = element.montant_avance + " / " + element.montant_estime;
+            this.listlignedefrais.push(element);
+            
         });
-        this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listNotedefrais);
+        console.log(this.listavance)
+        console.log(this.listlignedefrais)
+          
+        this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.isDisabled = false;
     });
   }
 
-  accepterLdf(id : number, avance : boolean, statut_ldf : String) {
-    this.isDisabled = true;
-    var stat = '';
-    var statut = 0;
-    if(avance && statut_ldf == 'avattCds')
-      statut = 2;
-    else
-      statut = 8;
-    if(avance) {
-      console.log('accepter avance ' + statut)
-      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
-      });
-    }
-    else {
-      console.log('accepter ldf ' + statut)
-      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
-      });
-    }
+  accepterLignes() {
+    console.log('accepter')
+    console.log(this.listlignedefrais.length)
+    this.gestionnotedefraisService
+      .accepterNotedefrais({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(1500).then(any => {
+      this.refreshLignes();
+    });
+  }
+
+  renvoyerLignes() {
+    this.gestionnotedefraisService
+      .renvoyerNotedefrais({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
     this.delay(1500).then(any => {
       this.refreshLignes();
     });
@@ -128,42 +142,32 @@ export class GestionlignedefraisComponent implements OnInit {
       });
     });
   }
+  
+  accepterAvance(id : number) {
+    this.gestionnotedefraisService
+      .accepterAvance({
+        id_ldf : id, id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(1500).then(any => {
+      this.refreshLignes();
+    });
+  }
 
-  annulerLdf(id : number, avance : boolean, statut_ldf : String) {
-    this.isDisabled = true;
-    var statut = 0;
-    var statutOld = 0;
-    console.log(statut_ldf)
-    if(avance && statut_ldf == 'avnoCds') {
-      statut = 3;
-      statutOld = 4;
-    } 
-    else if(avance && statut_ldf == 'avattF') {
-      statut = 3;
-      statutOld = 2;
-    }
-    else if(statut_ldf == 'attF') {
-      statut = 7;
-      statutOld = 8;
-    }
-    else {
-      statut = 7;
-      statutOld = 9;
-    }
-    if(avance) {
-      console.log('annuler avance ' + statut)
-      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, 
-        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
-      });
-    }
-    else {
-      console.log('annuler ldf ' + statut)
-      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut,
-        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
-      });
-    }
+  accepterAllAvance() {
+    this.gestionnotedefraisService
+      .accepterAllAvance({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(1500).then(any => {
+      this.refreshLignes();
+    });
+  }
+
+  refuserAllAvance() {
+    this.gestionnotedefraisService
+      .refuserAllAvance({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
     this.delay(1500).then(any => {
       this.refreshLignes();
     });

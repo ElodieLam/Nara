@@ -59,6 +59,7 @@ import { FormControl, Validators } from '@angular/forms';
       if(this.data.stat == 'Refusée Compta')
         this._refusCompta = true;
     }
+    
   
     onClick(): void {
       this.data.comp.montant =  this.montantControl.value;
@@ -72,7 +73,9 @@ import { FormControl, Validators } from '@angular/forms';
           id_ldf : this.data.comp.id_ldf,
           libelle : this.data.comp.libelle,
           montant : this.data.comp.montant,
-          commentaire : this.data.comp.commentaire
+          commentaire : this.data.comp.commentaire,
+          id_cds : this.data.id_cds,
+          id_ndf : this.data.id_ndf
         });
       }
     }

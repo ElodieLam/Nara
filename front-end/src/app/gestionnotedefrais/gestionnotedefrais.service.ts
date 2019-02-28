@@ -21,53 +21,11 @@ export class GestionnotedefraisService {
             .get(`${this.url}/gestionndf/getldfidndfidcds`, { params : data });
     }
 
-    updateStatutLignedefrais(data) {
-      this.http.post(`${this.url}/gestionndf/updateldf`, data)
+    accepterNotedefrais(data) {
+      this.http.post(`${this.url}/gestionndf/accepternotedefrais`, data)
         .subscribe(
           res => {
-          this.toastr.success('Ligne de frais modifiée.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
-    updateStatutAvance(data) {
-      this.http.post(`${this.url}/gestionndf/updateavance`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Avance modifiée.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-
-    createOrUpdateNotifNdfToComptaGlobal(data) {
-      this.http.post(`${this.url}/notifndf/createnotifndftocomptaglobal`, data)
-        .subscribe(
-          res => {
-          this.toastr.success('Notif to compta avance.', 'Success');
-  
-          },
-          err => {
-          console.log('Error occured:' , err);
-          this.toastr.error(err.message, 'Error occured');
-          }
-      );
-    }
-    
-    createOrUpdateAllNotifications(data) {
-      this.http.post(`${this.url}/notifndf/createorupdateallnotifications`, data)
-        .subscribe(
-          res => {
-            console.log('All notifications updated')
+            console.log('tout accepter')
             this.toastr.success('Notif from compta avance ref.', 'Success');
           },
           err => {
@@ -77,15 +35,10 @@ export class GestionnotedefraisService {
       );
     }
 
-    /**
-     * @param data : id_ldf, id_cds, motif, stat, id_ndf 
-     * @description maj d'une ligne de frais, avec maj de la notif fromCompta : oui / non 
-     */
-    updateLdfnotifToAndFromCompta(data) {
-      this.http.post(`${this.url}/gestionndf/updateldfnotiftoandfromcompta`, data)
+    renvoyerNotedefrais(data) {
+      this.http.post(`${this.url}/gestionndf/renvoyernotedefrais`, data)
         .subscribe(
           res => {
-            console.log('maj ldf, maj notif to or from compta')
             this.toastr.success('Notif from compta avance ref.', 'Success');
           },
           err => {
@@ -95,15 +48,10 @@ export class GestionnotedefraisService {
       );
     }
 
-    /**
-     * @param data : id_ldf, motif, stat, id_ndf 
-     * @description maj d'une avance, avec maj de la notif fromCompta : oui / non 
-     */
-    updateAvancenotifToAndFromCompta(data) {
-      this.http.post(`${this.url}/gestionndf/updateavancenotiftoandfromcompta`, data)
+    refuserLignedefrais(data) {
+      this.http.post(`${this.url}/gestionndf/refuserlignedefrais`, data)
         .subscribe(
           res => {
-            console.log('maj avance, maj notif to or from compta')
             this.toastr.success('Notif from compta avance ref.', 'Success');
           },
           err => {
@@ -113,4 +61,55 @@ export class GestionnotedefraisService {
       );
     }
 
+    refuserAvance(data) {
+      this.http.post(`${this.url}/gestionndf/refuseravance`, data)
+        .subscribe(
+          res => {
+            this.toastr.success('Notif from compta avance ref.', 'Success');
+          },
+          err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+      );
+    }
+
+    accepterAvance(data) {
+      this.http.post(`${this.url}/gestionndf/accepteravance`, data)
+        .subscribe(
+          res => {
+            this.toastr.success('Notif from compta avance ref.', 'Success');
+          },
+          err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+      );
+    }
+
+    accepterAllAvance(data) {
+      this.http.post(`${this.url}/gestionndf/accepterallavance`, data)
+        .subscribe(
+          res => {
+            this.toastr.success('Notif from compta avance ref.', 'Success');
+          },
+          err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+      );
+    }
+
+    refuserAllAvance(data) {
+      this.http.post(`${this.url}/gestionndf/refuserallavance`, data)
+        .subscribe(
+          res => {
+            this.toastr.success('Notif from compta avance ref.', 'Success');
+          },
+          err => {
+            console.log('Error occured:' , err);
+            this.toastr.error(err.message, 'Error occured');
+            }
+      );
+    }
 }
