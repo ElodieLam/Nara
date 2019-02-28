@@ -24,7 +24,6 @@ export class DemandecongeService
 
   createDemandeconges(data)
   {
-    console.log("oh bosetti");
     return this
       .http
       .post(`${this.url}/demandeconge/demandecongescreate`, data)

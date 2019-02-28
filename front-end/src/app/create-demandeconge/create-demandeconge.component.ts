@@ -28,9 +28,9 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
 
   calculateDateMax(type)
   {
-    var dateMax = new Date();
+    var dateMax = new Date(this.newDemande.date_debut);
 
-    var addweekend;
+    var addweekend = new Date();
     var congerestants;
 
     if (type ==="rtt")
@@ -49,7 +49,7 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
     {
       if (congerestants == 2 && Number(this.newDemande.debut_matin) || congerestants == 1)
       {
-        console.log("maispqçamarchyepas")
+        //console.log("maispqçamarchyepas")
         dateMax.setDate(this.newDemande.date_debut.getDate());
       }
       
@@ -57,14 +57,15 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       else if (congerestants % 2 == 0)
       {
         addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, congerestants/2);
-        console.log(addweekend)
-        dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
+        //console.log(addweekend)
+        dateMax = addweekend;
       }
       else
       {
         addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2)+1);
-        console.log(addweekend)
-        dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
+        //console.log(addweekend)
+        dateMax = addweekend;
+        //dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
       }
     }
 
@@ -148,6 +149,7 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       {
         this.isFilled.am = true;
         this.dateMaxi = this.calculateDateMax(this.newDemande.type_demande_conge);
+        console.log(this.dateMaxi)
         this.resetDemande(into);
         break;
       }
@@ -268,62 +270,45 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
   {
     console.log("présent");
     data.duree  = this.calculDuree(data);
-    var info = this.infoConge[0]
     var canCreate = false;
 
-    switch(data.type_demande_conge)
-    {
-      case "rtt":
-      {
-        if (info.rtt_restant - data.duree >= 0)
-        {
-          canCreate = true;
-          if (this.checkDemande())
-          {
-            info.rtt_restant = info.rtt_restant - data.duree;
-            info.rtt_pris = info.rtt_pris + data.duree;
-          }
-          
-  
-        }
-        break;
-      }
-      case "cp":
-      {
-        if (info.cp_restant - data.duree >= 0)
-        {
-          canCreate = true;
-          if (this.checkDemande())
-          {
-            info.cp_restant = info.cp_restant - data.duree;
-            info.cp_pris = info.cp_pris + data.duree;
-          }
-
-        }
-        break;
-      }
-      case "css":
-      {
-        canCreate = true;
-        if (this.checkDemande())
-        {
-          info.css_pris = info.css_pris + data.duree;
-        }
-       
-        break;
-      }
-
-    }
-
-
     canCreate = this.checkDemande();
+
     if(canCreate)
     {
+      switch(data.type_demande_conge)
+      {
+        case "rtt":
+        {
+          console.log("tamerlecoleopter");
+          console.log(this.infoConge[0])
+          this.infoConge[0].rtt_restant = this.infoConge[0].rtt_restant - data.duree;
+          this.infoConge[0].rtt_pris = this.infoConge[0].rtt_pris + data.duree;
+          console.log(this.infoConge[0])
+          break;
+        }
+
+        case "cp":
+        {
+          this.infoConge[0].cp_restant = this.infoConge[0].cp_restant - data.duree;
+          this.infoConge[0].cp_pris = this.infoConge[0].cp_pris + data.duree;
+          break;
+        }
+
+        case "css":
+        {
+
+          this.infoConge[0].css_pris = this.infoConge[0].css_pris + data.duree;
+          break;
+        }
+
+      }
+
       data.date_debut.setDate(data.date_debut.getDate()+1);
       data.date_fin.setDate(data.date_fin.getDate()+1);
       data.date_debut.setHours(0,0,0,0);
       data.date_fin.setHours(0,0,0,0);
-      this.congeService.createConges(info);
+      this.congeService.createConges(this.infoConge[0]);
       this.demandecongeService.createDemandeconges(data);
       this.dialogRef.close();
       
@@ -331,7 +316,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
 
     else
     {
-      info = this.infoConge[0]
       this.openSnackBar()
       
     }
@@ -388,9 +372,30 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
   //fonction retournant la liste des dates comprises entre les deux dates entrees
   getEntreDatesWithoutWeekend(datedebut, nbjours)
   {
-    var dates = []
+    
     var dateActuelle = new Date(datedebut);
-    var datefin = new Date();
+    var compteur = nbjours - 1;
+    while (compteur > 0)
+    {
+      dateActuelle = this.incrementeDate(dateActuelle);
+      if (dateActuelle.getDay() == 0 || dateActuelle.getDay() == 6)
+      {
+        //donothing
+      }
+      else
+      {
+        compteur--;
+      }
+
+      
+      
+    }
+    console.log(dateActuelle)
+    return dateActuelle;
+
+
+    /*var datefin = new Date(datedebut);
+    var dates = []
     datefin.setDate(dateActuelle.getDate()+(nbjours));
     console.log(datefin)
     dates = this.getEntreDates(dateActuelle, datefin);
@@ -406,7 +411,7 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
         
       }
     }
-    return compteur + (nbjours-1);
+    return compteur + (nbjours-1);*/
 
 
   }
