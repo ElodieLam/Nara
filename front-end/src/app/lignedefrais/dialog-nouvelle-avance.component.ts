@@ -40,27 +40,29 @@ export class DialogNouvelleAvance implements OnInit{
     isAvance : boolean = false;
     dateAvance : String = '';
     nbJours : number = 0;
+    mobileVersion:boolean =false;
 
     constructor(
         public dialogRef: MatDialogRef<DialogNouvelleAvance>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private lignedefraisService : LignedefraisService) {}
+        private lignedefraisService : LignedefraisService) {
+            this.mobileVersion = this.data.mobileVersion;
+        }
         
     ngOnInit() {
         
         this.lignedefraisService
         .getMissionsCollabAvance({id : this.data.comp.id_collab.toString()})
         .subscribe( (data : IMission[]) => {
-                this.missions = data;
-                console.log(this.missions);
-                if (this.missions.length == 0 ) {
-                    this.hasMiss = false;
-                    this.delay(2000).then(any => {
-                        this.data = null;
-                        this.dialogRef.close();
-                    });
-                }
-            });
+            this.missions = data;
+            if (this.missions.length == 0 ) {
+                this.hasMiss = false;
+                this.delay(2000).then(any => {
+                    this.data = null;
+                    this.dialogRef.close();
+                });
+            }
+        });
     }
 
     onClick(): void {
@@ -84,7 +86,6 @@ export class DialogNouvelleAvance implements OnInit{
 
     onChange(value : any) {
         if(this.idIsAvance(this.data.comp.id_mission)) {
-            console.log('is avance')
             this.isAvance = true;
         }
         if(this.montantControl.value)

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges, SimpleCh
 import { ILignedefrais } from '../lignedefrais/lignedefrais.interface'
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { LignedefraisComponent } from '../lignedefrais/lignedefrais.component';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-lignedefraisavance',
@@ -22,21 +23,20 @@ export class LignedefraisavanceComponent implements OnInit, OnChanges {
   dataSource;
   displayedColumns: string[] = ['status', 'mission', 'date',
   'libelle', 'montant', 'montant_dem', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['ldf'];
   montantTotalAvance: number = 0;
+  mobileVersion:boolean = false;
 
-  constructor(private lignedefrais : LignedefraisComponent) { }
+  constructor(private lignedefrais : LignedefraisComponent, private login : LoginComponent) {
+    this.mobileVersion = this.login.mobileVersion;
+   }
 
   ngOnInit() {
-    console.log('on init');
-    console.log(this.listavance)
-    console.log(this._listavance)
-    console.log('mattable')
   }
   
   
   ngOnChanges(changes: SimpleChanges) {
-    console.log('on changes')
-    console.log(this._listavance)
     const listavance: SimpleChange = changes.listavance;
     this._listavance = listavance.currentValue; 
     this.delay(1000).then(any => {
@@ -48,12 +48,17 @@ export class LignedefraisavanceComponent implements OnInit, OnChanges {
   refresh() {
     this.montantTotalAvance = 0; 
     this._listavance.forEach(element => {
-      console.log(this.montantTotalAvance)
       this.montantTotalAvance += +element.montant_avance;
     });
-    this.dataSource = new MatTableDataSource<ILignedefrais>(this._listavance);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if(this.mobileVersion){
+      this.dataSourceMobile = new MatTableDataSource<ILignedefrais>(this._listavance);
+      this.dataSourceMobile.paginator = this.paginator;
+    }
+    else {
+      this.dataSource = new MatTableDataSource<ILignedefrais>(this._listavance);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   applyFilter(filterValue: string) {
@@ -83,10 +88,14 @@ export class LignedefraisavanceComponent implements OnInit, OnChanges {
   }
 
   openDialogModifierAvance(element : ILignedefrais) {
-    this.lignedefrais.openDialogModifierAvance(element)
+    this.lignedefrais.openDialogModifierAvance(element);
   }
   supprLignedefrais(element : ILignedefrais) {
-    this.lignedefrais.supprLignedefrais(element)
+    this.lignedefrais.supprLignedefrais(element);
+  }
+
+  openInformation(element : ILignedefrais) {
+    this.lignedefrais.openDialogInformation(element, true);
   }
 
 }

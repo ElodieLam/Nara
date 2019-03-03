@@ -22,3 +22,34 @@
 .example-button-row a {
   margin-right: 8px;
 }
+
+.mobile .mat-cell{
+    font-size: 15px;
+    text-align: center;
+}
+
+.mat-dialog-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.mat-fab-top-right {
+    position: relative;
+    right: 12px;
+    top: 8px;
+    z-index: 10;
+    opacity: 1;
+    color: white;
+}
+
+.mat-fab-top-left {
+    position: relative;
+    left: 47px;
+    top: 8px;
+    z-index: 10;
+    opacity: 1;
+    color: white;
+}
+
+.mat-raised-button {
+    padding : 5px 10px;
+}

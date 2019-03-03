@@ -17,9 +17,11 @@ import {
   MatSortModule,
   MatGridListModule,
   MatCardModule,
+  MatExpansionModule,
   MatMenuModule,
   MatCheckboxModule,
   MatFormFieldModule,
+  MatDividerModule,
   MatInputModule,
   MAT_DATE_LOCALE,
   MatSnackBarModule,
@@ -39,13 +41,14 @@ import { NotedefraisService } from "./notedefrais/notedefrais.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { LignedefraisComponent, LignedefraisAjoutComponent } from './lignedefrais/lignedefrais.component';
+import { LignedefraisComponent, SnackBarComponent } from './lignedefrais/lignedefrais.component';
 import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.component';
 import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component';
 import { DialogNouvelleAvance } from './lignedefrais/dialog-nouvelle-avance.component';
 import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component';
+import { DialogInformation } from './lignedefrais/dialog-information.component';
 import { CongeComponent } from './conge/conge.component';
 
 import { NotifComponent } from './notif/notif.component';
@@ -70,7 +73,8 @@ import { NotifMsgServiceComponent } from './notif-msg-service/notif-msg-service.
 import { LignedefraisavanceComponent } from './lignedefraisavance/lignedefraisavance.component';
 import { GestionavanceComponent } from './gestionavance/gestionavance.component';
 import { ServicecomptaavanceComponent } from './servicecomptaavance/servicecomptaavance.component';
-import { DialogAccepterAvanceCompta } from './servicecomptandf/dialog-accepter-avance.component'
+import { DialogAccepterAvanceCompta } from './servicecomptandf/dialog-accepter-avance.component';
+import { NotedefraishistoriqueComponent } from './notedefraishistorique/notedefraishistorique.component'
  
 
 const appRoutes: Routes = [
@@ -78,6 +82,7 @@ const appRoutes: Routes = [
   {path: 'login', component: LoginComponent},
     {path: 'dashboard', component: DashboardComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
+    {path: 'notedefraishistorique', component: NotedefraishistoriqueComponent},
     {path: 'gestionnotedefrais', component: GestionnotedefraisComponent},
     {path: 'gestionnotedefrais/:id', component: GestionlignedefraisComponent},
     {path: 'servicecompta', component: ServicecomptaComponent},
@@ -88,7 +93,6 @@ const appRoutes: Routes = [
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
-  
 ];
 
 @NgModule({
@@ -106,7 +110,8 @@ const appRoutes: Routes = [
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
     DialogAccepterAvanceCompta,
-    LignedefraisAjoutComponent,
+    DialogInformation,
+    SnackBarComponent,
     CongeComponent,
     DemandecongeComponent,
 
@@ -126,6 +131,7 @@ const appRoutes: Routes = [
     LignedefraisavanceComponent,
     GestionavanceComponent,
     ServicecomptaavanceComponent,
+    NotedefraishistoriqueComponent,
   ],
   imports: [
     BrowserModule,
@@ -142,8 +148,10 @@ const appRoutes: Routes = [
     MatSortModule,
     MatSnackBarModule,
     MatGridListModule,
+    MatExpansionModule,
     MatCardModule,
     MatMenuModule,
+    MatDividerModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatDialogModule,
@@ -175,7 +183,8 @@ const appRoutes: Routes = [
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
     DialogAccepterAvanceCompta,
-    LignedefraisAjoutComponent
+    DialogInformation,
+    SnackBarComponent
   ],
   providers: [
     NotedefraisService,

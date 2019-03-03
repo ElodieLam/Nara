@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { ILignedefraisListe } from '../gestionnotedefrais/gestionnotedefrais.interface';
+import { ILignedefrais } from '../servicecompta/servicecompta.interface';
 import { ServicecomptandfComponent } from '../servicecomptandf/servicecomptandf.component';
+import { LoginComponent } from '../login/login.component';
 
 
 @Component({
@@ -10,26 +11,27 @@ import { ServicecomptandfComponent } from '../servicecomptandf/servicecomptandf.
   styleUrls: ['./servicecomptaavance.component.css']
 })
 export class ServicecomptaavanceComponent implements OnInit, OnChanges {
-  @Input() listavance : ILignedefraisListe[];
-  private _listavance: ILignedefraisListe[];
+  @Input() listavance : ILignedefrais[];
+  private _listavance: ILignedefrais[];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource;
   displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant_e', 'montant_a', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['ldf'];
+  mobileVersion:boolean = false;
 
-  constructor(private servicecomptandf : ServicecomptandfComponent) { }
+  constructor(private servicecomptandf : ServicecomptandfComponent, private login : LoginComponent) {
+    this.mobileVersion = this.login.mobileVersion;
+   }
 
   ngOnInit() {
-    console.log(this.listavance)
-    console.log(this._listavance)
   }
   
   
   ngOnChanges(changes: SimpleChanges) {
-    console.log('on changes')
-    console.log(this._listavance)
     const listavance: SimpleChange = changes.listavance;
     this._listavance = listavance.currentValue; 
     this.delay(1000).then(any => {
@@ -39,9 +41,15 @@ export class ServicecomptaavanceComponent implements OnInit, OnChanges {
   }
 
   refresh() {
-    this.dataSource = new MatTableDataSource<ILignedefraisListe>(this._listavance);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if(this.mobileVersion) {
+      this.dataSourceMobile = new MatTableDataSource<ILignedefrais>(this._listavance);
+      this.dataSourceMobile.paginator = this.paginator;
+    }
+    else {
+      this.dataSource = new MatTableDataSource<ILignedefrais>(this._listavance);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   applyFilter(filterValue: string) {
@@ -52,21 +60,23 @@ export class ServicecomptaavanceComponent implements OnInit, OnChanges {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
   }
 
-  transfromStatut(statut : string) {
-    if(statut == 'avval')
+  transformStatut(statut : string) {
+    if(statut == 'noCds' || statut == 'noF' || statut == 'val'
+    || statut == 'attCds' || statut == 'attF' || statut == 'noSent')
       return 'Validée'
-    else if(statut == 'avattF')
-      return 'Attente compta'
-    else if(statut == 'avnoF')
-      return 'Refusée compta'
+    if(statut == 'avnoF')
+      return 'Refus de laCompta'
+    if(statut == 'avattF')
+      return 'En attente de la Compta'
+    return 'unknown'
   }
 
   refuserAvance(id : number) {
     this.servicecomptandf.refuserAvance(id);
   }
 
-  accepterAvance(id : number) {
-    this.servicecomptandf.accepterAvance(id);
+  accepterAvance(element : ILignedefrais) {
+    this.servicecomptandf.accepterAvance(element);
   }
 
 

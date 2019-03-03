@@ -61,6 +61,17 @@ router.get('/getnotedefraismonthyear', function (req, res) {
     });
 });
 
+router.get('/getnotedefraishistorique', function (req, res) {
+    Notedefrais.getNotedefraisHistorique(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
 router.get('/notedefraisidmois', function (req, res) {
     Notedefrais.getNotedefraisFromIdCollabAndMonth(req.body, function (err, rows) {
         if (err) {

@@ -1,4 +1,5 @@
-<h1 mat-dialog-title>Modifier ligne de frais</h1>
+<h1 mat-dialog-title *ngIf="!mobileVersion">Modifier ligne de frais</h1>
+<p mat-dialog-title *ngIf="mobileVersion" style="font-size: 15px;">Modifier ligne de frais</p>
 <div mat-dialog-content>
     <mat-form-field>
         <input matInput placeholder="Mission" [(ngModel)]="data.comp.nom_mission" disabled>
@@ -28,7 +29,7 @@
     <br>
     Motif : {{data.comp.commentaire_refus}}    
 </p>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Annuler</button>
-  <button mat-button [disabled]="!_ldfValide || !_modif" (click)="onClick()" [mat-dialog-close]="data">Modifier</button>
+<div mat-dialog-actions style="margin: auto;">
+  <button mat-raised-button (click)="onNoClick()">Annuler</button>
+  <button mat-raised-button [disabled]="!_ldfValide || !_modif" (click)="onClick()" [mat-dialog-close]="data">Modifier</button>
 </div>

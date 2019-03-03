@@ -31,20 +31,17 @@ export class DialogRefuserLigne implements OnInit{
 
     onClick(): void {
         var statut = 0;
-        console.log(this.data.statut)
         if(this.data.statut == 'avattCds') 
             statut = 4;
         else
             statut = 9;
         if(this.data.avance) {
-            console.log('refuser avance ' + statut)
             this.gestionnotedefraisService.refuserAvance({
                 id_ldf : this.data.id, motif : this.motifControl.value, statut : statut,
                 id_cds : this.data.id_cds, id_ndf : this.data.id_ndf
             })
         }
         else {
-            console.log('refuser ldf statut ' + statut)
             this.gestionnotedefraisService.refuserLignedefrais({
                 id_ldf : this.data.id, motif : this.motifControl.value, statut : statut
             })

@@ -15,25 +15,33 @@ export class DialogEnvoyerAvance implements OnInit{
 
   dataSource;
   displayedColumns: string[] = ['mission', 'libelle', 'montant_estime', 'montant_avance'];
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['avance'];
   _avanceValid:boolean = true;
+  mobileVersion:boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<DialogEnvoyerAvance>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
+    private lignedefraisService : LignedefraisService) {
+      this.mobileVersion = data.mobile;
+    }
     
   ngOnInit() {
-    this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
-    this.dataSource.paginator = this.paginator;
+    if(this.mobileVersion) {
+      this.dataSourceMobile = new MatTableDataSource<ILignedefrais>(this.data.liste);
+      this.dataSourceMobile.paginator = this.paginator;
+    }
+    else {
+      this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   onClick(): void {
     var liste = []
     var listeCds = [];
     this.data.liste.forEach(element => {
-        //liste.push({id : element.id_ldf, id_ndf : element.id_ndf ,avance : true, stat : 3 })
-        console.log(element.id_chef)
-        console.log(this.data.id_collab)
         if(element.id_chef == this.data.id_collab)
           liste.push({
             id : element.id_ldf, id_ndf : element.id_ndf, 
@@ -53,8 +61,6 @@ export class DialogEnvoyerAvance implements OnInit{
           isIn ? {} : listeCds.push(element.id_chef);
         }
     });
-    console.log(liste)
-    console.log(listeCds)
     this.lignedefraisService.updateLignedefraisGlobal( {
       liste : liste, listeCds : listeCds
     }); 

@@ -40,11 +40,14 @@ export class DialogNouvelleLignedefrais implements OnInit{
     isAvance : boolean = false;
     dateAvance : String = '';
     nbJours : number = 0;
+    mobileVersion:boolean = false;
 
     constructor(
         public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private lignedefraisService : LignedefraisService) {}
+        private lignedefraisService : LignedefraisService) {
+            this.mobileVersion = this.data.mobileVersion;
+        }
         
     ngOnInit() {
         
@@ -52,7 +55,6 @@ export class DialogNouvelleLignedefrais implements OnInit{
         .getMissionsCollabLignedefrais({id : this.data.comp.id_collab.toString()})
         .subscribe( (data : IMission[]) => {
                 this.missions = data;
-                console.log(this.missions);
                 if (this.missions.length == 0 ) {
                     this.hasMiss = false;
                     this.delay(2000).then(any => {

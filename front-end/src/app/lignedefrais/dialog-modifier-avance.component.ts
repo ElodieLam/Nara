@@ -53,6 +53,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
     _refusCDS :boolean = false;
     _refusCompta :boolean = false;
     _modif : boolean = false;
+    mobileVersion:boolean =false;
   
     valuesAtStart : any = {
       id_mission : 0,
@@ -66,7 +67,9 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
     constructor(
       public dialogRef: MatDialogRef<DialogModifierAvance>,
       @Inject(MAT_DIALOG_DATA) public data: any,
-      private lignedefraisService : LignedefraisService) {}
+      private lignedefraisService : LignedefraisService) {
+        this.mobileVersion = this.data.mobileVersion;
+      }
      
     ngOnInit() {
       // valeurs pour la comparaison pour activer le bouton modifier

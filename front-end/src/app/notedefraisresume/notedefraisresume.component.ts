@@ -20,6 +20,7 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   private _id_ndf: number;
   private sub: any;
   listLignedefrais: INotedefraisresume[];
+  listtodisplay: INotedefraisresume[];
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
   mois : number = 0;
   annee : number = 0;
@@ -51,21 +52,15 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const id: SimpleChange = changes.id_notedefrais;
     this._id_ndf = id.currentValue.toUpperCase();
+    this.listtodisplay = [];
     this.sub = this.notedefraisService
       .getNotedefraisresumeFromIdNdf({id : this.id_notedefrais})
       .subscribe( (data : INotedefraisresume[]) => {
         this.listLignedefrais = data;
         var temp = this.moisAnnee.split("-",2);
-
-        this.lignesTotal = this.listLignedefrais.length;
         this.listLignedefrais.forEach( ligne => {
+          
           ligne.isAvance = false;
-          if(ligne.statut_ldf == 'avnoCds' || ligne.statut_ldf == 'avnoF' || 
-              ligne.statut_ldf == 'avattCds' || ligne.statut_ldf == 'avnoSent' ||
-              ligne.statut_ldf == 'avattF') {
-                ligne.isAvance = true;
-                this.nbAvance++;
-          }
           ligne.no = false;
           ligne.wait = false;
           ligne.val = false;
@@ -76,13 +71,30 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
               (ligne.statut_ldf == 'noSent' || ligne.statut_ldf == 'avnoSent') ? 
                 ligne.nosent = true : ligne.wait = true));
           ligne.statut_ldf == 'val' ? this.lignesValid++ : {};
+          if(ligne.statut_ldf == 'avnoSent' || ligne.statut_ldf == 'avnoCds' ||
+             ligne.statut_ldf == 'avnoF' || ligne.statut_ldf == 'avattCds' || 
+             ligne.statut_ldf == 'avattF') {
+              ligne.isAvance = true;
+              if(ligne.id_ndf == this.id_notedefrais) {
+                this.listtodisplay.push(ligne);
+                this.nbAvance++;
+                this.lignesTotal++;
+              }
+          }
+          else {
+            if((ligne.id_ndf_ldf == this.id_notedefrais) || 
+            (ligne.id_ndf_ldf == null && ligne.id_ndf == this.id_notedefrais) ) {
+              this.listtodisplay.push(ligne);
+              this.lignesTotal++;
+            } 
+          }
         });
         this.mois = +temp[0];
         this.annee = +temp[1];
         if(this.nbAvance == 0 && this.lignesTotal == this.lignesValid)
           this.ndfValid = true;
         this.dateVerbose = this.listemois[this.mois] + " " + this.annee;
-        this.dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
+        this.dataSource = new MatTableDataSource<INotedefraisresume>(this.listtodisplay);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         if(this.listLignedefrais.length == 0) {
@@ -95,10 +107,6 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
     var hiddenParam = this.id_notedefrais + "-" + this.annee + "-" + this.mois;
         //Encrypt-Decrypt
         var encrypted = this.encrypt(hiddenParam, this.key);
-        //console.log("Param encrypted: " + encrypted);
-        //var decrypted = this.decrypt(encrypted, this.key);
-        //var param = encrypted;
-        //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
         this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
     
   }
@@ -144,7 +152,6 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   }
 
   ngOnDestroy() {
-    //console.log("destroy ndf res")
     this.sub.unsubscribe();
   }
 

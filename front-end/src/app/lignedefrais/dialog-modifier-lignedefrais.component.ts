@@ -36,7 +36,8 @@ import { FormControl, Validators } from '@angular/forms';
     _refusCDS :boolean = false;
     _refusCompta :boolean = false;
     _modif : boolean = false;
-  
+    mobileVersion : boolean = false;
+
     valuesAtStart : any = {
       libelle : '',
       montant : 0,
@@ -46,7 +47,9 @@ import { FormControl, Validators } from '@angular/forms';
     constructor(
       public dialogRef: MatDialogRef<DialogModifierLignedefrais>,
       @Inject(MAT_DIALOG_DATA) public data: any,
-      private lignedefraisService : LignedefraisService) {}
+      private lignedefraisService : LignedefraisService) {
+        this.mobileVersion = this.data.mobileVersion;
+      }
      
     ngOnInit() {
       this.montantControl.setValue(this.data.comp.montant);
@@ -63,7 +66,6 @@ import { FormControl, Validators } from '@angular/forms';
   
     onClick(): void {
       this.data.comp.montant =  this.montantControl.value;
-      console.log(this.data)
       // verification de la validité de la note de frais 
       // avec les champs missions, libellé et montant
       if(this._ldfValide) {

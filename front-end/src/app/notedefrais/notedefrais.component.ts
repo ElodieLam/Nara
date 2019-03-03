@@ -28,6 +28,7 @@ export class NotedefraisComponent implements OnInit {
   count : number = 0;
   str : string[];
   spinner:boolean = false;
+  mobile:boolean = false;
   //Variable pour encrypt/decrypt
   keySize: number = 256;
   ivSize : number = 128;
@@ -54,17 +55,10 @@ export class NotedefraisComponent implements OnInit {
       // trie la liste de la plus récente à la plus ancienne
       this.dataS = this.datePipe.transform(this.date, 'yyyy-MM-dd');
       this.str = this.dataS.split("-",2);
-      console.log(this.str)
       if(this.lnotedefrais.length != 0){
             this.lnotedefrais.sort((a, b) => {   
               return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
             });
-
-            //console.log(this.lnotedefrais)
-            // enlève les ndf validées
-            // TODO
-
-
             // vérifie s'il existe une ndf pour le mois courrant
             this.lnotedefrais.forEach( ndf => {
               if(+this.str[0] == ndf.annee && +this.str[1] == ndf.mois){
@@ -77,7 +71,7 @@ export class NotedefraisComponent implements OnInit {
               this.topthreeNdf[0] = "miss";
               this.topthreeMonth[0] = "miss";
               this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[1].annee;
+              this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
               this.count = 2;
             }
             else if(this.lnotedefrais.length == 1)
@@ -144,13 +138,13 @@ export class NotedefraisComponent implements OnInit {
             var hiddenParam = temp[0].id_ndf + "-" + this.str[0] + "-" + this.str[1];
             //Encrypt-Decrypt
             var encrypted = this.encrypt(hiddenParam, this.key);
-            //console.log("Param encrypted: " + encrypted);
-            //var decrypted = this.decrypt(encrypted, this.key);
-            //var param = encrypted;
-            //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
             this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
           });
         });
+  }
+
+  goToHistorique() {
+    this.router.navigate(['/notedefraishistorique']);
   }
 
   encrypt (msg, key) {
@@ -194,7 +188,6 @@ export class NotedefraisComponent implements OnInit {
   }
   
   ngOnDestroy() {
-    console.log("destroy ndf ")
     this.sub.unsubscribe();
   }
 

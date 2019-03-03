@@ -1,5 +1,6 @@
-<h1 mat-dialog-title>Nouvelle demande d'avance</h1>
-<div mat-dialog-conent *ngIf="hasMiss" >
+<h1 mat-dialog-title *ngIf="!mobileVersion">Nouvelle demande d'avance</h1>
+<p mat-dialog-title *ngIf="mobileVersion" style="font-size: 15px;">Nouvelle demande d'avance</p>
+<div mat-dialog-content *ngIf="hasMiss" >
   <mat-form-field>
     <mat-select placeholder="Mission" [(ngModel)]="data.comp.id_mission" (ngModelChange)="onChange()" required>
       <mat-option *ngFor="let miss of missions" [value]="miss.id_mission">
@@ -47,8 +48,8 @@
   </div>
 </div>
 <div mat-dialog-actions *ngIf="hasMiss" >
-  <button mat-button (click)="onNoClick()">Annuler</button>
-  <button mat-button [disabled]="!_ldfValide" (click)="onClick()" [mat-dialog-close]="data">Ajouter</button>
+  <button mat-raised-button (click)="onNoClick()">Annuler</button>
+  <button mat-raised-button [disabled]="!_ldfValide" (click)="onClick()" [mat-dialog-close]="data">Ajouter</button>
 </div>
 <div  *ngIf="!hasMiss" >
   <p>Aucune missions possible pour une demande d'avance</p>

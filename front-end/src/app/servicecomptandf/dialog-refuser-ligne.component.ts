@@ -29,10 +29,8 @@ export class DialogRefuserLigneCompta implements OnInit{
     }
 
     onClick(): void {
-        console.log('on fleek')
         this.data.motif = this.motifControl.value;
         if(this.data.id_ldf != null){
-            console.log(this.data.id_ldf)
             this.servicecomptaservice
             .refuserAvance({
                 id_ldf : this.data.id_ldf, motif : this.motifControl.value,

@@ -1,6 +1,7 @@
 export interface ILignedefraisFull {
     id_ldf: Number;
     id_ndf: Number;
+    id_ndf_ldf: Number;
     id_mission: Number;
     id_chef: Number;
     nom_mission: String;
@@ -12,7 +13,6 @@ export interface ILignedefraisFull {
     motif_refus: String;
     justif_ldf: Blob;
     date_mission: Date;
-    mission_passe: boolean;
     montant_estime: Number;
     montant_avance: Number;
 }
@@ -34,7 +34,13 @@ export interface ILignedefrais {
     commentaire: String;
     commentaire_refus: String;
     justificatif: Blob;
- }
+    noF:boolean;
+    noCds:boolean;
+    wait:boolean;
+    send:boolean;
+    no:boolean;
+    val:boolean;
+}
 
 export interface IMissionOld { 
     id_mission : number;

@@ -10,13 +10,13 @@ import {Router} from "@angular/router";
 export class AppService {
 
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-  url = 'http://localhost:3000';
+  url = 'http://192.168.1.20:3000';
 
     updateApp() {
       this.http.post(`${this.url}/application/updateapp`, {})
           .subscribe(
               res => {
-                console.log("succes")
+              console.log("succes")
               this.toastr.success('Ligne de frais modifiée.', 'Success');
   
               },

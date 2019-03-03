@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar } from '@angular/material';
 import { GestionnotedefraisService } from '../gestionnotedefrais/gestionnotedefrais.service';
 import { ILignedefraisListe } from '../gestionnotedefrais/gestionnotedefrais.interface';
 import { LoginComponent } from '../login/login.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { DialogRefuserLigne } from './dialog-refuser-ligne.component';
+import { SnackBarComponent } from '../lignedefrais/lignedefrais.component';
 
 @Component({
   selector: 'app-gestionlignedefrais',
@@ -25,7 +26,10 @@ export class GestionlignedefraisComponent implements OnInit {
   isDisabled:boolean = true;
 
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  dataSource;
   displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'refuser', 'motif_refus'];
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['ldf'];
   listNotedefrais: ILignedefraisListe[] = [];
   listavance: ILignedefraisListe[] = [];
   listlignedefrais: ILignedefraisListe[] = [];
@@ -33,7 +37,8 @@ export class GestionlignedefraisComponent implements OnInit {
   accept:boolean = true;
   cancelAv:boolean = false;
   acceptAv:boolean = false;
-  dataSource;
+  noLine:boolean = true;
+  mobileVersion:boolean = false;
   sub : any;
 
   //Variable pour encrypt/decrypt
@@ -46,15 +51,15 @@ export class GestionlignedefraisComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   constructor(private gestionnotedefraisService : GestionnotedefraisService,
     private login : LoginComponent, private route : ActivatedRoute,
-    private dialog: MatDialog, private router : Router) { }
+    private dialog: MatDialog, private router : Router, private snackBar: MatSnackBar) {
+      this.mobileVersion = this.login.mobileVersion;
+     }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
 
       var decrypted = this.decrypt(params['id'], this.key);
-      //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
       this.str = decrypted.toString(CryptoJS.enc.Utf8).split('-', 6);
-      console.log(this.str)
       this.id_ndf = +this.str[0];
       this.prenom = this.str[1];
       this.nom = this.str[2];
@@ -74,7 +79,6 @@ export class GestionlignedefraisComponent implements OnInit {
       .getLignesdefraisFromIdNdfIdCds({ id_ndf : this.id_ndf , id_cds : this.id_cds})
       .subscribe( (data : ILignedefraisListe[]) => {
         this.listNotedefrais = data;
-        // console.log(this.listNotedefrais)
         this.listNotedefrais.forEach(element => {
           if(!this.cancel)
             element.statut_ldf == 'noCds' ? this.cancel = true : {} ;
@@ -93,31 +97,56 @@ export class GestionlignedefraisComponent implements OnInit {
             element.avacceptable = true;
             element.avrefutable = true;
           }
-          if(element.statut_ldf == 'avattCds' || element.statut_ldf == 'avnoCds'
-            || element.statut_ldf == 'avattF')
-            this.listavance.push(element);
-          else
-            this.listlignedefrais.push(element);
-            
+          if(element.montant_avance == null) {
+            if(element.statut_ldf != 'noSent')
+              this.listlignedefrais.push(element);
+          }
+          else {
+            if(element.statut_ldf != 'avnoSent') {
+              if(element.id_ndf != this.id_ndf) {
+                if(element.id_ndf_ldf == this.id_ndf && element.statut_ldf != 'noSent') {
+                  this.listlignedefrais.push(element);
+                }
+              }
+              else {
+                if(element.id_ndf_ldf != this.id_ndf) {
+                  this.listavance.push(element);
+                }
+                else {
+                  this.listavance.push(element);
+                  if(element.statut_ldf != 'avattCds' && element.statut_ldf != 'avnoCds'
+                  && element.statut_ldf != 'avattF' && element.statut_ldf != 'avnoF'
+                  && element.statut_ldf != 'noSent') {
+                    this.listlignedefrais.push(element);
+
+                  }
+                }
+              }
+            }
+          }
         });
-        console.log(this.listavance)
-        console.log(this.listlignedefrais)
-          
-        this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.listNotedefrais.length == 0 ? this.noLine = true : {} ;
+        if(this.mobileVersion) {
+          this.dataSourceMobile = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
+          this.dataSourceMobile.paginator = this.paginator;
+
+        }
+        else {
+          this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        }
         this.isDisabled = false;
     });
   }
 
   accepterLignes() {
-    console.log('accepter')
-    console.log(this.listlignedefrais.length)
     this.gestionnotedefraisService
       .accepterNotedefrais({
         id_ndf : this.id_ndf, id_cds : this.id_cds
       })
-    this.delay(1500).then(any => {
+    this.delay(2000).then(any => {
+      this.openSnackBar('Note de frais acceptée', 750)
       this.refreshLignes();
     });
   }
@@ -127,7 +156,8 @@ export class GestionlignedefraisComponent implements OnInit {
       .renvoyerNotedefrais({
         id_ndf : this.id_ndf, id_cds : this.id_cds
       })
-    this.delay(1500).then(any => {
+    this.delay(2000).then(any => {
+      this.openSnackBar('Note de frais renvoyée', 750)
       this.refreshLignes();
     });
   }
@@ -137,7 +167,13 @@ export class GestionlignedefraisComponent implements OnInit {
       data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf, id_cds : this.id_cds }
     });
     dialogRef.afterClosed().subscribe(res => {
-      this.delay(1500).then(any => {
+      this.delay(2000).then(any => {
+        if(avance) {
+          this.openSnackBar('Avance refusée', 750)
+        }
+        else {
+          this.openSnackBar('Ligne de frais refusée', 750)
+        }
         this.refreshLignes();
       });
     });
@@ -148,7 +184,8 @@ export class GestionlignedefraisComponent implements OnInit {
       .accepterAvance({
         id_ldf : id, id_ndf : this.id_ndf, id_cds : this.id_cds
       })
-    this.delay(1500).then(any => {
+    this.delay(2000).then(any => {
+      this.openSnackBar('Avance acceptée', 750)
       this.refreshLignes();
     });
   }
@@ -158,7 +195,8 @@ export class GestionlignedefraisComponent implements OnInit {
       .accepterAllAvance({
         id_ndf : this.id_ndf, id_cds : this.id_cds
       })
-    this.delay(1500).then(any => {
+    this.delay(2000).then(any => {
+      this.openSnackBar('Avances acceptées', 750)
       this.refreshLignes();
     });
   }
@@ -168,9 +206,36 @@ export class GestionlignedefraisComponent implements OnInit {
       .refuserAllAvance({
         id_ndf : this.id_ndf, id_cds : this.id_cds
       })
-    this.delay(1500).then(any => {
+    this.delay(2000).then(any => {
+      this.openSnackBar('Avances refusées', 750)
       this.refreshLignes();
     });
+  }
+
+  transformStatut(statut : string) {
+    if(statut == 'val')
+      return 'Validée'
+    if(statut == 'noCds')
+      return 'Refus du Chef de service'
+    if(statut == 'noF')
+      return 'Refus de laCompta'
+    if(statut == 'attCds')
+      return 'En attente du Chef de service'
+    if(statut == 'attF')
+      return 'En attente de la Compta'
+    return 'unknown'
+  }
+
+  openSnackBar(msg: string, duration : number) {
+    console.log('snack')
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: duration,
+      data : msg
+    });
+  }
+
+  goBack() {
+    this.router.navigate(['/gestionnotedefrais']);
   }
 
   async delay(ms: number) {

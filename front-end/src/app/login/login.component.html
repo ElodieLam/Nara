@@ -15,6 +15,9 @@
     </div>
     <button class="btn btn-lg btn-primary btn-block">Se connecter</button>
   </form>
+  <div *ngIf="mobileVersion">
+    <span class="center">Nara mobile Version</span>
+  </div>
 </div>
 <!-- /container -->
 <app-dashboard *ngIf="isOn"></app-dashboard>

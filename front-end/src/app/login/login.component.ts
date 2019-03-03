@@ -10,6 +10,8 @@ import {Collaborateur} from './login.interface';
 })
 export class LoginComponent implements OnInit {
 
+  public innerWidth: any;
+  public mobileVersion: boolean = false;
   //user Input
   username: string;
   param: string;
@@ -17,7 +19,6 @@ export class LoginComponent implements OnInit {
   user : Collaborateur = null;
   correct : boolean =  true;
   isOn : boolean = false;
-
   constructor(private loginService: LoginService , private router: Router) { }
 
   getUserId(){
@@ -26,6 +27,8 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit() {
+    if(window.innerWidth < 400)
+      this.mobileVersion = true;
     console.log("Start loginService");  
   }
 
@@ -35,7 +38,7 @@ export class LoginComponent implements OnInit {
     const target = event.target;
     const username = target.querySelector('#inputUsername').value;
     const password = target.querySelector('#inputPassword').value;
-    console.log("input: " + username, password);
+    
 
     //Create params
     var param = {nom: username, pass: password};
@@ -45,7 +48,6 @@ export class LoginComponent implements OnInit {
         .subscribe( 
           (data : Collaborateur[]) => {
             if(data.length == 0){
-              console.log('User not found', data)
               this.correct = false;
             }
             else{
@@ -64,8 +66,7 @@ export class LoginComponent implements OnInit {
       this.user.isCDS = true;
     }
     console.log("User logged in ! ");
-    //console.log(this.user);
-
+   
     this.goToDashboard();
   }
 

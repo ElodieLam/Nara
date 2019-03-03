@@ -6,7 +6,7 @@ import {Router} from "@angular/router";
 @Injectable()
 export class GestionnotedefraisService {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-  url = 'http://localhost:3000';
+  url = 'http://192.168.1.20:3000';
   
   
     getNotedefraisFromIdCds(data){
@@ -25,7 +25,6 @@ export class GestionnotedefraisService {
       this.http.post(`${this.url}/gestionndf/accepternotedefrais`, data)
         .subscribe(
           res => {
-            console.log('tout accepter')
             this.toastr.success('Notif from compta avance ref.', 'Success');
           },
           err => {
