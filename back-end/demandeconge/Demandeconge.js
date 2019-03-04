@@ -3,9 +3,9 @@ var db = require('../db');
 var Demandeconge =
 {
     
-    getDemandeconges: function(Demandeconge, callback)
+    getDemandeconges: function(data, callback)
     {
-        return db.query('SELECT * from t_demande_conge WHERE id_collab = ?', [Demandeconge.id_collab], callback);
+        return db.query('SELECT * from t_demande_conge WHERE id_collab = ?', [data.id], callback);
     },
 
     
