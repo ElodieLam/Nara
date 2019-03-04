@@ -68,6 +68,7 @@ import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-lign
 import { NotifMsgServiceComponent } from './notif-msg-service/notif-msg-service.component';
 import { GestioncongeComponent } from './gestionconge/gestionconge.component';
 import { GestiondemandeComponent } from './gestiondemande/gestiondemande.component';
+import { ServicerhComponent } from './servicerh/servicerh.component';
 
 
 const appRoutes: Routes = [
@@ -85,6 +86,7 @@ const appRoutes: Routes = [
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'gestionconge', component: GestioncongeComponent},
+    {path: 'servicerh', component: ServicerhComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
   
 ];
@@ -121,6 +123,7 @@ const appRoutes: Routes = [
     NotifMsgServiceComponent,
     GestioncongeComponent,
     GestiondemandeComponent,
+    ServicerhComponent,
   ],
   imports: [
     BrowserModule,

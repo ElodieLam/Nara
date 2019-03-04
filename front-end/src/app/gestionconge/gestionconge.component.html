@@ -50,6 +50,7 @@
 
 </div>
 </section>
+
 <div class = "listouille" *ngIf = "listeCollab.length > 0">
 <table align = "center" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
   <!-- Position Column -->
@@ -104,5 +105,5 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
 </table>
-<mat-paginator *ngIf = "events.length > 0"[pageSizeOptions]="[5]" showFirstLastButtons style = "float: right;"></mat-paginator>
+<mat-paginator [pageSizeOptions]="[3]" showFirstLastButtons style = "float: right;"></mat-paginator>
 </div>

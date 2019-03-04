@@ -71,7 +71,7 @@ export class DashboardComponent implements OnInit{
   }
 
   goToGestionRH(){
-
+    this.router.navigate(['/servicerh']); 
   }
   
   goToGestionNDF(){

@@ -301,7 +301,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       {
         case "rtt":
         {
-          console.log("tamerlecoleopter");
           console.log(this.infoConge[0])
           this.infoConge[0].rtt_restant = this.infoConge[0].rtt_restant - data.duree;
           this.infoConge[0].rtt_pris = this.infoConge[0].rtt_pris + data.duree;

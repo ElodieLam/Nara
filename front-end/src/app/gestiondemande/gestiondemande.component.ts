@@ -19,6 +19,9 @@ export class GestiondemandeComponent implements OnInit {
   demande: IDemandeconge;
   listeCollab: ICollaborateur[];
   infoConges : IConge[]
+  async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
+  }
 
   constructor(private gestioncongeService: GestioncongeService, private congeService: CongeService, private router: Router, public dialogRef: MatDialogRef<GestiondemandeComponent>, @Inject(MAT_DIALOG_DATA) public data: any)
   { 
@@ -27,13 +30,34 @@ export class GestiondemandeComponent implements OnInit {
 
   onClick(statut)
   {
+    var isRh = false;
+    if(this.demande.status_conge === "attRh")
+    {
+      isRh = true;
+    }
+
     if(statut)
     {
-      this.demande.status_conge = "attRh";
+      if(isRh)
+      {
+        this.demande.status_conge = "validee";
+      }
+      else
+      {
+        this.demande.status_conge = "attRh";
+      }
     }
     else
     {
-      this.demande.status_conge = "noCds"
+      if(isRh)
+      {
+        this.demande.status_conge = "noRh"
+      }
+      else
+      {
+        this.demande.status_conge = "noCds"
+      }
+      
       switch(this.demande.type_demande_conge)
       {
         case "rtt":
@@ -56,8 +80,21 @@ export class GestiondemandeComponent implements OnInit {
       }
       this.congeService.createConges(this.infoConges[0]) 
     }
+
     
     this.gestioncongeService.updateService(this.demande);
+    this.delay(1500).then(any => {
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>{
+      if(isRh)
+      {
+        this.router.navigate(["/servicerh"]);
+      }
+      else
+      {
+        this.router.navigate(["/gestionconge"]);
+      }
+    }); 
+    });
     this.dialogRef.close()
   }
 

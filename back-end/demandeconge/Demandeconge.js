@@ -13,6 +13,11 @@ var Demandeconge =
        return db.query('SELECT * FROM t_demande_conge WHERE id_collab IN (SELECT id_collab FROM t_collaborateur WHERE id_serviceCollab = (SELECT id_serviceCollab FROM t_collaborateur WHERE id_collab = ?) AND id_collab NOT LIKE ?)', [data.id, data.id], callback)
     },
 
+    getDemandeRH: function(data, callback)
+    {
+        return db.query('SELECT * FROM t_demande_conge WHERE id_collab IN (SELECT id_collab FROM t_collaborateur WHERE id_serviceCollab NOT LIKE (SELECT id_serviceCollab FROM t_collaborateur WHERE id_collab = ?))', [data.id], callback)
+    },
+
     updateService: function(Demandeconge, callback)
     {
         date = new Date();

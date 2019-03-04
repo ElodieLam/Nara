@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GestioncongeService } from './gestionconge.service';
 import { GestiondemandeComponent} from '../gestiondemande/gestiondemande.component';
+import {ServiceRHService} from './servicerh.service'
 import {Router} from "@angular/router";
 import { IDemandeconge } from '../demandeconge/demandeconge.interface';
 import { CalendarEvent, CalendarDateFormatter, DAYS_OF_WEEK, CalendarView } from 'angular-calendar';
@@ -19,7 +19,7 @@ import {
   addHours
 } from 'date-fns';
 import { LoginComponent } from '../login/login.component';
-import { ICollaborateur } from './collaborateur.interface';
+import { ICollaborateur } from '../gestionconge/collaborateur.interface';
 
 const colors: any = {
   red: {
@@ -40,20 +40,14 @@ const colors: any = {
   }
 };
 
+
 @Component({
-  selector: 'app-gestionconge',
-  templateUrl: './gestionconge.component.html',
-  styleUrls: ['./gestionconge.component.css'],
-  providers: [
-    {
-      provide: CalendarDateFormatter,
-      useClass: CustomDateFormatter
-    }
-  ]
+  selector: 'app-servicerh',
+  templateUrl: './servicerh.component.html',
+  styleUrls: ['./servicerh.component.css']
 })
-export class GestioncongeComponent implements OnInit 
-{
-  
+export class ServicerhComponent implements OnInit {
+
   viewDate: Date = new Date();
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY; 
 
@@ -93,7 +87,7 @@ export class GestioncongeComponent implements OnInit
   eventClicked(event: CalendarEvent): void 
   {
     //todo, rediriger vers la demande de congé en question, à voir.
-    if(this.listeDemande[this.events.indexOf(event)].status_conge === "attCds")
+    if(this.listeDemande[this.events.indexOf(event)].status_conge === "attRh")
     {
       this.openDialog(this.listeDemande[this.events.indexOf(event)])
     }
@@ -115,12 +109,12 @@ export class GestioncongeComponent implements OnInit
       {
         case "attCds":
         {
-          couleur = colors.yellow;
+          couleur = colors.blue;
           break;
         }
         case "attRh" : 
         {
-          couleur = colors.blue;
+          couleur = colors.yellow;
           break;
         }
 
@@ -176,7 +170,7 @@ export class GestioncongeComponent implements OnInit
       
     }
   }
-  constructor(private gestioncongeService: GestioncongeService , private router: Router, private login : LoginComponent, public dialog: MatDialog) 
+  constructor(private serviceRHservice: ServiceRHService, private router: Router, private login : LoginComponent, public dialog: MatDialog) 
   {
     this.user = login.user.id_collab.toString();
   }
@@ -186,8 +180,8 @@ export class GestioncongeComponent implements OnInit
   {
 
 
-    this.gestioncongeService
-    .getDemandecongesFromIdCdS({id : this.user})
+    this.serviceRHservice
+    .getDemandecongesFromIdRH({id : this.user})
       .subscribe( (data : IDemandeconge[]) => {
       this.listeDemande = data;
       this.dataSource = new MatTableDataSource(this.listeDemande); 
@@ -198,7 +192,7 @@ export class GestioncongeComponent implements OnInit
       //console.log(this.events);
     }); 
     
-    this.gestioncongeService
+    this.serviceRHservice
     .getCollabs()
       .subscribe((data : ICollaborateur[]) => {
       this.listeCollab = data;
@@ -216,3 +210,8 @@ export class GestioncongeComponent implements OnInit
   }
 
 }
+
+
+
+
+  

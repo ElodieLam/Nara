@@ -1,0 +1,110 @@
+<div class="row text-center">
+    <div class="col-md-4">
+        <div class="btn-group">
+        
+            <button mat-flat-button color = "blue"
+            mwlCalendarPreviousView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            (viewDateChange)="activeDayIsOpen = false"
+          
+            >
+          <mat-icon>navigate_before</mat-icon>
+      
+          </button>
+      
+            <button mat-flat-button color = "blue"
+              mwlCalendarToday
+              [(viewDate)]="viewDate"
+              (viewDateChange)="activeDayIsOpen = false"
+            >
+            <mat-icon>clear</mat-icon>
+            </button>
+            <button mat-flat-button color = "blue"
+              mwlCalendarNextView
+              [view]="view"
+              [(viewDate)]="viewDate"
+              (viewDateChange)="activeDayIsOpen = false"
+            
+            >
+            <mat-icon>navigate_next</mat-icon>
+      
+            </button>
+           
+          </div>
+    </div>
+  </div>
+  
+  <section><h3>{{viewDate | date : 'MMMM yyyy'}} </h3>
+  
+  <div *ngIf = "events.length > 0">
+  
+    <mwl-calendar-month-view
+    [viewDate]="viewDate"
+    [events]="events"
+    [weekStartsOn]="weekStartsOn"
+    (dayClicked)="dayClicked($event.day)"
+    [activeDayIsOpen]="activeDayIsOpen"
+    (eventClicked)="eventClicked($event.event)">
+    </mwl-calendar-month-view>
+  
+  </div>
+  </section>
+  
+  <div class = "listouille" *ngIf = "listeCollab.length > 0">
+  <table align = "center" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- Position Column -->
+  
+    <ng-container matColumnDef="nom_collab">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom</th>
+      <td mat-cell *matCellDef="let element"> {{listeCollab[element.id_collab - 1].nom_collab}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="prenom_collab">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Prénom</th>
+      <td mat-cell *matCellDef="let element"> {{listeCollab[element.id_collab - 1].prenom_collab}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="type_demande_conge">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Type Congé </th>
+      <td mat-cell *matCellDef="let element"> {{element.type_demande_conge}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="date_debut">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date début </th>
+      <td mat-cell *matCellDef="let element"> {{element.date_debut | date : 'dd/MM/yyyy'}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="date_fin">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date fin </th>
+      <td mat-cell *matCellDef="let element"> {{element.date_fin | date : 'dd/MM/yyyy'}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="status_conge">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
+      <td mat-cell *matCellDef="let element"> {{element.status_conge}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="duree">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Durée </th>
+        <td mat-cell *matCellDef="let element"> {{element.duree}} demi-journées</td>
+    </ng-container>
+    <ng-container matColumnDef="voir">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-flat-button 
+          *ngIf="element.status_conge === 'attRh'"
+          (click)="openDialog(element)" >Voir</button>
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumn;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[3]" showFirstLastButtons style = "float: right;"></mat-paginator>
+  </div>
+  
