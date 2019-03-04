@@ -78,6 +78,10 @@ export class DashboardComponent implements OnInit{
 
   }
   
+  goToGestionMission() {
+    this.router.navigate(['/missions']); 
+  }
+
   goToGestionNDF(){
     this.router.navigate(['/gestionnotedefrais']); 
   }

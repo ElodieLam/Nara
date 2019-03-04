@@ -27,6 +27,60 @@ export class MissionService
       .get(`${this.url}/missions/collaborateurs`, { params : data });
   }
 
+  createMission(data) {
+    this.http.post(`${this.url}/missions/createmission`, data)
+      .subscribe(
+        res => {
+          this.toastr.success('Mission créée.', 'Success');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+
+  supprimerMission(data)
+  {
+    this.http.post(`${this.url}/missions/supprimermission`, data)
+    .subscribe(
+      res => {
+        this.toastr.success('Mission supprimée.', 'Success');
+      },
+      err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+      }
+    );
+  }
+
+  cloreMission(data)
+  {
+    this.http.post(`${this.url}/missions/cloremission`, data)
+    .subscribe(
+      res => {
+        this.toastr.success('Mission fermée.', 'Success');
+      },
+      err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+      }
+    );
+  }
+
+  ouvrirMission(data)
+  {
+    this.http.post(`${this.url}/missions/ouvrirmission`, data)
+    .subscribe(
+      res => {
+        this.toastr.success('Mission ouverte.', 'Success');
+      },
+      err => {
+        console.log('Error occured:' , err);
+        this.toastr.error(err.message, 'Error occured');
+      }
+    );
+  }
 
 }
 
