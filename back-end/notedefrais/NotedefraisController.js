@@ -38,18 +38,6 @@ router.get('/nommission', function (req, res) {
     });
 });
 
-router.post('/notedefraiscreate', function (req, res) {
-    Notedefrais.createNotedefraisWithMonth(req.body, function (err, count) {
-        if (err) {
-            res.status(400).json(err);
-        }
-        else {
-            req.body.id = count.insertId;
-            res.json(req.body);
-        }
-    });
-});
-
 router.post('/createnotedefrais', function (req, res) {
     Notedefrais.createNotedefrais(req.body, function (err, count) {
         if (err) {
@@ -64,6 +52,17 @@ router.post('/createnotedefrais', function (req, res) {
 
 router.get('/getnotedefraismonthyear', function (req, res) {
     Notedefrais.getNotedefraisMonthYear(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
+router.get('/getnotedefraishistorique', function (req, res) {
+    Notedefrais.getNotedefraisHistorique(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }

@@ -5,8 +5,8 @@ import {Router} from "@angular/router";
 
 @Injectable()
 export class NotifService {
-  constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-  url = 'http://localhost:3000';
+  constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) {}
+    url = 'http://localhost:3000';
   
   getNotifCollab(data){
     return this 

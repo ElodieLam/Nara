@@ -13,16 +13,29 @@ export class DialogEnvoyerLignes implements OnInit{
 
   dataSource;
   displayedColumns: string[] = ['avance', 'mission', 'libelle', 'montant'];
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['ldf'];
   size : number;
+  mobileVersion:boolean = false;
   constructor(
     public dialogRef: MatDialogRef<DialogEnvoyerLignes>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private lignedefraisService : LignedefraisService) {}
+    private lignedefraisService : LignedefraisService) {
+      this.mobileVersion = this.data.mobile;
+    }
     
   ngOnInit() {
+    console.log(this.mobileVersion)
     this.size = this.data.liste.length;
-    this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
-    this.dataSource.paginator = this.paginator;
+    if(this.mobileVersion) {
+      console.log(this.data.liste)
+      this.dataSourceMobile = new MatTableDataSource<ILignedefrais>(this.data.liste);
+      this.dataSourceMobile.paginator = this.paginator;
+    }
+    else {
+      this.dataSource = new MatTableDataSource<ILignedefrais>(this.data.liste);
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   onClick(): void {
@@ -50,7 +63,6 @@ export class DialogEnvoyerLignes implements OnInit{
           isIn ? {} : listeCds.push(element.id_chef);
         }
     });
-    console.log(listeCds)
     this.lignedefraisService.updateLignedefraisGlobal( {
       liste : liste, listeCds : listeCds
     });    

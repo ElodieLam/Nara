@@ -1,6 +1,7 @@
 import { Component, OnInit , Input} from '@angular/core';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-notif-msg-service',
@@ -32,17 +33,19 @@ export class NotifMsgServiceComponent implements OnInit {
     color: ""
   }
 
+  mobileVersion:boolean = false;
+
   //Variable pour encrypt/decrypt
   keySize: number = 256;
   ivSize : number = 128;
   iterations : number = 100;
   key  : any = "daouda";
 
-  constructor(private router : Router) { 
+  constructor(private router : Router, private login : LoginComponent) { 
+    this.mobileVersion = this.login.mobileVersion;
   }
  
   ngOnInit() {
-    console.log(this.ndfforcds)
       //infos à afficher dans le tableau
       this.componentData.ndfforcds = (this.ndfforcds == 1) ? true : false;
       this.componentData.ndf = (this.ndf == 'true') ? true : false;
@@ -51,9 +54,6 @@ export class NotifMsgServiceComponent implements OnInit {
       this.componentData.date = this.date;
       this.componentData.statut = this.statut;
       this.componentData.color = this.color;
-      console.log(this.componentData);
-      
-      
   }
 
   goToConge() {
@@ -61,7 +61,6 @@ export class NotifMsgServiceComponent implements OnInit {
 
   getTrColor(type){
     if (type == "Demande de congé") {
-      console.log(type);
       this.color = "orange";
       return this.color;
     } 

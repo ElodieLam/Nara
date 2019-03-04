@@ -42,6 +42,8 @@ ALTER TABLE `t_service`
 
 ALTER TABLE `t_collaborateur`
   ADD FOREIGN KEY (`id_serviceCollab`) REFERENCES t_service(`id_service`);
+ALTER TABLE `t_collaborateur`
+  ADD UNIQUE `col_unique`(`nom_collab`);
 
 -- ajout des donnees pour les tests
 INSERT INTO `t_service` (`id_service`, `nom_service`, `id_chefDeService`) VALUES
@@ -205,9 +207,11 @@ CREATE TABLE `t_note_de_frais` (
   `total` float(11) NOT NULL,
   `mois` int(2) NOT NULL,
   `annee` int(4) NOT NULL,
-  PRIMARY KEY (`id_ndf`, `mois`, `annee`)
+  PRIMARY KEY (`id_ndf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `t_note_de_frais`
+  ADD UNIQUE `ndf_unique`(`id_collab`, `mois`, `annee`);
 ALTER TABLE `t_note_de_frais`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
@@ -265,6 +269,7 @@ INSERT INTO `t_ligne_de_frais` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`,
 CREATE TABLE `t_ligne_de_frais_avance` (
   `id_ldf` int(11) NOT NULL AUTO_INCREMENT,
   `id_ndf` int(11) NOT NULL,
+  `id_ndf_ldf` int(11) NOT NULL,
   `id_mission` int(11) NOT NULL,
   `libelle_ldf` varchar(64) NOT NULL,
   `montant_ldf` float(11) NOT NULL,
@@ -272,8 +277,7 @@ CREATE TABLE `t_ligne_de_frais_avance` (
   `commentaire_ldf` varchar(255) NOT NULL,
   `motif_refus` varchar(128) NOT NULL,
   `justif_ldf` BLOB,
-  `id_statut` int(2) NOT NULL,
-  `mission_passee` boolean NOT NULL, 
+  `id_statut` int(2) NOT NULL, 
   `montant_estime` float(11) NOT NULL,
   `montant_avance` float(11) NOT NULL,
   PRIMARY KEY (`id_ldf`)
@@ -282,16 +286,18 @@ CREATE TABLE `t_ligne_de_frais_avance` (
 ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_ligne_de_frais_avance`
+  ADD FOREIGN KEY (`id_ndf_ldf`) REFERENCES t_note_de_frais(`id_ndf`);
+ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
 ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
 
-INSERT INTO `t_ligne_de_frais_avance` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`id_statut`, `commentaire_ldf`,`motif_refus`, `justif_ldf`, `mission_passee`, `montant_estime`, `montant_avance`) VALUES
-(1, 1, 1, -14.55, 'taxi', '2019-01-15', 1, '', '', NULL, FALSE, 16.0, 14.55),
-(2, 1, 1, -22.00, 'restaurant', '2019-01-15', 1, 'midi', '', NULL, FALSE, 30.0, 22.0),
-(3, 2, 1, -35.99, 'restaurant', '2019-01-15', 1, 'soir', '', NULL, FALSE, 40.0, 35.99),
-(4, 2, 2, -18.55, 'taxi', '2019-01-18', 6, '', '', NULL, TRUE, 25.00, 18.55),
-(5, 1, 2, -44.99, 'restaurant', '2019-01-15', 3, '', 'pas de restaurant le soir', NULL, FALSE, 50.0, 44.99);
+INSERT INTO `t_ligne_de_frais_avance` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`id_statut`, `commentaire_ldf`,`motif_refus`, `justif_ldf`, `montant_estime`, `montant_avance`) VALUES
+(1, 1, 1, -14.55, 'taxi', '2019-01-15', 1, '', '', NULL, 16.0, 14.55),
+(2, 1, 1, -22.00, 'restaurant', '2019-01-15', 1, 'midi', '', NULL, 30.0, 22.0),
+(3, 2, 1, -35.99, 'restaurant', '2019-01-15', 1, 'soir', '', NULL, 40.0, 35.99),
+(4, 2, 2, -18.55, 'taxi', '2019-01-18', 6, '', '', NULL, 25.00, 18.55),
+(5, 1, 2, -44.99, 'restaurant', '2019-01-15', 3, '', 'pas de restaurant le soir', NULL, 50.0, 44.99);
 
 -- table t_admin
 
@@ -390,3 +396,4 @@ ALTER TABLE `t_notif_ndf_from_compta`
 
 
 COMMIT;
+

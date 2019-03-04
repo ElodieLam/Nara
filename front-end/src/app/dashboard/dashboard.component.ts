@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit{
   isCDS: boolean = false;
   isCompta: boolean = false;
   isRH: boolean = false;
+  mobileVersion:boolean = false;
   //param: string;
   isOn: boolean = false;
   date: Date
@@ -30,6 +31,7 @@ export class DashboardComponent implements OnInit{
     );
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private activatedRoute: ActivatedRoute, private login: LoginComponent) {
+    this.mobileVersion = this.login.mobileVersion;
     this.isOn = true;
     this.date = new Date();
     //Récupère les paramètres passés dans l'URL
@@ -62,7 +64,10 @@ export class DashboardComponent implements OnInit{
   }
 
   goToNDF(){
-    this.router.navigate(['/notedefrais']); 
+    if(this.mobileVersion)
+      this.router.navigate(['/notedefraishistorique']);
+    else
+      this.router.navigate(['/notedefrais']); 
   }
 
   goToGestionConge(){
@@ -89,8 +94,5 @@ export class DashboardComponent implements OnInit{
     this.isCDS = false;
     this.router.navigate(['/login']); 
   }
-
-
-  
 
 }

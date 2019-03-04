@@ -40,19 +40,21 @@ export class DialogNouvelleLignedefrais implements OnInit{
     isAvance : boolean = false;
     dateAvance : String = '';
     nbJours : number = 0;
+    mobileVersion:boolean = false;
 
     constructor(
         public dialogRef: MatDialogRef<DialogNouvelleLignedefrais>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private lignedefraisService : LignedefraisService) {}
+        private lignedefraisService : LignedefraisService) {
+            this.mobileVersion = this.data.mobileVersion;
+        }
         
     ngOnInit() {
         
         this.lignedefraisService
-        .getMissionsCollab({id : this.data.comp.id_collab.toString()})
+        .getMissionsCollabLignedefrais({id : this.data.comp.id_collab.toString()})
         .subscribe( (data : IMission[]) => {
                 this.missions = data;
-                console.log(this.missions);
                 if (this.missions.length == 0 ) {
                     this.hasMiss = false;
                     this.delay(2000).then(any => {
@@ -69,26 +71,14 @@ export class DialogNouvelleLignedefrais implements OnInit{
         // avec les champs missions, libellé et montant
         if(this._ldfValide) {
             this.data.comp.valide = true;
-            if(this.isAvance) {
-                this.lignedefraisService.createAvance({
-                    id_ndf : this.data.comp.id_ndf,
-                    id_mission : this.data.comp.id_mission,
-                    libelle : this.data.comp.libelle,
-                    montant : this.data.comp.montant,
-                    commentaire : this.data.comp.commentaire
-                })
-            }
-            else {
-
-                // query SQL pour l'ajout de la ligne de frais
-                this.lignedefraisService.createLignedefrais({
-                    id_ndf : this.data.comp.id_ndf,
-                    id_mission : this.data.comp.id_mission,
-                    libelle : this.data.comp.libelle,
-                    montant : this.data.comp.montant,
-                    commentaire : this.data.comp.commentaire
-                });
-            }
+            // query SQL pour l'ajout de la ligne de frais
+            this.lignedefraisService.createLignedefrais({
+                id_ndf : this.data.comp.id_ndf,
+                id_mission : this.data.comp.id_mission,
+                libelle : this.data.comp.libelle,
+                montant : this.data.comp.montant,
+                commentaire : this.data.comp.commentaire
+            });
         }
         else {
             this.data.comp.valide = false;
@@ -96,33 +86,12 @@ export class DialogNouvelleLignedefrais implements OnInit{
     }
 
     onChange(value : any) {
-        if(this.idIsAvance(this.data.comp.id_mission)) {
-            console.log('is avance')
-            this.isAvance = true;
-        }
         if(this.montantControl.value)
             this._ldfValide = this.data.comp.id_mission != '' && this.data.comp.libelle != '' && this.montantValid(this.montantControl.value);
         else
             this._ldfValide = false;
     }
 
-    idIsAvance(id : number) : boolean {
-        this.dateAvance = '';
-        this.isAvance = false;
-        var is = false;
-        this.missions.forEach( miss => {
-            if(id == miss.id_mission && miss.avance) {
-                is = true;
-                this.dateAvance = miss.date_mission;
-                var dateone = new Date(miss.date_mission.toString()); 
-                var datetwo = new Date();
-                datetwo.setHours(0,0,0,0);
-                var oneDay = 24*60*60*1000; // Calculates milliseconds in a day
-                this.nbJours = Math.abs((dateone.getTime() - datetwo.getTime())/(oneDay));
-            }
-        });
-        return is;
-    }
 
     montantValid(montant : String) : boolean {
         return (montant != '') && (montant.match('\\d+(\.\\d{1,2})?')[0] == montant);

@@ -16,8 +16,8 @@ router.get('/lignesdefraisidndf', function (req, res) {
     });
 });
 
-router.get('/missionsidcollab', function (req, res) {
-    Lignedefrais.getMissionsCollabFormIdCollab(req.query, function (err, rows) {
+router.get('/missionscollabldf', function (req, res) {
+    Lignedefrais.getMissionsCollabLignedefrais(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }
@@ -27,8 +27,8 @@ router.get('/missionsidcollab', function (req, res) {
     });
 });
 
-router.get('/missionscollabavanceldf', function (req, res) {
-    Lignedefrais.getMissionsCollabAvanceOrLignedefrais(req.query, function (err, rows) {
+router.get('/missionscollabavance', function (req, res) {
+    Lignedefrais.getMissionsCollabAvance(req.query, function (err, rows) {
         if (err) {
             res.status(400).json(err);
         }
@@ -62,8 +62,8 @@ router.post('/ajoutavance', function (req, res) {
     });
 });
 
-router.delete('/supprlignedefrais/:id', function (req, res) {
-    Lignedefrais.deleteLignedefrais(req.params, function (err, count) {
+router.post('/supprlignedefrais', function (req, res) {
+    Lignedefrais.deleteLignedefrais(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }
@@ -99,32 +99,8 @@ router.post('/updatelignedefraisavance', function (req, res) {
 });
 
 
-router.delete('/suppravance/:id', function (req, res) {
-    Lignedefrais.deleteAvance(req.params, function (err, count) {
-        if (err) {
-            res.status(400).json(err);
-        }
-        else {
-            req.body.id = count.insertId;
-            res.json(req.body);
-        }
-    });
-});
-
-router.post('/updatestatutlignedefrais', function (req, res) {
-    Lignedefrais.updateStatutLignedefrais(req.body, function (err, count) {
-        if (err) {
-            res.status(400).json(err);
-        }
-        else {
-            req.body.id = count.insertId;
-            res.json(req.body);
-        }
-    });
-});
-
-router.post('/updatestatutavance', function (req, res) {
-    Lignedefrais.updateStatutAvance(req.body, function (err, count) {
+router.post('/suppravance', function (req, res) {
+    Lignedefrais.deleteAvance(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }
@@ -147,8 +123,8 @@ router.post('/updatelignedefraisglobal', function (req, res) {
     });
 });
 
-router.post('/deletecreateavance', function (req, res) {
-    Lignedefrais.deleteAndCreateAvance(req.body, function (err, count) {
+router.post('/cancelsending', function (req, res) {
+    Lignedefrais.cancelSending(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }
