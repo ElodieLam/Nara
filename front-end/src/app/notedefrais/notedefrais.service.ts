@@ -6,7 +6,7 @@ import {Router} from "@angular/router";
 @Injectable()
 export class NotedefraisService {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-    url = 'http://192.168.1.20:3000';
+    url = 'http://localhost:3000';
   
   getNotedefraisFromIdCollab(data){
     return this 

@@ -10,7 +10,6 @@ import { AppService } from './app.service';
 export class AppComponent implements OnInit
 {
   title = 'Nara';
-  public port = '192.168.1.20'
   constructor(private appservice : AppService) {
 
   }

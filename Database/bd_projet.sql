@@ -396,3 +396,4 @@ ALTER TABLE `t_notif_ndf_from_compta`
 
 
 COMMIT;
+

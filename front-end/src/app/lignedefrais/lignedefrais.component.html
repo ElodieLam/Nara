@@ -134,10 +134,10 @@
             </mat-grid-tile>
             <mat-grid-tile>
               <p *ngIf="element.noF || element.noCds; else elseBlock">
-                <span *ngIf="element.noCds">Refus chef de service</span>
-                <span *ngIf="element.noF">Refus service comptabilité</span>
+                <span *ngIf="element.noCds">Refus CDS</span>
+                <span *ngIf="element.noF">Refus compta</span>
                 <br>
-                Motif : {{ldf.commentaire_refus}} <br>
+                Motif : {{element.commentaire_refus}} <br>
               </p>
               <ng-template #elseBlock>
                 <p>

@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 export class CongeService 
 {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-    url = 'http://192.168.1.20:3000';
+    url = 'http://localhost:3000';
   
   
   getCongesFromIdCollab(data)
