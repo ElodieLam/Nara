@@ -1,0 +1,91 @@
+<br>
+<br>
+<br>
+<section>
+  Sélectionner le mois
+  <br>
+
+  <div  ng-controller="monthCtrl">
+        <mat-form-field>
+            <mat-select [(value)]="selected" (selectionChange)="switchMissions(selected)"> 
+              <mat-option value="1">Janvier</mat-option>
+              <mat-option value="2">Février</mat-option>
+              <mat-option value="3">Mars</mat-option>
+              <mat-option value="4">Avril</mat-option>
+              <mat-option value="5">Mai</mat-option>
+              <mat-option value="6">Juin</mat-option>
+              <mat-option value="7">Juillet</mat-option>
+              <mat-option value="8">Août</mat-option>
+              <mat-option value="9">Septembre</mat-option>
+              <mat-option value="10">Octobre</mat-option>
+              <mat-option value="11">Novembre</mat-option>
+              <mat-option value="12">Décembre</mat-option>
+            </mat-select>
+          </mat-form-field>
+  </div>
+
+  <!-- Bouton pour création d'une nouvelle mission -->
+  <br>
+
+  <button mat-flat-button color="accent" (click)="openDialogCreerMission()">Ajouter une nouvelle mission</button>
+  
+  <br>
+  <br>
+
+  <!-- Tableau des missions -->
+
+  <table mat-table [dataSource]="listeMissions" class="mat-elevation-z8">
+ 
+     <!-- ID de la mission -->
+     <ng-container matColumnDef="id_mission">
+      <th mat-header-cell *matHeaderCellDef> N° </th>
+      <td mat-cell *matCellDef="let element"> {{element.id_mission}} </td>
+    </ng-container>
+
+    <!-- Nom de la mission -->
+    <ng-container matColumnDef="nom_mission">
+      <th mat-header-cell *matHeaderCellDef> Mission </th>
+      <td mat-cell *matCellDef="let element"> {{element.nom_mission}} </td>
+    </ng-container>
+  
+    <!-- Chef de service -->
+    <ng-container matColumnDef="id_chef">
+      <th mat-header-cell *matHeaderCellDef> Collaborateurs </th>
+      <td mat-cell *matCellDef="let element"> {{element.id_chef}} </td>
+    </ng-container>
+
+    <!-- Date -->
+    <ng-container matColumnDef="date_mission">
+      <th mat-header-cell *matHeaderCellDef> Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.date_mission | date : 'dd/MM/yyyy'}} </td>
+    </ng-container>
+  
+    <!-- Bouton "voir" -->
+    <ng-container matColumnDef="voirButton">
+      <th mat-header-cell *matHeaderCellDef>  </th>
+      <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Voir</button> </td>
+    </ng-container>
+    
+    <!-- Bouton "Modifier" -->
+    <ng-container matColumnDef="modifierButton">
+      <th mat-header-cell *matHeaderCellDef>  </th>
+      <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Modifier</button> </td>
+    </ng-container>
+
+    <!-- Bouton "Clore" -->
+    <ng-container matColumnDef="cloreButton">
+      <th mat-header-cell *matHeaderCellDef>  </th>
+      <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Clore</button> </td>
+    </ng-container>
+    
+    <!-- Bouton "Supprimer" -->
+    <ng-container matColumnDef="supprimerButton">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element">  <button mat-flat-button color="warn">Supprimer</button>  </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+</section>

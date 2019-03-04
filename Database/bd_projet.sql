@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.7.4
--- https://www.phpmyadmin.net/
---
--- Hôte : localhost
--- Généré le :  mar. 03 juil. 2018 à 11:50
--- Version du serveur :  5.7.19
--- Version de PHP :  7.2.0RC2
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -240,6 +231,7 @@ ALTER TABLE `t_ligne_de_frais`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_ligne_de_frais`
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
+
 ALTER TABLE `t_ligne_de_frais`
   ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
 
@@ -286,8 +278,10 @@ CREATE TABLE `t_ligne_de_frais_avance` (
 ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_ligne_de_frais_avance`
+
   ADD FOREIGN KEY (`id_ndf_ldf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_ligne_de_frais_avance`
+
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
 ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
@@ -298,6 +292,13 @@ INSERT INTO `t_ligne_de_frais_avance` (`id_ldf`, `id_ndf`, `id_mission`, `montan
 (3, 2, 1, -35.99, 'restaurant', '2019-01-15', 1, 'soir', '', NULL, 40.0, 35.99),
 (4, 2, 2, -18.55, 'taxi', '2019-01-18', 6, '', '', NULL, 25.00, 18.55),
 (5, 1, 2, -44.99, 'restaurant', '2019-01-15', 3, '', 'pas de restaurant le soir', NULL, 50.0, 44.99);
+
+INSERT INTO `t_ligne_de_frais_avance` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`status_ldf`, `commentaire_ldf`,`motif_refus`, `justif_ldf`, `mission_passee`, `montant_estime`, `montant_avance`) VALUES
+(1, 1, 1, -14.55, 'taxi', '2019-01-15', 'avnoSent', '', '', NULL, FALSE, 16.0, 14.55),
+(2, 1, 1, -22.00, 'restaurant', '2019-01-15', 'avnoSent', 'midi', '', NULL, FALSE, 30.0, 22.0),
+(3, 2, 1, -35.99, 'restaurant', '2019-01-15', 'avnoSent', 'soir', '', NULL, FALSE, 40.0, 35.99),
+(4, 2, 2, -18.55, 'taxi', '2019-01-18', 'noSent', '', '', NULL, TRUE, 25.00, 18.55),
+(5, 1, 2, -44.99, 'restaurant', '2019-01-15', 'avnoCds', '', 'pas de restaurant le soir', NULL, FALSE, 50.0, 44.99);
 
 -- table t_admin
 
@@ -368,6 +369,7 @@ CREATE TABLE `t_notif_ndf` (
 ALTER TABLE `t_notif_ndf`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_notif_ndf`
+
   ADD FOREIGN KEY (`id_cds`) REFERENCES t_collaborateur(`id_collab`);
 
 CREATE TABLE `t_notif_ndf_to_compta` (
