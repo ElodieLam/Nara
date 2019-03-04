@@ -20,6 +20,7 @@ import {
   MatPaginatorModule,
   MatSortModule,
   MatGridListModule,
+  MatCheckboxModule,
   MatCardModule,
   MatMenuModule,
   MatNativeDateModule,
@@ -46,6 +47,7 @@ import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.comp
 import { ChefdeserviceComponent } from './chefdeservice/chefdeservice.component';
 import { MissionsComponent} from './missions/missions.component';
 import { DialogCreerMission } from './missions/dialog-creer-mission.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     {path: '', redirectTo: 'notifications', pathMatch: 'full'},
@@ -94,6 +96,9 @@ const appRoutes: Routes = [
     MatDatepickerModule,
     MatCardModule,
     MatMenuModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
     MatInputModule,
     MatNativeDateModule,
     MatDialogModule,

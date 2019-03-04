@@ -14,6 +14,8 @@ export interface MissionInterface {
   mois : number;
 }
 
+
+
 @Component({
   selector: 'app-missions',
   templateUrl: './missions.component.html',
@@ -24,8 +26,10 @@ export class MissionsComponent implements OnInit {
 
   
 infoMissions : MissionInterface[]
-dataSource;
-listeCollaboteurs;
+listeMissions;
+listeCollaborateurs;
+displayedColumns: string[] = ['id_mission', 'nom_mission', 'id_chef', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
+
 
 constructor(private missionService: MissionService , private router: Router,
   public dialog: MatDialog) {}
@@ -37,17 +41,19 @@ ngOnInit()
     .subscribe( (data : MissionInterface[]) => {
       console.log(data);
       this.infoMissions = data;
-    this.dataSource = new MatTableDataSource<MissionInterface>(this.infoMissions);
+    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions);
 
   });
 
 }
 
-openDialogCreerMission(): void {
+openDialogCreerMission(): void 
+{
   const dialogRef = this.dialog.open(DialogCreerMission, {
     width: '500px'
   });
-
+  
+  
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
@@ -60,12 +66,13 @@ switchMissions(month) : void
     .subscribe( (data : MissionInterface[]) => {
       console.log(data);
       this.infoMissions = data;
-    this.dataSource = new MatTableDataSource<MissionInterface>(this.infoMissions);
+    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions);
 
   });
 }
 
-  displayedColumns: string[] = ['id_mission', 'nom_mission', 'id_chef', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
+
+  
 
 
 }

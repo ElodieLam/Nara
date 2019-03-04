@@ -21,10 +21,10 @@ export class MissionService
       .get(`${this.url}/missions/missionsidmonths`, { params : data });
   }
 
-  getAllCollaborateurs(){
+  getAllCollaborateurs(data){
     return this
       .http
-      .get(`${this.url}/missions/collaborateurs`);
+      .get(`${this.url}/missions/collaborateurs`, { params : data });
   }
 
 
