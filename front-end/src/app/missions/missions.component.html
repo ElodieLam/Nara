@@ -75,13 +75,18 @@
     <!-- Bouton "Clore" -->
     <ng-container matColumnDef="cloreButton">
       <th mat-header-cell *matHeaderCellDef>  </th>
-      <td mat-cell *matCellDef="let element"> <button mat-flat-button color="primary">Clore</button> </td>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button *ngIf="element.ouverte" color="primary" (click)="cloreMission(element.id_mission)"> Clore</button> 
+        <button mat-flat-button *ngIf="!element.ouverte" color="primary" (click)="ouvrirMission(element.id_mission)" >Ouvrir</button> 
+      </td>
     </ng-container>
     
     <!-- Bouton "Supprimer" -->
     <ng-container matColumnDef="supprimerButton">
       <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let element">  <button mat-flat-button color="warn">Supprimer</button>  </td>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button color="warn" *ngIf="element.cnt == 0" (click)="supprimerMission(element.id_mission)" >Supprimer</button>  
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

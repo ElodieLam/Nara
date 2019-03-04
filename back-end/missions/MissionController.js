@@ -50,7 +50,52 @@ router.get('/collaborateurs', function (req, res)
     });
 });
 
+router.post('/createmission', function (req, res) {
+    Mission.createMission(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
 
+router.post('/supprimermission', function (req, res) {
+    Mission.supprimerMission(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
 
+router.post('/cloremission', function (req, res) {
+    Mission.cloreMission(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/ouvrirmission', function (req, res) {
+    Mission.ouvrirMission(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
 
 module.exports = router;

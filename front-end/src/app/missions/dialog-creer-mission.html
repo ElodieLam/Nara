@@ -1,4 +1,7 @@
-<h1 mat-dialog-title>Nouvelle mission</h1>
+<h1 mat-dialog-title>
+    Nouvelle mission 
+    <span *ngIf="nomControl.value != ''"> : {{nomControl.value}}</span>
+</h1>
 <div mat-dialog-content>
 
 <mat-list>
@@ -62,8 +65,8 @@
 
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Annuler</button>
-  <button mat-button cdkFocusInitial>OK</button>
+  <button mat-button (click)="onNoClick()" >Annuler</button>
+  <button mat-button [disabled]="!valid" (click)="onClick()" [mat-dialog-close]="true">OK</button>
 </div>
 
 
