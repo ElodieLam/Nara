@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnChanges, Inject } from '@angular/core';
-import {MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { DemandecongeService } from '../demandeconge/demandeconge.service';
 import {Router} from "@angular/router";
 import { IDemandeconge } from '../demandeconge/demandeconge.interface';
@@ -22,7 +22,12 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
   dateMaxi = null;
   forcedAm = false;
   forcedPm = false;
+  isCds = false;
   user = 0;
+  async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
+  }
+
 
   
 
@@ -62,7 +67,15 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       }
       else
       {
-        addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2)+1);
+        if(!Number(this.newDemande.debut_matin))
+        {
+          addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2));
+        }
+        else
+        {
+          addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2)+1);
+        }
+        
         //console.log(addweekend)
         dateMax = addweekend;
         //dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
@@ -206,62 +219,70 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       tempfin = new Date(demande.date_fin)
       console.log(datefin)
       console.log(tempdebut)
-      if ((datedebut >tempdebut &&  datedebut < tempfin) || (datefin > tempdebut && datefin < tempfin))
+      if(demande.status_conge === "noCds" || demande.status_conge === "noRh")
       {
-        console.log("caz 1")
-        possible = false;
+        continue;
       }
-
-      if ((tempdebut > datedebut &&  tempdebut < datefin) || (tempfin > datedebut && tempfin < datefin))
+      else
       {
-        console.log("caz 2")
-        possible = false;
-      }
-
-      
-      if (tempdebut.getTime() === datefin.getTime())
-      {
-        console.log("c'est étrange")
-        console.log(demande.debut_matin)
-
-        console.log(finaprem)
-
-        if (!demande.debut_matin && !finaprem)
+        if ((datedebut >tempdebut &&  datedebut < tempfin) || (datefin > tempdebut && datefin < tempfin))
         {
-          //rien c'est ok
-          console.log("c'est ok pour moi")
-        }
-        else if(tempdebut.getTime() === tempfin.getTime())
-        {
-          if((demande.debut_matin && debutmatin) || (demande.fin_aprem && finaprem))
-          {
-            possible = false;
-          }
-        }
-        else
-        {
+          console.log("caz 1")
           possible = false;
         }
-      }
-      else if (tempfin.getTime() === datedebut.getTime())
-      {
+
+        if ((tempdebut > datedebut &&  tempdebut < datefin) || (tempfin > datedebut && tempfin < datefin))
+        {
+          console.log("caz 2")
+          possible = false;
+        }
+
         
-        if (!demande.fin_aprem && !debutmatin)
+        if (tempdebut.getTime() === datefin.getTime())
         {
-          console.log("c'est ok pour moi aussi")
-        }
-        else if(tempdebut.getTime() === tempfin.getTime())
-        {
-          if((demande.debut_matin && debutmatin) || (!demande.fin_aprem && finaprem))
+          console.log("c'est étrange")
+          console.log(demande.debut_matin)
+
+          console.log(finaprem)
+
+          if (!demande.debut_matin && !finaprem)
+          {
+            //rien c'est ok
+            console.log("c'est ok pour moi")
+          }
+          else if(tempdebut.getTime() === tempfin.getTime())
+          {
+            if((demande.debut_matin && debutmatin) || (demande.fin_aprem && finaprem))
+            {
+              possible = false;
+            }
+          }
+          else
           {
             possible = false;
           }
         }
-        else
+        else if (tempfin.getTime() === datedebut.getTime())
         {
-          possible = false;
+          
+          if (!demande.fin_aprem && !debutmatin)
+          {
+            console.log("c'est ok pour moi aussi")
+          }
+          else if(tempdebut.getTime() === tempfin.getTime())
+          {
+            if((demande.debut_matin && debutmatin) || (!demande.fin_aprem && finaprem))
+            {
+              possible = false;
+            }
+          }
+          else
+          {
+            possible = false;
+          }
         }
       }
+      
     }
     return possible;
   }
@@ -308,18 +329,36 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       data.date_fin.setDate(data.date_fin.getDate()+1);
       data.date_debut.setHours(0,0,0,0);
       data.date_fin.setHours(0,0,0,0);
+      if(this.isCds)
+      {
+        data.status_conge = "attRh"
+      }
       this.congeService.createConges(this.infoConge[0]);
       this.demandecongeService.createDemandeconges(data);
+      this.delay(1500).then(any => {
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+        this.router.navigate(["/conge"])); 
+        this.openSnackBar('Demande de congé créée !!');
+      
+      });
+      
       this.dialogRef.close();
       
     }
 
     else
     {
-      this.openSnackBar()
+      this.openSnackBar('Cette demande se chevauche avec une autre !!');
       
     }
     
+  }
+
+  openSnackBar(msg: string) {
+    this.snackBar.openFromComponent(DemandeRefuseeComponent, {
+      duration: 750,
+      data : msg
+    });
   }
 
 
@@ -374,7 +413,13 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
   {
     
     var dateActuelle = new Date(datedebut);
+
     var compteur = nbjours - 1;
+    var debutmatin = Number(this.newDemande.debut_matin)
+    if (!debutmatin)
+    {
+      dateActuelle = this.incrementeDate(dateActuelle);
+    }
     while (compteur > 0)
     {
       dateActuelle = this.incrementeDate(dateActuelle);
@@ -440,21 +485,21 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
   {
     this.dialogRef.close();
   }
-  openSnackBar() {
-    this.snackBar.openFromComponent(DemandeRefuseeComponent, {
-      duration: 2500,
-    });
-  }
 
   constructor(private demandecongeService: DemandecongeService , private congeService: CongeService, 
     private router: Router, private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<CreateDemandecongeComponent>, @Inject(MAT_DIALOG_DATA) public data: any) 
     {
-      this.user = data;
+      
+      this.user = data[0];
+      console.log(this.user)
+      this.isCds = data[1];
     }
 
   ngOnInit() 
   {
+
+
     this.congeService
     .getCongesFromIdCollab({id : this.user})
       .subscribe( (data : IConge []) => {
@@ -494,4 +539,4 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
   }
 `],
 })
-export class DemandeRefuseeComponent {}
+export class DemandeRefuseeComponent {constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) { }}

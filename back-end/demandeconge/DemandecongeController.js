@@ -19,10 +19,39 @@ router.get('/demandecongesid', function (req, res)
     });
 });
 
+router.get('/demandeservice', function (req, res) 
+{
+    Demandeconge.getDemandeService(req.query, function(err, rows)
+    {
+        if(err) 
+        {
+            res.status(400).json(err);
+        }
+        else
+        {
+            res.json(rows);
+        }
+    });
+});
+
 
 router.post('/demandecongescreate', function (req, res) 
 {
     Demandeconge.createDemandeconges(req.body, function(err, count){
+        if(err)
+        {
+            res.status(400).json(err);
+        }
+        else
+        {
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/updateservice', function (req, res) 
+{
+    Demandeconge.updateService(req.body, function(err, count){
         if(err)
         {
             res.status(400).json(err);

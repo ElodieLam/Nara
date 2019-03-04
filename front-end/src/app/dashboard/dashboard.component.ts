@@ -66,6 +66,7 @@ export class DashboardComponent implements OnInit{
   }
 
   goToGestionConge(){
+    this.router.navigate(['/gestionconge']); 
 
   }
 

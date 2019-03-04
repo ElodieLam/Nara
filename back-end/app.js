@@ -14,6 +14,9 @@ app.use('/conge', CongeController);
 var DemandecongeController = require('./demandeconge/DemandecongeController');
 app.use('/demandeconge', DemandecongeController);
 
+var CollaborateurController = require('./collaborateur/CollaborateurController');
+app.use('/collaborateur', CollaborateurController);
+
 var LignedefraisController = require('./lignedefrais/LignedefraisController');
 app.use('/lignedefrais', LignedefraisController);
 

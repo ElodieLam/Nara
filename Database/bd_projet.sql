@@ -132,6 +132,7 @@ INSERT INTO `t_conge` (`id_collab`, `rtt_restant`, `rtt_pris`, `cp_restant`, `cp
 CREATE TABLE `t_demande_conge` (
   `id_demande_conge` int(11) NOT NULL AUTO_INCREMENT,
   `id_collab` int(11) NOT NULL,
+  `date_demande` DATE NOT NULL,
   `type_demande_conge` enum('rtt', 'css', 'cp') NOT NULL,
   `date_debut` DATE NOT NULL,
   `debut_matin` boolean NOT NULL,
@@ -148,9 +149,6 @@ CREATE TABLE `t_demande_conge` (
 ALTER TABLE `t_demande_conge`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
-INSERT INTO `t_demande_conge` (`id_demande_conge`, `id_collab`, `type_demande_conge`, `date_debut`, `debut_matin`, `date_fin`, `fin_aprem`, `status_conge`, `motif_refus`, `duree`) VALUES
-(1, 6, 'rtt', '2019-01-22', TRUE, '2019-01-23', TRUE, 'attCds', '', 4),
-(2, 6, 'cp', '2019-01-20', FALSE, '2019-01-21', FALSE, 'attRH', '', 2);
 
 -- table t_modification_conge
 
@@ -319,21 +317,6 @@ ALTER TABLE `t_log`
   ADD FOREIGN KEY (`id_admin`) REFERENCES t_admin(`id_admin`);
 
 -- table t_notif_dem_conge
-
-CREATE TABLE `t_notif_dem_conge` (
-  `id_demande_conge` int(11) NOT NULL,
-  `id_collab` int(11) NOT NULL,
-  PRIMARY KEY (`id_demande_conge`, `id_collab`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `t_notif_dem_conge`
-  ADD FOREIGN KEY (`id_demande_conge`) REFERENCES t_demande_conge(`id_demande_conge`);
-ALTER TABLE `t_notif_dem_conge`
-  ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
-
-INSERT INTO `t_notif_dem_conge` (`id_demande_conge`, `id_collab`) VALUES
-(1, 6),
-(2, 6);
 
 -- table t_notif_mod_conge
 

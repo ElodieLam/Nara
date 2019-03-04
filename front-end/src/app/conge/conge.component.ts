@@ -20,15 +20,19 @@ export class CongeComponent implements OnInit
   infoConges : IConge[]
   test: IConge = {id_collab: 6, rtt_restant: null, rtt_pris: null, cp_pris: null, cp_restant: null, css_pris: null}
   user = 0;
+  isCds = false;
+  transmettre = [this.user, this.isCds]
   dataSource;
 
   constructor(private congeService: CongeService , private router: Router, private login: LoginComponent,  public dialog: MatDialog) 
   { 
     this.user = this.login.user.id_collab;
+    this.isCds = this.login.user.isCDS == null ? false : true; 
+    this.transmettre = [this.user, this.isCds]
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(CreateDemandecongeComponent, {data:this.user });
+    const dialogRef = this.dialog.open(CreateDemandecongeComponent, {data: this.transmettre});
   }
 
   ngOnInit() 

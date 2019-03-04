@@ -66,6 +66,8 @@ import { ServicecomptaService } from './servicecompta/servicecompta.service';
 import { ServicecomptandfComponent } from './servicecomptandf/servicecomptandf.component';
 import { DialogRefuserLigneCompta } from './servicecomptandf/dialog-refuser-ligne.component';
 import { NotifMsgServiceComponent } from './notif-msg-service/notif-msg-service.component';
+import { GestioncongeComponent } from './gestionconge/gestionconge.component';
+import { GestiondemandeComponent } from './gestiondemande/gestiondemande.component';
 
 
 const appRoutes: Routes = [
@@ -82,6 +84,7 @@ const appRoutes: Routes = [
     {path: 'notifications/service', component: Notif_ServiceComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
+    {path: 'gestionconge', component: GestioncongeComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
   
 ];
@@ -116,6 +119,8 @@ const appRoutes: Routes = [
     ServicecomptaComponent,
     ServicecomptandfComponent,
     NotifMsgServiceComponent,
+    GestioncongeComponent,
+    GestiondemandeComponent,
   ],
   imports: [
     BrowserModule,
@@ -156,6 +161,7 @@ const appRoutes: Routes = [
   ],
   entryComponents: [
     DemandeRefuseeComponent,
+    GestiondemandeComponent,
     DialogNouvelleLignedefrais,
     DialogModifierLignedefrais,
     DialogModifierAvance,

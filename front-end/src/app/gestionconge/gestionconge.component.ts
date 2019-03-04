@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DemandecongeService } from './demandeconge.service';
+import { GestioncongeService } from './gestionconge.service';
+import { GestiondemandeComponent} from '../gestiondemande/gestiondemande.component';
 import {Router} from "@angular/router";
-import { IDemandeconge } from './demandeconge.interface';
+import { IDemandeconge } from '../demandeconge/demandeconge.interface';
 import { CalendarEvent, CalendarDateFormatter, DAYS_OF_WEEK, CalendarView } from 'angular-calendar';
-import {MatSort, MatTableDataSource, MatDialog} from '@angular/material';
+import {MatSort, MatTableDataSource, MatDialog, MatPaginator} from '@angular/material';
 
-import { CustomDateFormatter } from './custom-date-formatter.provider';
+import { CustomDateFormatter } from '../demandeconge/custom-date-formatter.provider';
 
 import {
   startOfDay,
@@ -18,6 +19,7 @@ import {
   addHours
 } from 'date-fns';
 import { LoginComponent } from '../login/login.component';
+import { ICollaborateur } from './collaborateur.interface';
 
 const colors: any = {
   red: {
@@ -39,9 +41,9 @@ const colors: any = {
 };
 
 @Component({
-  selector: 'app-demandeconge',
-  templateUrl: './demandeconge.component.html',
-  styleUrls: ['./demandeconge.component.css'],
+  selector: 'app-gestionconge',
+  templateUrl: './gestionconge.component.html',
+  styleUrls: ['./gestionconge.component.css'],
   providers: [
     {
       provide: CalendarDateFormatter,
@@ -49,7 +51,7 @@ const colors: any = {
     }
   ]
 })
-export class DemandecongeComponent implements OnInit 
+export class GestioncongeComponent implements OnInit 
 {
   
   viewDate: Date = new Date();
@@ -58,14 +60,20 @@ export class DemandecongeComponent implements OnInit
   events: CalendarEvent[] = [ ];
   view: CalendarView = CalendarView.Month;
   activeDayIsOpen: boolean = false;
+  async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
+  }
 
   listeDemande : IDemandeconge[];
+
+  listeCollab: ICollaborateur[] = [];
+
+  displayedColumn = ['nom_collab', 'prenom_collab', 'type_demande_conge', 'date_debut', 'date_fin', 'status_conge', 'duree', 'voir'];
   user = "0";
-  test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null};
-  test2: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: new Date(), date_fin: new Date(), motif_refus: "", debut_matin: true, duree: 2, fin_aprem: true, type_demande_conge: "rtt", status_conge: "attCds"};
   dataSource;
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void 
   {
@@ -85,7 +93,15 @@ export class DemandecongeComponent implements OnInit
   eventClicked(event: CalendarEvent): void 
   {
     //todo, rediriger vers la demande de congé en question, à voir.
-    this.router.navigateByUrl('/historiqueconge')
+    if(this.listeDemande[this.events.indexOf(event)].status_conge === "attCds")
+    {
+      this.openDialog(this.listeDemande[this.events.indexOf(event)])
+    }
+    
+  }
+
+  openDialog(demande): void {
+    const dialogRef = this.dialog.open(GestiondemandeComponent, {data:demande });
   }
 
   fillEvent()
@@ -119,42 +135,44 @@ export class DemandecongeComponent implements OnInit
 
       }
       
+    
+      typedem = this.listeCollab[demande.id_collab-1].nom_collab + " " + this.listeCollab[demande.id_collab-1].prenom_collab + " : "
       
       
       switch(demande.type_demande_conge)
       {
         case "rtt":
         {
-          typedem = "RTT";
+          typedem += "RTT";
           break;
         }
 
         case "cp":
         {
-          typedem = "Congé Payé";
+          typedem += "Congé Payé";
           break;
         }
 
         case "css":
         {
-          typedem = "Congé sans Solde";
+          typedem += "Congé sans Solde";
           break;
         }
 
       }
-      typedem += " : " + demande.status_conge
+      typedem += " - " + demande.status_conge
       this.events.push({
 
         start: new Date(demande.date_debut),
         end: new Date(demande.date_fin),
         title: typedem,
-        color: couleur ,
+        color: couleur,
 
       })
       
     }
   }
-  constructor(private demandecongeService: DemandecongeService , private router: Router, private login : LoginComponent) 
+  constructor(private gestioncongeService: GestioncongeService , private router: Router, private login : LoginComponent, public dialog: MatDialog) 
   {
     this.user = login.user.id_collab.toString();
   }
@@ -162,16 +180,35 @@ export class DemandecongeComponent implements OnInit
   ngOnInit() 
   
   {
-    this.demandecongeService
-    .getDemandecongesFromIdCollab({id : this.user})
+
+
+    this.gestioncongeService
+    .getDemandecongesFromIdCdS({id : this.user})
       .subscribe( (data : IDemandeconge[]) => {
       this.listeDemande = data;
       this.dataSource = new MatTableDataSource(this.listeDemande); 
       this.dataSource.sort = this.sort;
-      console.log(this.dataSource);
-      this.fillEvent();
-      console.log(this.events);
+      this.dataSource.paginator = this.paginator;
+      //console.log(this.dataSource);
+
+      //console.log(this.events);
     }); 
+    
+    this.gestioncongeService
+    .getCollabs()
+      .subscribe((data : ICollaborateur[]) => {
+      this.listeCollab = data;
+      console.log(this.listeCollab)  
+  });
+  this.delay(500).then(any => {
+    this.fillEvent();
+  
+  });
+  
+
+
+
+
   }
 
 }

@@ -1,5 +1,41 @@
+<div class="row text-center">
+  <div class="col-md-4">
+    <div class="btn-group">
+      
+      <button mat-flat-button color = "blue"
+      mwlCalendarPreviousView
+      [view]="view"
+      [(viewDate)]="viewDate"
+      (viewDateChange)="activeDayIsOpen = false"
+    
+      >
+    <mat-icon>navigate_before</mat-icon>
 
-<section><h3>{{viewDate | date : 'MMMM yyyy'}}</h3>
+    </button>
+
+      <button mat-flat-button color = "blue"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+        (viewDateChange)="activeDayIsOpen = false"
+      >
+      <mat-icon>clear</mat-icon>
+      </button>
+      <button mat-flat-button color = "blue"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="activeDayIsOpen = false"
+      
+      >
+      <mat-icon>navigate_next</mat-icon>
+
+      </button>
+     
+    </div>
+  </div>
+</div>
+
+<section><h3>{{viewDate | date : 'MMMM yyyy'}} </h3>
 
 <div *ngIf = "events.length > 0">
 
