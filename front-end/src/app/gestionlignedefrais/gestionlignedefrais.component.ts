@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar } from '@angular/material';
 import { GestionnotedefraisService } from '../gestionnotedefrais/gestionnotedefrais.service';
 import { ILignedefraisListe } from '../gestionnotedefrais/gestionnotedefrais.interface';
 import { LoginComponent } from '../login/login.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { DialogRefuserLigne } from './dialog-refuser-ligne.component';
+import { SnackBarComponent } from '../lignedefrais/lignedefrais.component';
 
 @Component({
   selector: 'app-gestionlignedefrais',
@@ -25,9 +26,19 @@ export class GestionlignedefraisComponent implements OnInit {
   isDisabled:boolean = true;
 
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'accepter', 'refuser', 'motif_refus'];
-  listNotedefrais: ILignedefraisListe[] = [];
   dataSource;
+  displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'montant', 'commentaire_ldf', 'justif_ldf', 'statut_ldf', 'refuser', 'motif_refus'];
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['ldf'];
+  listNotedefrais: ILignedefraisListe[] = [];
+  listavance: ILignedefraisListe[] = [];
+  listlignedefrais: ILignedefraisListe[] = [];
+  cancel:boolean = false;
+  accept:boolean = true;
+  cancelAv:boolean = false;
+  acceptAv:boolean = false;
+  noLine:boolean = true;
+  mobileVersion:boolean = false;
   sub : any;
 
   //Variable pour encrypt/decrypt
@@ -40,15 +51,15 @@ export class GestionlignedefraisComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   constructor(private gestionnotedefraisService : GestionnotedefraisService,
     private login : LoginComponent, private route : ActivatedRoute,
-    private dialog: MatDialog, private router : Router) { }
+    private dialog: MatDialog, private router : Router, private snackBar: MatSnackBar) {
+      this.mobileVersion = this.login.mobileVersion;
+     }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
 
       var decrypted = this.decrypt(params['id'], this.key);
-      //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
       this.str = decrypted.toString(CryptoJS.enc.Utf8).split('-', 6);
-      console.log(this.str)
       this.id_ndf = +this.str[0];
       this.prenom = this.str[1];
       this.nom = this.str[2];
@@ -62,58 +73,91 @@ export class GestionlignedefraisComponent implements OnInit {
   }
 
   refreshLignes() {
+    this.listavance = [];
+    this.listlignedefrais = [];
     this.sub = this.gestionnotedefraisService
       .getLignesdefraisFromIdNdfIdCds({ id_ndf : this.id_ndf , id_cds : this.id_cds})
       .subscribe( (data : ILignedefraisListe[]) => {
         this.listNotedefrais = data;
-        // console.log(this.listNotedefrais)
         this.listNotedefrais.forEach(element => {
-          // le cds peut acceder à accepter et refuser
-          element.modif = false;
-          if(element.statut_ldf == 'attCds' || element.statut_ldf == 'avattCds')
-            element.modif = true;
-          // le cds peut acceder à annuler
-          element.annuler = false;
-          if(element.statut_ldf == 'attF' || element.statut_ldf == 'avattF' ||
-            element.statut_ldf == 'noCds' || element.statut_ldf == 'avnoCds')
-            element.annuler = true;
-
-          element.avance = false;
-          if(element.montant_estime)
+          if(!this.cancel)
+            element.statut_ldf == 'noCds' ? this.cancel = true : {} ;
+          if(this.accept)
+            element.statut_ldf == 'noCds' ? this.accept = false : {} ;
+          if(!this.acceptAv)
+            element.statut_ldf == 'avattCds' ? this.acceptAv = true : {} ;
+          if(!this.cancelAv)
+            element.statut_ldf == 'avattCds' ? this.cancelAv = true : {} ;
+          if(element.montant_avance != null)
             element.avance = true;
-          if(element.montant_ldf > 0)
-            element.montant_display = element.montant_ldf.toString();
-          else
-            element.montant_display = element.montant_avance + " / " + element.montant_estime;
+          element.refutable = false;
+          if(element.statut_ldf == 'attCds')
+            element.refutable = true;
+          if(element.statut_ldf == 'avattCds') {
+            element.avacceptable = true;
+            element.avrefutable = true;
+          }
+          if(element.montant_avance == null) {
+            if(element.statut_ldf != 'noSent')
+              this.listlignedefrais.push(element);
+          }
+          else {
+            if(element.statut_ldf != 'avnoSent') {
+              if(element.id_ndf != this.id_ndf) {
+                if(element.id_ndf_ldf == this.id_ndf && element.statut_ldf != 'noSent') {
+                  this.listlignedefrais.push(element);
+                }
+              }
+              else {
+                if(element.id_ndf_ldf != this.id_ndf) {
+                  this.listavance.push(element);
+                }
+                else {
+                  this.listavance.push(element);
+                  if(element.statut_ldf != 'avattCds' && element.statut_ldf != 'avnoCds'
+                  && element.statut_ldf != 'avattF' && element.statut_ldf != 'avnoF'
+                  && element.statut_ldf != 'noSent') {
+                    this.listlignedefrais.push(element);
+
+                  }
+                }
+              }
+            }
+          }
         });
-        this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listNotedefrais);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.listNotedefrais.length == 0 ? this.noLine = true : {} ;
+        if(this.mobileVersion) {
+          this.dataSourceMobile = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
+          this.dataSourceMobile.paginator = this.paginator;
+
+        }
+        else {
+          this.dataSource = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        }
         this.isDisabled = false;
     });
   }
 
-  accepterLdf(id : number, avance : boolean, statut_ldf : String) {
-    this.isDisabled = true;
-    var stat = '';
-    var statut = 0;
-    if(avance && statut_ldf == 'avattCds')
-      statut = 2;
-    else
-      statut = 8;
-    if(avance) {
-      console.log('accepter avance ' + statut)
-      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
-      });
-    }
-    else {
-      console.log('accepter ldf ' + statut)
-      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, id_ldf : id, id_cds : this.id_cds
-      });
-    }
-    this.delay(1500).then(any => {
+  accepterLignes() {
+    this.gestionnotedefraisService
+      .accepterNotedefrais({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(2000).then(any => {
+      this.openSnackBar('Note de frais acceptée', 750)
+      this.refreshLignes();
+    });
+  }
+
+  renvoyerLignes() {
+    this.gestionnotedefraisService
+      .renvoyerNotedefrais({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(2000).then(any => {
+      this.openSnackBar('Note de frais renvoyée', 750)
       this.refreshLignes();
     });
   }
@@ -123,50 +167,75 @@ export class GestionlignedefraisComponent implements OnInit {
       data: { id : id, avance : avance, statut : statut, id_ndf : this.id_ndf, id_cds : this.id_cds }
     });
     dialogRef.afterClosed().subscribe(res => {
-      this.delay(1500).then(any => {
+      this.delay(2000).then(any => {
+        if(avance) {
+          this.openSnackBar('Avance refusée', 750)
+        }
+        else {
+          this.openSnackBar('Ligne de frais refusée', 750)
+        }
         this.refreshLignes();
       });
     });
   }
-
-  annulerLdf(id : number, avance : boolean, statut_ldf : String) {
-    this.isDisabled = true;
-    var statut = 0;
-    var statutOld = 0;
-    console.log(statut_ldf)
-    if(avance && statut_ldf == 'avnoCds') {
-      statut = 3;
-      statutOld = 4;
-    } 
-    else if(avance && statut_ldf == 'avattF') {
-      statut = 3;
-      statutOld = 2;
-    }
-    else if(statut_ldf == 'attF') {
-      statut = 7;
-      statutOld = 8;
-    }
-    else {
-      statut = 7;
-      statutOld = 9;
-    }
-    if(avance) {
-      console.log('annuler avance ' + statut)
-      this.gestionnotedefraisService.updateAvancenotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut, 
-        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
-      });
-    }
-    else {
-      console.log('annuler ldf ' + statut)
-      this.gestionnotedefraisService.updateLdfnotifToAndFromCompta( {
-        id_ndf : this.id_ndf, motif : '', stat : statut,
-        id_ldf : id, id_cds : this.id_cds, statOld : statutOld
-      });
-    }
-    this.delay(1500).then(any => {
+  
+  accepterAvance(id : number) {
+    this.gestionnotedefraisService
+      .accepterAvance({
+        id_ldf : id, id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(2000).then(any => {
+      this.openSnackBar('Avance acceptée', 750)
       this.refreshLignes();
     });
+  }
+
+  accepterAllAvance() {
+    this.gestionnotedefraisService
+      .accepterAllAvance({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(2000).then(any => {
+      this.openSnackBar('Avances acceptées', 750)
+      this.refreshLignes();
+    });
+  }
+
+  refuserAllAvance() {
+    this.gestionnotedefraisService
+      .refuserAllAvance({
+        id_ndf : this.id_ndf, id_cds : this.id_cds
+      })
+    this.delay(2000).then(any => {
+      this.openSnackBar('Avances refusées', 750)
+      this.refreshLignes();
+    });
+  }
+
+  transformStatut(statut : string) {
+    if(statut == 'val')
+      return 'Validée'
+    if(statut == 'noCds')
+      return 'Refus du Chef de service'
+    if(statut == 'noF')
+      return 'Refus de laCompta'
+    if(statut == 'attCds')
+      return 'En attente du Chef de service'
+    if(statut == 'attF')
+      return 'En attente de la Compta'
+    return 'unknown'
+  }
+
+  openSnackBar(msg: string, duration : number) {
+    console.log('snack')
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: duration,
+      data : msg
+    });
+  }
+
+  goBack() {
+    this.router.navigate(['/gestionnotedefrais']);
   }
 
   async delay(ms: number) {

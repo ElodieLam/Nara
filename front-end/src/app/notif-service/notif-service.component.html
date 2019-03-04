@@ -1,10 +1,11 @@
-<div class="example-container mat-elevation-z8">
+<div *ngIf="!mobileVersion" class="example-container mat-elevation-z8">
+
   <mat-table #table [dataSource]="dataSource" matSort>
 
     <!-- Date-Heure Column -->
     <ng-container matColumnDef="date_heure">
       <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:150px;"> Date - Heure </th>
-      <td mat-cell *matCellDef="let element" style="min-width:150px;"> {{element.date_notif | date: 'dd/MM/yyyy'}} </td>
+      <td mat-cell *matCellDef="let element" style="min-width:150px;"> {{ element.date_notif | date : 'dd/MM/yyyy' }} </td>
     </ng-container>
 
     <!-- Collaborateur Column -->
@@ -36,4 +37,28 @@
   </mat-table>
   <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
 
+</div>
+<div *ngIf="mobileVersion" class="example-container mat-elevation-z8">
+  <table class="table table-striped">  
+    <tbody>
+      <tr *ngFor="let element of lNotifDisplay">
+        <td style="max-width: 75px; font-size: 13px; position: relative; top : 3em; text-align: center;">
+          {{ element.date_notif | date : 'dd/MM/yyyy'}}<br>
+          {{element.prenom}} {{element.nom}} 
+        </td>
+        <td>
+          <app-notif-msg-service  ndfforcds="{{element.ndfforcds}}"
+          service="{{element.service}}"
+          ndf="{{element.id}}" 
+          id="{{element.id_collab}}" 
+          type="{{element.type}}" 
+          date="{{element.date}}" 
+          nom="{{element.nom}}"
+          prenom="{{element.prenom}}"
+          statut="{{element.statut}}" >
+          </app-notif-msg-service>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

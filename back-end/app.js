@@ -5,6 +5,9 @@ var cors = require('cors');
 
 app.use(cors());
 
+var ApplicationController = require('./application/ApplicationController');
+app.use('/application', ApplicationController);
+
 var NotedefraisController = require('./notedefrais/NotedefraisController');
 app.use('/notedefrais', NotedefraisController);
 
@@ -14,8 +17,13 @@ app.use('/conge', CongeController);
 var DemandecongeController = require('./demandeconge/DemandecongeController');
 app.use('/demandeconge', DemandecongeController);
 
+<<<<<<< HEAD
 var CollaborateurController = require('./collaborateur/CollaborateurController');
 app.use('/collaborateur', CollaborateurController);
+=======
+var MissionController = require('./missions/MissionController');
+app.use('/missions', MissionController);
+>>>>>>> 0ca9891e43a7195e7504b89b5a3f40880cafdea8
 
 var LignedefraisController = require('./lignedefrais/LignedefraisController');
 app.use('/lignedefrais', LignedefraisController);

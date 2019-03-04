@@ -20,25 +20,25 @@ export class Notif_ServiceComponent{
   lNotifService : INotifService[] = [];
   lNotifDisplay: INotifServiceDisplay[];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  mobileVersion:boolean = false;
 
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private notifService: NotifService, private login: LoginComponent) { 
+  constructor(private notifService: NotifService, private login: LoginComponent) {
+    this.mobileVersion = this.login.mobileVersion 
     }
 
   ngOnInit() {
     this.lNotifDisplay = [];  
     //Récupération des notifs "Demande de congé"
-    console.log("ID= " + this.login.user.id_collab);
     this.notifService
     .getNotifFromIdCollabAndIdService({
       id_cds : this.login.user.id_collab, id_service : this.login.user.id_service
     })
     .subscribe( (data : INotifService[]) => {
       this.lNotifService = data;
-      console.log(this.lNotifService);
       if(this.lNotifService.length > 0) {
         this.lNotifService.forEach( element => {
           if(element.ndfforcds == true) {
@@ -51,8 +51,8 @@ export class Notif_ServiceComponent{
               'prenom' : element.prenom_collab,
               'date_notif' : new Date(element.date.toString()),
               'date' : this.mois[+element.mois] + ' ' + element.annee,
-              'type' : element.avance ? "Avance de note de frais" : "Note de frais", 
-              'statut' : "En attente de validation Chef de service",
+              'type' : element.avance ? "Demande d'avance" : "Note de frais", 
+              'statut' : "En attente du Chef de service",
               'color': 'orange', 
             })
           }
@@ -66,8 +66,8 @@ export class Notif_ServiceComponent{
               'prenom' : element.prenom_collab,
               'date_notif' : new Date(element.date.toString()),
               'date' : this.mois[+element.mois] + ' ' + element.annee,
-              'type' : element.avance ? "Avance de note de frais" : "Note de frais", 
-              'statut' : "En attente de validation Comptabilité",
+              'type' : element.avance ? "Demande d'avance" : "Note de frais", 
+              'statut' : "En attente de la Comptabilité",
               'color': 'orange', 
             })
           }
@@ -83,10 +83,14 @@ export class Notif_ServiceComponent{
               'color': 'cyan', 
               })*/
           }
+
               //Affiche les éléments dans le tableau
-       this.dataSource = new MatTableDataSource <INotifServiceDisplay> (this.lNotifDisplay);
-       this.dataSource.paginator = this.paginator;
-    })
+          });
+        this.lNotifDisplay.sort((a, b) => {
+          return a.date_notif < b.date_notif ? 1 : -1
+        });
+        this.dataSource = new MatTableDataSource <INotifServiceDisplay> (this.lNotifDisplay);
+        this.dataSource.paginator = this.paginator;
   }
   })
   }

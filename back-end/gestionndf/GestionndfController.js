@@ -51,25 +51,85 @@ router.post('/updateavance', function (req, res) {
     });
 });
 
-// maj d'une ligne de frais, avec maj de la notif from/to Compta
-router.post('/updateldfnotiftoandfromcompta', function (req, res) {
-    Gestionndf.updateLignedefraisAndNotifToAndFromCompta(req.body, function (err, rows) {
+router.post('/accepternotedefrais', function (req, res) {
+    Gestionndf.accepterNotedefrais(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }
         else {
+            req.body.id = count.insertId;
             res.json(req.body);
         }
     });
 });
 
-// maj d'une ligne de frais, avec maj de la notif from/to Compta
-router.post('/updateavancenotiftoandfromcompta', function (req, res) {
-    Gestionndf.updateAvanceAndNotifToAndFromCompta(req.body, function (err, rows) {
+router.post('/renvoyernotedefrais', function (req, res) {
+    Gestionndf.renvoyerNotedefrais(req.body, function (err, count) {
         if (err) {
             res.status(400).json(err);
         }
         else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/refuserlignedefrais', function (req, res) {
+    Gestionndf.refuserLignedefrais(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/refuseravance', function (req, res) {
+    Gestionndf.refuserAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/accepteravance', function (req, res) {
+    Gestionndf.accepterAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/accepterallavance', function (req, res) {
+    Gestionndf.accepterAllAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
+            res.json(req.body);
+        }
+    });
+});
+
+router.post('/refuserallavance', function (req, res) {
+    Gestionndf.refuserAllAvance(req.body, function (err, count) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            req.body.id = count.insertId;
             res.json(req.body);
         }
     });

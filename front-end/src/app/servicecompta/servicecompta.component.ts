@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ServicecomptaService } from './servicecompta.service';
-import { INotedefraisListe } from './servicecompta.interface';
+import { INotedefrais, FilterGroup } from './servicecompta.interface';
 import { LoginComponent } from '../login/login.component';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
@@ -16,9 +16,21 @@ export class ServicecomptaComponent implements OnInit {
 
   id_cds:number;
   listemois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-  displayedColumns: string[] = ['nom_service', 'date', 'nom', 'mois', 'avance', 'nb_lignes', 'voir'];
-  listNotedefrais: INotedefraisListe[] = [];
+  displayedColumns: string[] = ['service', 'nom', 'date', 'nb_lignes', 'voir'];
+  listNotedefrais: INotedefrais[] = [];
   dataSource;
+  
+  dataSourceMobile;
+  displayedColumnsMobile: string[] = ['ndf'];
+  
+  listCollab: String[] = [];
+  listService: String[] = [];
+  collab:String;
+  service:String;
+  filter:String;
+  mobileVersion:boolean = false;
+  sub : any;
+  filterGroup: FilterGroup[];
 
   //Variable pour encrypt/decrypt
   keySize: number = 256;
@@ -29,24 +41,72 @@ export class ServicecomptaComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   constructor(private servicecomptaService : ServicecomptaService,
-    private login : LoginComponent, private router : Router) { }
+    private login : LoginComponent, private router : Router) {
+      this.mobileVersion = this.login.mobileVersion;
+     }
 
   ngOnInit() {
     this.id_cds = this.login.user.id_collab;
     this.servicecomptaService
-      .getNotedefraisToCompta({ id : this.login.user.id_collab })
-      .subscribe( (data : INotedefraisListe[]) => {
-        
+      .getNotedefraisToCompta({ id : this.login.user.id_collab, isCds : this.login.user.isCDS ? true : false })
+      .subscribe( (data : INotedefrais[]) => {
         this.listNotedefrais = data;
         console.log(this.listNotedefrais)
-        this.dataSource = new MatTableDataSource<INotedefraisListe>(this.listNotedefrais);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.listCollab = this.listNotedefrais.reduce(function (a,b) {
+          if (a.indexOf(b.prenom_collab + ' ' + b.nom_collab) == -1) {
+            a.push(b.prenom_collab + ' ' + b.nom_collab)
+          }
+          return a;
+        }, []);
+        this.listService = this.listNotedefrais.reduce(function (a,b) {
+          if (a.indexOf(b.nom_service) == -1) {
+            a.push(b.nom_service)
+          }
+          return a;
+        }, []);
+        this.filterGroup = [ 
+          {
+            name : 'Collaborateur',
+            values : this.listCollab
+          },
+          {
+            name : 'Service',
+            values : this.listService
+          }
+        ]
+        this.listNotedefrais.forEach(ndf => {
+          if(ndf.cnt == null) {
+            ndf.cnt = 0;
+          }
+        });
+        this.listNotedefrais.sort((a, b) => {   
+          return b.cnt.valueOf() - a.cnt.valueOf() || b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
+        });
+        if(this.mobileVersion) {
+          this.dataSourceMobile = new MatTableDataSource<INotedefrais>(this.listNotedefrais);
+          this.dataSourceMobile.paginator = this.paginator;
+        }
+        else {
+          this.dataSource = new MatTableDataSource<INotedefrais>(this.listNotedefrais);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        }
     });
   }
 
-  temp() {
-
+  onChange() {
+    if(this.filter != null) {
+      if(this.mobileVersion) 
+        this.dataSourceMobile.filter = this.filter.split(" ", 2)[0].trim().toLowerCase();
+      else
+        this.dataSource.filter = this.filter.split(" ", 2)[0].trim().toLowerCase();
+    }
+    else {
+      if(this.mobileVersion)
+        this.dataSourceMobile.filter = '';
+      else
+        this.dataSource.filter = '';
+    }
   }
 
   goToGestionlignedefrais(element : any) {
@@ -54,12 +114,7 @@ export class ServicecomptaComponent implements OnInit {
     var hiddenParam = element.id_ndf + '-' +element.nom_service + '-' + element.prenom_collab + 
       '-' + element.nom_collab + '-' + this.listemois[element.mois] + '-' + element.annee;
     //Encrypt-Decrypt
-    console.log(hiddenParam)
     var encrypted = this.encrypt(hiddenParam, this.key);
-    //console.log("Param encrypted: " + encrypted);
-    //var decrypted = this.decrypt(encrypted, this.key);
-    //var param = encrypted;
-    //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
     this.router.navigate(['/servicecompta',  encrypted.toString()  ]);
   }
 

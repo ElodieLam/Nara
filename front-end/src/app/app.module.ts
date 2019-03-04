@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import {AppComponent} from './app.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { FlatpickrModule } from 'angularx-flatpickr';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {
@@ -12,14 +11,17 @@ import {
   MatSidenavModule,
   MatIconModule,
   MatListModule,
+  MatFormFieldModule,
   MatTableModule,
+  MatTabsModule,
   MatPaginatorModule,
   MatSortModule,
   MatGridListModule,
-  MatCardModule,
-  MatMenuModule,
   MatCheckboxModule,
-  MatFormFieldModule,
+  MatCardModule,
+  MatExpansionModule,
+  MatMenuModule,
+  MatDividerModule,
   MatInputModule,
   MAT_DATE_LOCALE,
   MatSnackBarModule,
@@ -36,15 +38,18 @@ import { NotedefraisComponent } from './notedefrais/notedefrais.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from "@angular/common/http";
 import { NotedefraisService } from "./notedefrais/notedefrais.service";
+import {MissionService} from "./missions/missions.service";
 import { LignedefraisService } from "./lignedefrais/lignedefrais.service";
 import { CongeService } from "./conge/conge.service";
 import { ToastrModule } from "ngx-toastr";
-import { LignedefraisComponent, LignedefraisAjoutComponent } from './lignedefrais/lignedefrais.component';
+import { LignedefraisComponent, SnackBarComponent } from './lignedefrais/lignedefrais.component';
 import { DialogEnvoyerAvance } from './lignedefrais/dialog-envoyer-avance.component';
 import { DialogModifierAvance } from './lignedefrais/dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component';
+import { DialogNouvelleAvance } from './lignedefrais/dialog-nouvelle-avance.component';
 import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component';
+import { DialogInformation } from './lignedefrais/dialog-information.component';
 import { CongeComponent } from './conge/conge.component';
 
 import { NotifComponent } from './notif/notif.component';
@@ -56,6 +61,9 @@ import { LoginService } from "./login/login.service";
 import { DemandecongeComponent } from './demandeconge/demandeconge.component';
 import { NotedefraisresumeComponent } from './notedefraisresume/notedefraisresume.component';
 import { HistoriquecongeComponent } from './historiqueconge/historiqueconge.component';
+
+import { MissionsComponent} from './missions/missions.component';
+import { DialogCreerMission } from './missions/dialog-creer-mission.component';
 import { CreateDemandecongeComponent, DemandeRefuseeComponent } from './create-demandeconge/create-demandeconge.component';
 import { GestionnotedefraisComponent } from './gestionnotedefrais/gestionnotedefrais.component';
 import { GestionnotedefraisService } from './gestionnotedefrais/gestionnotedefrais.service';
@@ -70,25 +78,32 @@ import { GestioncongeComponent } from './gestionconge/gestionconge.component';
 import { GestiondemandeComponent } from './gestiondemande/gestiondemande.component';
 import { ServicerhComponent } from './servicerh/servicerh.component';
 
+import { LignedefraisavanceComponent } from './lignedefraisavance/lignedefraisavance.component';
+import { GestionavanceComponent } from './gestionavance/gestionavance.component';
+import { ServicecomptaavanceComponent } from './servicecomptaavance/servicecomptaavance.component';
+import { DialogAccepterAvanceCompta } from './servicecomptandf/dialog-accepter-avance.component';
+import { NotedefraishistoriqueComponent } from './notedefraishistorique/notedefraishistorique.component'
+ 
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
     {path: 'dashboard', component: DashboardComponent},
     {path: 'notedefrais', component: NotedefraisComponent},
+    {path: 'notedefraishistorique', component: NotedefraishistoriqueComponent},
     {path: 'gestionnotedefrais', component: GestionnotedefraisComponent},
     {path: 'gestionnotedefrais/:id', component: GestionlignedefraisComponent},
     {path: 'servicecompta', component: ServicecomptaComponent},
     {path: 'servicecompta/:id', component: ServicecomptandfComponent},
     {path: 'conge', component: CongeComponent},
     {path: 'notifications', component: NotifComponent},
+    {path: 'missions', component: MissionsComponent},
     {path: 'notifications/service', component: Notif_ServiceComponent},
     {path: 'lignedefrais/:id', component: LignedefraisComponent},
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'gestionconge', component: GestioncongeComponent},
     {path: 'servicerh', component: ServicerhComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
-  
 ];
 
 @NgModule({
@@ -98,18 +113,23 @@ const appRoutes: Routes = [
     NotedefraisComponent,
     LignedefraisComponent,
     DialogNouvelleLignedefrais,
+    DialogNouvelleAvance,
     DialogModifierLignedefrais,
     DialogModifierAvance,
     DialogEnvoyerAvance,
     DialogEnvoyerLignes,
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
-    LignedefraisAjoutComponent,
+    DialogAccepterAvanceCompta,
+    DialogInformation,
+    SnackBarComponent,
     CongeComponent,
     DemandecongeComponent,
 
     Notif_ServiceComponent,
     LoginComponent,
+    DialogCreerMission,
+    MissionsComponent,
     NotedefraisresumeComponent,
     HistoriquecongeComponent,
     CreateDemandecongeComponent,
@@ -124,6 +144,10 @@ const appRoutes: Routes = [
     GestioncongeComponent,
     GestiondemandeComponent,
     ServicerhComponent,
+    LignedefraisavanceComponent,
+    GestionavanceComponent,
+    ServicecomptaavanceComponent,
+    NotedefraishistoriqueComponent,
   ],
   imports: [
     BrowserModule,
@@ -133,15 +157,20 @@ const appRoutes: Routes = [
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    MatFormFieldModule,
+    MatSelectModule,
     BrowserAnimationsModule,
     MatInputModule,
     MatTableModule,
+    MatTabsModule,
     MatPaginatorModule,
     MatSortModule,
     MatSnackBarModule,
     MatGridListModule,
+    MatExpansionModule,
     MatCardModule,
     MatMenuModule,
+    MatDividerModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatDialogModule,
@@ -162,19 +191,25 @@ const appRoutes: Routes = [
       useFactory: adapterFactory
     })
   ],
+
   entryComponents: [
+    DialogCreerMission,
     DemandeRefuseeComponent,
     GestiondemandeComponent,
     DialogNouvelleLignedefrais,
+    DialogNouvelleAvance,
     DialogModifierLignedefrais,
     DialogModifierAvance,
     DialogEnvoyerAvance,
     DialogEnvoyerLignes,
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
-    LignedefraisAjoutComponent
+    DialogAccepterAvanceCompta,
+    DialogInformation,
+    SnackBarComponent
   ],
   providers: [
+    MissionService,
     NotedefraisService,
     LignedefraisService,
     ServicecomptaService,

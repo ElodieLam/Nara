@@ -20,3 +20,23 @@
   position: absolute;
   right: 0;
 }
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 3px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+.row {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.row-sidenav-content {
+  display: contents;
+  margin-left: 10px;
+  margin-right: 10px;
+}

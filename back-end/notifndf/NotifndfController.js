@@ -17,14 +17,4 @@ router.get('/getnotifndf', function (req, res) {
     res.end();
 });
 
-router.post('/createorupdateallnotifications', function (req, res) {
-        Notifndf.createOrUpdateAllNotifications(req.body, function (err, count) {
-        if (err) res.status(400).json(err);
-        else {
-            req.body.id = count.insertId;
-            res.json(req.body);
-        }
-    });
-});
-
 module.exports = router;

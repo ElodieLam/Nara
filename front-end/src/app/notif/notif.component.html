@@ -1,5 +1,5 @@
-<div class="example-container mat-elevation-z8">
-    <mat-table #table *ngIf="values" [dataSource]="dataSource" matSort>
+<div *ngIf="!mobileVersion" class="example-container mat-elevation-z8">
+    <mat-table #table [dataSource]="dataSource" matSort>
   
       <!-- Date-Heure Column -->
       <ng-container matColumnDef="date_heure" >
@@ -27,3 +27,23 @@
     </mat-table>
     <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>
+
+<div *ngIf="mobileVersion" class="example-container mat-elevation-z8">
+  <table class="table table-striped">  
+    <tbody>
+    <tr *ngFor="let element of lNotifDisplay">
+      <td style="max-width: 75px; font-size: 13px; position: relative; top : 3em;">
+          {{ element.date_notif | date : 'dd/MM/yyyy'}}
+      </td>
+      <td>
+        <app-notif-msg  ndf="{{element.ndf}}"
+        id="{{element.id}}" 
+        type="{{element.type}}" 
+        date="{{element.date}}" 
+        statut="{{element.statut}}" >
+        </app-notif-msg>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

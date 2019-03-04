@@ -1,6 +1,7 @@
 import { Component, OnInit , Input} from '@angular/core';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-notif-msg',
@@ -29,13 +30,16 @@ export class NotifMsgComponent implements OnInit {
     dateNotif: "",
   }
 
+  mobileVersion:boolean = false;
+
   //Variable pour encrypt/decrypt
   keySize: number = 256;
   ivSize : number = 128;
   iterations : number = 100;
   key  : any = "daouda";
 
-  constructor(private router : Router) { 
+  constructor(private router : Router, private login : LoginComponent) { 
+    this.mobileVersion = this.login.mobileVersion;
   }
  
   ngOnInit() {
@@ -47,28 +51,10 @@ export class NotifMsgComponent implements OnInit {
       this.componentData.statut = this.statut;
       this.componentData.color = this.color;
       this.componentData.dateNotif = this.dateNotif;
-      console.log(this.componentData);
+     
       
       
   }
-
-  ngAfterViewInit() {
-    /*if (this.componentData.type == "Demande de congé") {
-      console.log(this.componentData.type);
-      //document.getElementById("divColor").classList.remove('make-blue');
-      document.getElementById("divColor").classList.add("make-orange");
-      //document.getElementById("divColor").style.backgroundColor = "orange";
-      this.color = "orange";
-    } 
-    else if (this.componentData.type == "Note de frais") {
-      console.log(this.componentData.type);
-     // document.getElementById("divColor").classList.remove('make-orange');
-      document.getElementById("divColor").classList.add("make-blue");
-      //document.getElementById("divColor").style.backgroundColor = "cyan";
-      this.color = "cyan";
-    }*/
-  }
-
 
   goToConge() {
     //this.router.navigate(['/notedefrais']); 
@@ -76,7 +62,6 @@ export class NotifMsgComponent implements OnInit {
 
   getTrColor(type){
     if (type == "Demande de congé") {
-      console.log(type);
       this.color = "orange";
       return this.color;
     } 
@@ -104,10 +89,6 @@ export class NotifMsgComponent implements OnInit {
     var hiddenParam = this.id + "-" + str[1] + "-" + mois;
     //Encrypt-Decrypt
     var encrypted = this.encrypt(hiddenParam, this.key);
-    //console.log("Param encrypted: " + encrypted);
-    //var decrypted = this.decrypt(encrypted, this.key);
-    //var param = encrypted;
-    //console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
     this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
     
   }
