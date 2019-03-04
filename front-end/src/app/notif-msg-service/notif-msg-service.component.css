@@ -1,0 +1,44 @@
+.example-button-row button,
+.example-button-row a {
+  margin-right: 8px;
+}
+
+
+div.relative{
+  position: relative;
+  width: 550px;
+  height: 65px;
+}
+
+.absolute{
+  position: absolute;
+  top: 8px;
+  width: 500px;
+  height: 50px;
+  border: 1px solid black;
+  text-align: center;
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+.make-blue {
+  background-color: cyan;
+}
+
+.make-orange {
+  background-color: orange;
+}
+
+.btnVoir{
+  position: absolute; 
+  margin-left: 600px; 
+  width:150px;
+  top: 10px;
+  border: 1px solid black;
+}
+
+.mobile {
+  display: grid;
+}

@@ -1,0 +1,23 @@
+<div *ngIf="!mobileVersion" class = "relative">
+  <p class = "absolute" id="divColor" [ngStyle]="{ 'background-color': componentData.color }">
+    {{componentData.type}} : {{componentData.date}} 
+      <br>
+    {{componentData.statut}} 
+  </p>
+  <button mat-stroked-button *ngIf="componentData.ndf" (click)="goToNdf()" class="btnVoir ">Voir note de frais</button>
+  <button mat-stroked-button *ngIf="!componentData.ndf" color="warn" (click)="goToConge()" class="btnVoir ">Voir congé</button>
+  <br>
+</div>
+<div *ngIf="mobileVersion" class="mobile">
+  <button mat-flat-button *ngIf="componentData.ndf" (click)="goToNdf()" class="mat-elevation-z8">
+      <strong>{{componentData.type}}</strong><br>
+      {{componentData.date}}<br>
+      {{componentData.statut}} 
+  </button>
+  <button mat-flat-button *ngIf="!componentData.ndf" (click)="goToConge()" class="mat-elevation-z8">
+      <strong>{{componentData.type}}</strong><br>
+      {{componentData.date}}<br>
+      {{componentData.statut}} 
+  </button>
+</div>
+

@@ -1,0 +1,56 @@
+<h1 mat-dialog-title *ngIf="!mobileVersion">Envoyer les avances</h1>
+<p mat-dialog-title *ngIf="mobileVersion" style="font-size: 15px;">Envoyer les avances</p>
+<div mat-dialog-content>
+    <div *ngIf="!mobileVersion" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+            
+            <ng-container matColumnDef="mission">
+                <th mat-header-cell *matHeaderCellDef> Mission </th>
+                <td mat-cell *matCellDef="let element"> {{ element.nom_mission }} </td>
+            </ng-container>
+            
+        <ng-container matColumnDef="libelle">
+            <th mat-header-cell *matHeaderCellDef> Libellé </th>
+            <td mat-cell *matCellDef="let element"> {{ element.libelle }} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="montant_estime">
+            <th mat-header-cell *matHeaderCellDef> Montant estimé </th>
+            <td mat-cell *matCellDef="let element"> {{ element.montant_estime }} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="montant_avance">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+                <input matInput placeholder="Montant" (input)="onChange()" [(ngModel)]="element.montant_avance" [value]="element.montant_avance" required>
+            </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+    </div> 
+    <!-- Mobile Version -->
+    <div *ngIf="mobileVersion">
+        <table mat-table [dataSource]="dataSourceMobile">
+            <ng-container matColumnDef="avance">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element" style="text-align: left;"> 
+                    {{ element.nom_mission }}<br>
+                    {{ element.libelle }}<br>
+                    Montant estimé : {{ element.montant_estime }}€<br>
+                    Montant avancé : {{ element.montant_avance }}€
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsMobile"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsMobile;"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[3]"></mat-paginator>
+    </div> 
+</div>
+<div mat-dialog-actions style="margin: auto;">
+    <button mat-raised-button (click)="onNoClick()">Annuler</button>
+    <button mat-raised-button [disabled]="!_avanceValid" (click)="onClick()" [mat-dialog-close]="data">Envoyer</button>
+</div>

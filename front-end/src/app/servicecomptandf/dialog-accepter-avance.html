@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Accepter avance</h1>
+<div mat-dialog-content>
+    <p>
+        Cette avance sera décalé à la note de frais : <br>
+        {{ date }}
+    </p>
+</div>
+<div mat-dialog-actions>
+    <button mat-flat-button (click)="onNoClick()">Annuler</button>
+    <button mat-flat-button (click)="onClick()" [mat-dialog-close]="data">Envoyer</button>
+</div>

@@ -1,0 +1,27 @@
+mat-paginator {
+    display: flex;
+    align-content: center;
+  }
+mat-flat-button {
+  text-align : center;
+}
+
+.note-de-frais-resume {
+  position: absolute;
+  top : 3px;
+  left: 2px;
+}
+
+h1 {
+  text-align: center;
+  position: relative;
+}
+
+p {
+  text-align: left;
+}
+
+.mat-cell {
+  padding: 10px 10px 10px 0;
+  text-align: center;
+}

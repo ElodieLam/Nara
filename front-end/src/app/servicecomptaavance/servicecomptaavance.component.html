@@ -1,0 +1,152 @@
+<div *ngIf="!mobileVersion">
+  <h1>
+    Avance
+  </h1>
+</div>
+<!-- Mobile Version -->
+<div *ngIf="mobileVersion">
+  <p style="font-size: 20px; padding-inline-start: 10px;">
+    Avance
+  </p>
+</div>
+<div *ngIf="!mobileVersion" style="width: 80%">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    
+    <ng-container matColumnDef="nom_mission">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"> Mission </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{ element.nom_mission }} 
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="libelle_ldf">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"> Libellé </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{ element.libelle_ldf }}
+      </td>
+    </ng-container>
+        
+    <ng-container matColumnDef="montant_e">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"> Montant <br>estimé </th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.montant_estime }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="montant_a">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"> Montant <br>demandé </th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.montant_avance }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="commentaire_ldf">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"> Commentaire </th>
+      <td mat-cell *matCellDef="let element">    
+        {{ element.commentaire_ldf }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="justif_ldf">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;">Justificatif</th>
+      <td mat-cell *matCellDef="let element">
+          {{ element.justif_ldf }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="statut_ldf">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;">Statut</th>
+      <td mat-cell *matCellDef="let element">
+          {{ transformStatut(element.statut_ldf) }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="accepter">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button 
+        [disabled]="isDisabled"
+        *ngIf="element.avacceptable"
+        (click)="accepterAvance(element)" 
+        style="color:green;">Accepter</button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="refuser">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;"></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button 
+        [disabled]="isDisabled"
+        *ngIf="element.avrefutable"
+        (click)="refuserAvance(element.id_ldf)" 
+        style="color:red;">Refuser</button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="motif_refus">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width: 100px;">Motif refus</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.motif_refus }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+</div>
+<div *ngIf="mobileVersion" >
+  <table mat-table [dataSource]="dataSourceMobile">
+    <ng-container matColumnDef="ldf">
+      <th mat-header-cell *matHeaderCellDef>Demande d'avance</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header> 
+              <mat-panel-title style="margin : auto;">
+                <mat-icon *ngIf="element.statut_ldf == 'avattCds'">more_horiz</mat-icon>
+                <mat-icon *ngIf="element.statut_ldf == 'avattF'">more_horiz</mat-icon>
+                <mat-icon *ngIf="element.statut_ldf == 'avnoCds' || element.statut_ldf == 'avnoF'">clear</mat-icon>
+                <mat-icon *ngIf="element.statut_ldf == 'noSent' || 
+                element.statut_ldf == 'noCds' || 
+                element.statut_ldf == 'noF' || 
+                element.statut_ldf == 'attCds' || 
+                element.statut_ldf == 'attF' || 
+                element.statut_ldf == 'val'">check</mat-icon>
+              </mat-panel-title>
+            <mat-panel-description>
+              {{ element.nom_mission }} - {{ element.libelle_ldf }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-grid-list cols="2" rowHeight="2:1">
+            <mat-grid-tile>
+              Estimé :{{ element.montant_estime }}€<br>
+              Avancé :{{ element.montant_avance }}€
+            </mat-grid-tile>
+            <mat-grid-tile>
+              {{ transformStatut(element.statut_ldf) }}
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <button mat-flat-button 
+                [disabled]="isDisabled || !element.avacceptable"
+                (click)="accepterAvance(element)">
+                <mat-icon style="color: green">check</mat-icon>
+              </button>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <button mat-flat-button 
+                [disabled]="isDisabled || !element.avrefutable"
+                (click)="refuserAvance(element.id_ldf)">
+                <mat-icon style="color: red">clear</mat-icon>
+              </button>
+            </mat-grid-tile>
+          </mat-grid-list>  
+        </mat-expansion-panel>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsMobile" style="min-width: 100px;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsMobile;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[4]" ></mat-paginator>
+</div>   

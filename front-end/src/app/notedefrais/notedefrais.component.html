@@ -1,20 +1,24 @@
-
-<table class="table">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>mois</th>
-    <th>Total</th> 
-    <th>Editer</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let notedefrais of lnotedefrais">
-    <td>{{ notedefrais.id_ndf }}</td>
-    <td>{{ notedefrais.mois }}</td>
-    <td>{{ notedefrais.total }}</td>
-    <td><button mat-button>Editer</button></td>
-  </tr>
-  </tbody>
-</table>
-
+<mat-grid-list cols="3" rowHeight="500px">
+  <mat-grid-tile [style.border]="'3px solid gray'">
+    <div *ngIf="currentMissing; else elseBlock">
+      <button mat-flat-button *ngIf="!spinner" (click)="goToNotedefrais()" color="warn">Editer</button>
+      <mat-spinner *ngIf="spinner"></mat-spinner>
+    </div>
+    <ng-template #elseBlock>
+      <app-notedefraisresume [id_notedefrais]=topthreeNdf[0] [moisAnnee]=topthreeMonth[0]></app-notedefraisresume>
+    </ng-template>
+  </mat-grid-tile>
+  <mat-grid-tile [style.border]="'3px solid gray'">
+    <div *ngIf="count > 1">
+      <app-notedefraisresume [id_notedefrais]=topthreeNdf[1] [moisAnnee]=topthreeMonth[1]></app-notedefraisresume>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile  [style.border]="'3px solid gray'">
+    <div *ngIf="count > 2">
+      <app-notedefraisresume [id_notedefrais]=topthreeNdf[2] [moisAnnee]=topthreeMonth[2]></app-notedefraisresume>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
+<button mat-button color="primary" (click)="goToHistorique()">
+  Historique
+</button>

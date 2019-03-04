@@ -1,0 +1,32 @@
+.mat-cell {
+    padding: 10px 10px 10px 0;
+    text-align: center;
+}
+
+.mat-row {
+    height: auto;
+    min-width: 60px;
+}
+
+.mat-header-cell {
+    text-align: center;
+    font-size: 15px;
+}
+
+.mat-fab-top-right {
+    position: relative;
+    right: 12px;
+    top: 8px;
+    z-index: 10;
+    opacity: 1;
+    color: white;
+}
+
+.mat-fab-top-left {
+    position: relative;
+    left: 47px;
+    top: 8px;
+    z-index: 10;
+    opacity: 1;
+    color: white;
+}

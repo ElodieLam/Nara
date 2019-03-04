@@ -1,0 +1,118 @@
+<div *ngIf="!mobileVersion">
+  <mat-form-field>
+    <mat-select placeholder="Rechercher" [(ngModel)]="filter" (selectionChange)="onChange()">
+      <mat-option>Aucun</mat-option>
+      <mat-optgroup *ngFor="let group of filterGroup" [label]="group.name">
+        <mat-option *ngFor="let word of group.values" [value]="word">
+          {{word}}
+        </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+</div>
+<!-- mobile Version -->
+<div *ngIf="mobileVersion" style="padding: 10px 15px;">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header> 
+      <mat-panel-title style="margin : auto;">
+        Rechercher
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+        <mat-select [(ngModel)]="filter" (selectionChange)="onChange()">
+          <mat-option>Aucun</mat-option>
+          <mat-optgroup *ngFor="let group of filterGroup" [label]="group.name">
+            <mat-option *ngFor="let word of group.values" [value]="word">
+              {{word}}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+  </mat-expansion-panel>
+</div>
+
+<div *ngIf="!mobileVersion">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    
+    <ng-container matColumnDef="service">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Service </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{element.nom_service }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nom">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Collaborateur </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{element.prenom_collab}} {{ element.nom_collab }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="date">
+      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+      <td mat-cell *matCellDef="let element">
+          {{ listemois[element.mois] }} {{ element.annee}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nb_lignes">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre de lignes en attente </th>
+      <td mat-cell *matCellDef="let element">    
+        {{ element.cnt }}
+      </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="voir">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button (click)="goToGestionlignedefrais(element)">Voir</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+</div>
+
+<!-- Mobile Version -->
+<div *ngIf="mobileVersion" style="padding: 15px;">
+    <table mat-table [dataSource]="dataSourceMobile">
+      <ng-container matColumnDef="ndf">
+        <th mat-header-cell *matHeaderCellDef style="max-height: 10px;">Note de frais</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header> 
+              <mat-panel-title style="margin : auto;">
+                <mat-icon *ngIf="element.cnt > 0">error_outline</mat-icon>
+                <mat-icon *ngIf="element.cnt == 0">more_horiz</mat-icon>
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ element.nom_collab }} - {{ listemois[element.mois] }} {{ element.annee}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-grid-list cols="1" rowHeight="20px">
+              <mat-grid-tile style="font-size: 15px;">
+                {{element.prenom_collab}} {{ element.nom_collab }}
+              </mat-grid-tile>
+              <mat-grid-tile style="font-size: 15px;">
+                {{element.nom_service}}
+              </mat-grid-tile>
+              <mat-grid-tile style="font-size: 15px;">
+                {{ listemois[element.mois] }} {{ element.annee}}
+              </mat-grid-tile>
+              <mat-grid-tile>
+                <button mat-icon-button (click)="goToGestionlignedefrais(element)">
+                  <mat-icon color="primary">create</mat-icon>
+                </button>
+              </mat-grid-tile>
+            </mat-grid-list>  
+          </mat-expansion-panel>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsMobile"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsMobile;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[4]" ></mat-paginator>
+  </div>

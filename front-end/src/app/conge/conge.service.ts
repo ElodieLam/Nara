@@ -3,11 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
 
+
 @Injectable()
 export class CongeService 
 {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-  url = 'http://localhost:3000';
+    url = 'http://localhost:3000';
   
   
   getCongesFromIdCollab(data)
@@ -15,5 +16,23 @@ export class CongeService
     return this
       .http
       .get(`${this.url}/conge/congesid`, { params : data});
+  }
+
+  createConges(data)
+  {
+    console.log("oh bosetti");
+    return this
+      .http
+      .post(`${this.url}/conge/congescreate`, data)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastr.success('Conge créée.', 'Success');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
   }
 }

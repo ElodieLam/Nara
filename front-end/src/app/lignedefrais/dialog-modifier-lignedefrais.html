@@ -1,0 +1,35 @@
+<h1 mat-dialog-title *ngIf="!mobileVersion">Modifier ligne de frais</h1>
+<p mat-dialog-title *ngIf="mobileVersion" style="font-size: 15px;">Modifier ligne de frais</p>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput placeholder="Mission" [(ngModel)]="data.comp.nom_mission" disabled>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput *ngIf="!_libModif" placeholder="Libellé" [(ngModel)]="data.comp.libelle" disabled>
+        <mat-select *ngIf="_libModif" placeholder="Libellé " [(ngModel)]="data.comp.libelle" (ngModelChange)="onChange()" required>
+            <mat-option *ngFor="let lib of libelles" [value]="lib.value">
+                {{lib.value}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="libelleControl.hasError('required')">Sélectionner un libellé</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Montant" (ngModelChange)="onChange()" [formControl]="montantControl" required>
+        <mat-error *ngIf="montantControl.invalid"> 
+            {{ getErrorMessage() }}
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Commentaire" [(ngModel)]="data.comp.commentaire" (ngModelChange)="onChange()">
+    </mat-form-field> 
+</div>
+<p *ngIf="_refusCDS || _refusCompta">
+    <span *ngIf="_refusCDS">Refus chef de service</span>
+    <span *ngIf="_refusCompta">Refus service comptabilité</span>
+    <br>
+    Motif : {{data.comp.commentaire_refus}}    
+</p>
+<div mat-dialog-actions style="margin: auto;">
+  <button mat-raised-button (click)="onNoClick()">Annuler</button>
+  <button mat-raised-button [disabled]="!_ldfValide || !_modif" (click)="onClick()" [mat-dialog-close]="data">Modifier</button>
+</div>

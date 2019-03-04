@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
-import { rootRenderNodes } from '@angular/core/src/view';
 
 @Injectable({
     providedIn: 'root'
@@ -20,5 +19,23 @@ export class DemandecongeService
     return this
       .http
       .get(`${this.url}/demandeconge/demandecongesid`, { params : data});
+  }
+
+  createDemandeconges(data)
+  {
+    return this
+      .http
+      .post(`${this.url}/demandeconge/demandecongescreate`, data)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastr.success('Demande créée.', 'Success');
+          this.router.navigateByUrl('/conge');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
   }
 }

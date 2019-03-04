@@ -6,39 +6,41 @@ import {Router} from "@angular/router";
 @Injectable()
 export class NotedefraisService {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
-  url = 'http://localhost:3000';
-  
+    url = 'http://localhost:3000';
   
   getNotedefraisFromIdCollab(data){
-
-/*    var param = new HttpParams().set('id', id);
-    console.log(id);*/
-    return this
+    return this 
       .http
-      .get(`${this.url}/notedefrais/notedefraisid`, { params : data});
+      .get(`${this.url}/notedefrais/notedefraisid`, { params : data });
   }
 
-
-  getNotedefraisFromIdCollabAndMonth(id, mois){
-    var param = new HttpParams().set('id', id);
-    param.set('mois', mois);
+  getNotedefraisresumeFromIdNdf(data){
     return this
       .http
-      .get(`${this.url}/notedefrais/notedefraisid`, { params : param});
+      .get(`${this.url}/notedefrais/lignesdefraisresumeidndf`, { params : data });
   }
 
-  createNotedefraisWithMonth(id, month) {
-    this.http.post(`${this.url}/notedefrais/notedefraiscreate`, id, month)
+  createNotedefrais(data) {
+    this.http.post(`${this.url}/notedefrais/createnotedefrais`, data)
       .subscribe(
         res => {
-          console.log(res);
           this.toastr.success('Note de frais créée.', 'Success');
-          this.router.navigateByUrl('/notedefrais');
         },
         err => {
           console.log('Error occured:' , err);
           this.toastr.error(err.message, 'Error occured');
         }
       );
+  }
+
+  getNotedefraisMonthYear(data){
+    return this
+      .http
+      .get(`${this.url}/notedefrais/getnotedefraismonthyear`, { params : data });
+  }
+  getNotedefraisHistorique(data) {
+    return this
+      .http
+      .get(`${this.url}/notedefrais/getnotedefraishistorique`, { params : data });
   }
 }

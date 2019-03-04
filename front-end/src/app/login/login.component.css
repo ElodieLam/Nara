@@ -37,3 +37,12 @@ body {
     border-top-right-radius: 0;
   }
   
+  .errorMsg {
+    color: red;
+  }
+
+
+.center {
+  position: relative;
+  left: 25%;
+} 

@@ -33,6 +33,8 @@ ALTER TABLE `t_service`
 
 ALTER TABLE `t_collaborateur`
   ADD FOREIGN KEY (`id_serviceCollab`) REFERENCES t_service(`id_service`);
+ALTER TABLE `t_collaborateur`
+  ADD UNIQUE `col_unique`(`nom_collab`);
 
 -- ajout des donnees pour les tests
 INSERT INTO `t_service` (`id_service`, `nom_service`, `id_chefDeService`) VALUES
@@ -141,7 +143,7 @@ ALTER TABLE `t_demande_conge`
 
 INSERT INTO `t_demande_conge` (`id_demande_conge`, `id_collab`, `type_demande_conge`, `date_debut`, `debut_matin`, `date_fin`, `fin_aprem`, `status_conge`, `motif_refus`, `duree`) VALUES
 (1, 6, 'rtt', '2019-01-22', TRUE, '2019-01-23', TRUE, 'attCds', '', 4),
-(2, 6, 'cp', '2019-01-20', FALSE, '2019-01-21', FALSE, 'attCds', '', 2);
+(2, 6, 'cp', '2019-01-20', FALSE, '2019-01-21', FALSE, 'attRH', '', 2);
 
 -- table t_modification_conge
 
@@ -167,6 +169,27 @@ ALTER TABLE `t_modification_conge`
 ALTER TABLE `t_modification_conge`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
+-- table t_statut
+
+CREATE TABLE `t_statut` (
+  `id_statut` int(2) NOT NULL,
+  `libelle` varchar(10) NOT NULL,
+  PRIMARY KEY (`id_statut`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `t_statut` (`id_statut`, `libelle`) VALUES
+(1, 'avnoSent'),
+(2, 'avattF'),
+(3, 'avattCds'),
+(4, 'avnoCds'),
+(5, 'avnoF'),
+(6, 'noSent'),
+(7, 'attCds'),
+(8, 'attF'),
+(9, 'noCds'),
+(10, 'noF'),
+(11, 'val');
+
 -- table t_note_de_frais
 
 CREATE TABLE `t_note_de_frais` (
@@ -175,9 +198,11 @@ CREATE TABLE `t_note_de_frais` (
   `total` float(11) NOT NULL,
   `mois` int(2) NOT NULL,
   `annee` int(4) NOT NULL,
-  PRIMARY KEY (`id_ndf`, `mois`, `annee`)
+  PRIMARY KEY (`id_ndf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `t_note_de_frais`
+  ADD UNIQUE `ndf_unique`(`id_collab`, `mois`, `annee`);
 ALTER TABLE `t_note_de_frais`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
@@ -195,10 +220,10 @@ CREATE TABLE `t_ligne_de_frais` (
   `libelle_ldf` varchar(64) NOT NULL,
   `montant_ldf` float(11) NOT NULL,
   `date_ldf` DATE NOT NULL,
-  `status_ldf` enum('noSent', 'attCds', 'attF', 'noCds', 'noF', 'val')  NOT NULL,
   `commentaire_ldf` varchar(255) NOT NULL,
   `motif_refus` varchar(128) NOT NULL,
   `justif_ldf` BLOB,
+  `id_statut` int(2) NOT NULL,
   PRIMARY KEY (`id_ldf`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -207,40 +232,44 @@ ALTER TABLE `t_ligne_de_frais`
 ALTER TABLE `t_ligne_de_frais`
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
 
-INSERT INTO `t_ligne_de_frais` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`status_ldf`, `commentaire_ldf`,`motif_refus`, `justif_ldf`) VALUES
-(1, 1, 1, 14.55, 'taxi', '2019-01-15', 'noSent', '', '', NULL),
-(2, 1, 1, 22.00, 'restaurant', '2019-01-15', 'noSent', 'midi', '', NULL),
-(3, 1, 1, 35.99, 'restaurant', '2019-01-15', 'noSent', 'soir', '', NULL),
-(4, 1, 2, 18.55, 'taxi', '2019-01-18', 'val', '', '', NULL),
-(5, 1, 2, 44.99, 'restaurant', '2019-01-15', 'noCds', '', 'pas de restaurant le soir', NULL),
-(16, 1, 2, 44.99, 'restaurant', '2019-01-15', 'noCds', '', '', NULL),
-(6, 2, 1, 14.55, 'taxi', '2019-01-15', 'noSent', '', '', NULL),
-(7, 2, 1, 22.00, 'restaurant', '2019-01-15', 'noSent', 'midi', '', NULL),
-(8, 2, 1, 35.99, 'restaurant', '2019-01-15', 'noSent', 'soir', '', NULL),
-(9, 2, 2, 18.55, 'taxi', '2019-01-18', 'val', '', '', NULL),
-(10, 2, 2, 44.99, 'restaurant', '2019-01-15', 'noCds', '', 'pas de restaurant le soir', NULL),
-(17, 2, 2, 44.99, 'restaurant', '2019-01-15', 'noCds', '', '', NULL),
-(11, 2, 1, 14.55, 'taxi', '2019-01-15', 'noSent', '', '', NULL),
-(12, 2, 1, 22.00, 'restaurant', '2019-01-15', 'noSent', 'midi', '', NULL),
-(13, 2, 1, 35.99, 'restaurant', '2019-01-15', 'noSent', 'soir', '', NULL),
-(14, 2, 2, 18.55, 'taxi', '2019-01-18', 'val', '', '', NULL),
-(15, 2, 2, 44.99, 'restaurant', '2019-01-15', 'noCds', '', '', NULL),
-(18, 2, 2, 44.99, 'restaurant', '2019-01-15', 'noCds', '', 'pas de restaurant le soir', NULL);
+ALTER TABLE `t_ligne_de_frais`
+  ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
+
+
+INSERT INTO `t_ligne_de_frais` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`id_statut`, `commentaire_ldf`,`motif_refus`, `justif_ldf`) VALUES
+(1, 1, 1, 14.55, 'taxi', '2019-01-15', 6, '', '', NULL),
+(2, 1, 1, 22.00, 'restaurant', '2019-01-15', 6, 'midi', '', NULL),
+(3, 1, 1, 35.99, 'restaurant', '2019-01-15', 6, 'soir', '', NULL),
+(4, 1, 2, 18.55, 'taxi', '2019-01-18', 11, '', '', NULL),
+(5, 1, 2, 44.99, 'restaurant', '2019-01-15', 7, '', 'pas de restaurant le soir', NULL),
+(16, 1, 2, 44.99, 'restaurant', '2019-01-15', 7, '', '', NULL),
+(6, 2, 1, 14.55, 'taxi', '2019-01-15', 8, '', '', NULL),
+(7, 2, 1, 22.00, 'restaurant', '2019-01-15', 7, 'midi', '', NULL),
+(8, 2, 1, 35.99, 'restaurant', '2019-01-15', 6, 'soir', '', NULL),
+(9, 2, 2, 18.55, 'taxi', '2019-01-18', 11, '', '', NULL),
+(10, 2, 2, 44.99, 'restaurant', '2019-01-15', 10, '', 'pas de restaurant le soir', NULL),
+(17, 2, 2, 44.99, 'restaurant', '2019-01-15', 9, '', '', NULL),
+(11, 2, 1, 14.55, 'taxi', '2019-01-15', 9, '', '', NULL),
+(12, 2, 1, 22.00, 'restaurant', '2019-01-15', 8, 'midi', '', NULL),
+(13, 2, 1, 35.99, 'restaurant', '2019-01-15', 9, 'soir', '', NULL),
+(14, 2, 2, 18.55, 'taxi', '2019-01-18', 11, '', '', NULL),
+(15, 2, 2, 44.99, 'restaurant', '2019-01-15', 7, '', '', NULL),
+(18, 2, 2, 44.99, 'restaurant', '2019-01-15', 6, '', 'pas de restaurant le soir', NULL);
 
 -- table t_avance
 
 CREATE TABLE `t_ligne_de_frais_avance` (
   `id_ldf` int(11) NOT NULL AUTO_INCREMENT,
   `id_ndf` int(11) NOT NULL,
+  `id_ndf_ldf` int(11) NOT NULL,
   `id_mission` int(11) NOT NULL,
   `libelle_ldf` varchar(64) NOT NULL,
   `montant_ldf` float(11) NOT NULL,
   `date_ldf` DATE NOT NULL,
-  `status_ldf` enum('avnoSent', 'avattCds', 'avattF', 'avnoCds', 'avnoF', 'noSent', 'attCds', 'attF', 'noCds', 'noF', 'val')  NOT NULL,
   `commentaire_ldf` varchar(255) NOT NULL,
   `motif_refus` varchar(128) NOT NULL,
   `justif_ldf` BLOB,
-  `mission_passee` boolean NOT NULL, 
+  `id_statut` int(2) NOT NULL, 
   `montant_estime` float(11) NOT NULL,
   `montant_avance` float(11) NOT NULL,
   PRIMARY KEY (`id_ldf`)
@@ -249,7 +278,20 @@ CREATE TABLE `t_ligne_de_frais_avance` (
 ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_ligne_de_frais_avance`
+
+  ADD FOREIGN KEY (`id_ndf_ldf`) REFERENCES t_note_de_frais(`id_ndf`);
+ALTER TABLE `t_ligne_de_frais_avance`
+
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
+ALTER TABLE `t_ligne_de_frais_avance`
+  ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
+
+INSERT INTO `t_ligne_de_frais_avance` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`id_statut`, `commentaire_ldf`,`motif_refus`, `justif_ldf`, `montant_estime`, `montant_avance`) VALUES
+(1, 1, 1, -14.55, 'taxi', '2019-01-15', 1, '', '', NULL, 16.0, 14.55),
+(2, 1, 1, -22.00, 'restaurant', '2019-01-15', 1, 'midi', '', NULL, 30.0, 22.0),
+(3, 2, 1, -35.99, 'restaurant', '2019-01-15', 1, 'soir', '', NULL, 40.0, 35.99),
+(4, 2, 2, -18.55, 'taxi', '2019-01-18', 6, '', '', NULL, 25.00, 18.55),
+(5, 1, 2, -44.99, 'restaurant', '2019-01-15', 3, '', 'pas de restaurant le soir', NULL, 50.0, 44.99);
 
 INSERT INTO `t_ligne_de_frais_avance` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`status_ldf`, `commentaire_ldf`,`motif_refus`, `justif_ldf`, `mission_passee`, `montant_estime`, `montant_avance`) VALUES
 (1, 1, 1, -14.55, 'taxi', '2019-01-15', 'avnoSent', '', '', NULL, FALSE, 16.0, 14.55),
@@ -297,8 +339,8 @@ ALTER TABLE `t_notif_dem_conge`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
 INSERT INTO `t_notif_dem_conge` (`id_demande_conge`, `id_collab`) VALUES
-(1, 5),
-(2, 5);
+(1, 6),
+(2, 6);
 
 -- table t_notif_mod_conge
 
@@ -317,17 +359,43 @@ ALTER TABLE `t_notif_mod_conge`
 
 CREATE TABLE `t_notif_ndf` (
   `id_ndf` int(11) NOT NULL,
-  `id_collab` int(11) NOT NULL,
-  PRIMARY KEY (`id_ndf`, `id_collab`)
+  `id_cds` int(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `avance` boolean NOT NULL,
+  `nb_lignes` int(5) NOT NULL,
+  PRIMARY KEY (`id_ndf`, `id_cds`, `avance`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `t_notif_ndf`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 ALTER TABLE `t_notif_ndf`
-  ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
-INSERT INTO `t_notif_ndf` (`id_ndf`, `id_collab`) VALUES
-(1, 5),
-(2, 5);
+  ADD FOREIGN KEY (`id_cds`) REFERENCES t_collaborateur(`id_collab`);
+
+CREATE TABLE `t_notif_ndf_to_compta` (
+  `id_ndf` int(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `avance` boolean NOT NULL,
+  `nb_lignes` int(5) NOT NULL,
+  PRIMARY KEY (`id_ndf`, `avance`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `t_notif_ndf_to_compta`
+  ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
+
+CREATE TABLE `t_notif_ndf_from_compta` (
+  `id_ndf` int(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `avance` boolean NOT NULL,
+  `nb_lignes` int(5) NOT NULL,
+  `acceptee` boolean NOT NULL,
+  PRIMARY KEY (`id_ndf`, `avance`, `acceptee`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `t_notif_ndf_from_compta`
+  ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
+
+
 
 COMMIT;
+
