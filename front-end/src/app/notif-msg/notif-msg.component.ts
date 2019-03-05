@@ -50,14 +50,11 @@ export class NotifMsgComponent implements OnInit {
       this.componentData.date = this.date;
       this.componentData.statut = this.statut;
       this.componentData.color = this.color;
-      this.componentData.dateNotif = this.dateNotif;
-     
-      
-      
+      this.componentData.dateNotif = this.dateNotif;  
   }
 
   goToConge() {
-    //this.router.navigate(['/notedefrais']); 
+    this.router.navigate(['/conge']); 
   }
 
   getTrColor(type){

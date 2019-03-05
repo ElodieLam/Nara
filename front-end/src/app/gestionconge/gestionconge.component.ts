@@ -68,7 +68,7 @@ export class GestioncongeComponent implements OnInit
 
   listeCollab: ICollaborateur[] = [];
 
-  displayedColumn = ['nom_collab', 'prenom_collab', 'type_demande_conge', 'date_debut', 'date_fin', 'status_conge', 'duree', 'voir'];
+  displayedColumn = ['nom_collab', 'type_demande_conge', 'date_debut', 'date_fin', 'status_conge', 'duree', 'voir'];
   user = "0";
   dataSource;
 
@@ -182,7 +182,6 @@ export class GestioncongeComponent implements OnInit
   }
 
   ngOnInit() 
-  
   {
 
 

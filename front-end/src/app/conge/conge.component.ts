@@ -27,7 +27,7 @@ export class CongeComponent implements OnInit
   constructor(private congeService: CongeService , private router: Router, private login: LoginComponent,  public dialog: MatDialog) 
   { 
     this.user = this.login.user.id_collab;
-    this.isCds = this.login.user.isCDS == null ? false : true; 
+    this.isCds = this.login.user.isCDS; 
     this.transmettre = [this.user, this.isCds]
   }
 

@@ -21,29 +21,4 @@
 <a routerLink = "../historiqueconge"><button class= "button button1" mat-button >Historique</button></a>
 <button class = "button button1" mat-button (click)="openDialog()">Nouvelle Demande</button>
 </aside>
-
-<!--<aside><table class="table table-striped">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Type Congé</th>
-    <th>Date début</th> 
-    <th>Date fin</th>
-    <th>Statut</th> 
-    <th>Durée (demi-journées)</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor ="let test of listeDemande">
-    <td>{{test.id_demande_conge}}</td>
-    <td>{{test.type_demande_conge}}</td>
-    <td>{{test.date_debut | date : 'dd/MM/yyyy'}}</td>
-    <td>{{test.date_fin | date : 'dd/MM/yyyy'}}</td>
-    <td>{{test.status_conge}}</td>
-    <td>{{test.duree}}</td>
-  </tr>
-  </tbody>
-</table>
-</aside>-->
-
 <app-demandeconge></app-demandeconge>

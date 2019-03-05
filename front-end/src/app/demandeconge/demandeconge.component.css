@@ -16,3 +16,8 @@ table
 {
     float: right;
 }
+
+.button{
+    max-height: 35px;
+    margin: auto;
+}

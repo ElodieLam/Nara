@@ -6,6 +6,11 @@ section
     height: 30%;
 }
 
+.button{
+    max-height: 35px;
+    margin: auto;
+}
+
 listouille
 {
     float: right;
@@ -16,11 +21,11 @@ listouille
 
 .mat-header-cell {
     text-align: center;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .mat-cell {
-    padding: 10px 10px 10px 0;
+    padding: 5px 5px 5px 0;
     text-align: center;
 }
 
@@ -28,9 +33,4 @@ h3
 {
     margin: 10px 10px 10px;
     text-align: center;
-}
-
-table
-{
-    float: right;
 }

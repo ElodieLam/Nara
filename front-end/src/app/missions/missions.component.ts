@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatTableDataSource, MatSnackBar } from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatTableDataSource, MatSnackBar, MatPaginator } from '@angular/material';
 import { MissionService } from './missions.service';
-import {Router} from "@angular/router";
-import {DialogCreerMission} from './dialog-creer-mission.component';
+import { Router } from "@angular/router";
+import { DialogCreerMission } from './dialog-creer-mission.component';
 import { LoginComponent } from '../login/login.component';
 import { SnackBarComponent } from '../lignedefrais/lignedefrais.component';
 
@@ -15,10 +15,7 @@ export interface MissionInterface {
   ouverte : number;
   cnt:number;
   mois : number;
-
 }
-
-
 
 @Component({
   selector: 'app-missions',
@@ -32,8 +29,9 @@ export class MissionsComponent implements OnInit {
 infoMissions : MissionInterface[]
 listeMissions;
 listeCollaborateurs;
-displayedColumns: string[] = ['id_mission', 'nom_mission', 'id_chef', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
+displayedColumns: string[] = ['nom_mission', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
 
+@ViewChild(MatPaginator) paginator: MatPaginator;
 
 constructor(private missionService: MissionService , private router: Router,
   public dialog: MatDialog, private login : LoginComponent, private snackBar : MatSnackBar) {}
@@ -41,7 +39,6 @@ constructor(private missionService: MissionService , private router: Router,
 ngOnInit() 
 {
   this.refresh();
-  
 }
 
 refresh() {
@@ -54,7 +51,8 @@ refresh() {
     this.infoMissions.forEach( miss => {
       miss.cnt ==  null ? miss.cnt = 0 : {};
     })
-    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions);   
+    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions); 
+    this.listeMissions.paginator = this.paginator;  
   });
 }
 
