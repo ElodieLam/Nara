@@ -8,6 +8,8 @@ import { CongeService } from '../conge/conge.service';
 import { IConge } from '../conge/conge.interface';
 import { DemandeRefuseeComponent } from '../create-demandeconge/create-demandeconge.component';
 
+/** Component contenant toutes les demandes de congés du collaborateur, il peut entre autre en supprimer une en attente CdS */
+
 @Component({
   selector: 'app-historiqueconge',
   templateUrl: './historiqueconge.component.html',
@@ -19,7 +21,7 @@ export class HistoriquecongeComponent implements OnInit
   listeDemande : IDemandeconge[];
   infoConges : IConge[];
   user = 0;
-  test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null}
+  isCds = false;
     
   displayedColumn = ['type_demande_conge', 'date_debut', 'date_fin', 'status_conge', 'duree', 'supprimer'];
   dataSource;
@@ -34,8 +36,12 @@ export class HistoriquecongeComponent implements OnInit
   constructor(private demandecongeService: DemandecongeService, private snackBar: MatSnackBar, private congeService : CongeService, private router: Router, private login: LoginComponent) 
   { 
     this.user = login.user.id_collab;
+    this.isCds = this.login.user.isCDS; 
   }
 
+  /** Quand le collaborateur supprime la demande on remet ses infos Congés à jour (s'il avait pris des rtt, on remet son compteur)
+   * et on met à jour sa liste de demande. On refresh ensuite le component, que l'utilisateur puisse voir son changement
+   */
   supprimerDemande(demande)
   {
 
@@ -70,6 +76,7 @@ export class HistoriquecongeComponent implements OnInit
 
   }
 
+  /**permet simplement d'ouvrir un snackbar avertissant l'utilisateur de son changement */
   openSnackBar(msg: string) {
     this.snackBar.openFromComponent(DemandeRefuseeComponent, {
       duration: 1000,

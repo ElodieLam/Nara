@@ -44,7 +44,7 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let element">
         <button class = "btn btn-danger" 
-        *ngIf="element.status_conge === 'attCds'"
+        *ngIf="element.status_conge === 'attCds' || (isCds && element.status_conge === 'attRh')"
         (click)="supprimerDemande(element)" >Supprimer</button>
       </td>
     </ng-container>

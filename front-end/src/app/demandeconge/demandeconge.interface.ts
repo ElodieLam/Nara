@@ -1,3 +1,4 @@
+/** Format d'une demande de congé telle qu'elle est décrite dans la base de données */
 export interface IDemandeconge
 {
     id_demande_conge: number;

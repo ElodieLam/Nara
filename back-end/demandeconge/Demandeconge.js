@@ -2,7 +2,7 @@ var db = require('../db');
 
 var Demandeconge =
 {
-    
+    //Fonction retournant toutes les demandes d'un collaborateur dont l'id est passé en paramètres dans le front-end
     getDemandeconges: function(data, callback)
     {
         return db.query('SELECT * from t_demande_conge WHERE id_collab = ?', [data.id], callback);
@@ -14,16 +14,19 @@ var Demandeconge =
     // // // //     return db.query('SELECT * from table WHERE id_qq = ?', [data[0]], callback);
     // // // // }
 
+    //Fonction retournant toutes les demandes des collaborateurs d'un service en excluant le chef de service 
     getDemandeService: function(data, callback)
     {
        return db.query('SELECT * FROM t_demande_conge WHERE id_collab IN (SELECT id_collab FROM t_collaborateur WHERE id_serviceCollab = (SELECT id_serviceCollab FROM t_collaborateur WHERE id_collab = ?) AND id_collab NOT LIKE ?)', [data.id, data.id], callback)
     },
 
+    //Fonction retournant toutes les demandes des collaborateurs de tous les services, excluant le service RH
     getDemandeRH: function(data, callback)
     {
         return db.query('SELECT * FROM t_demande_conge WHERE id_collab IN (SELECT id_collab FROM t_collaborateur WHERE id_serviceCollab NOT LIKE (SELECT id_serviceCollab FROM t_collaborateur WHERE id_collab = ?))', [data.id], callback)
     },
 
+    //Fonction mettant à jour le statut de la demande une fois que le RH ou le Cds a traité la demande
     updateService: function(Demandeconge, callback)
     {
         date = new Date();
@@ -31,11 +34,13 @@ var Demandeconge =
         [Demandeconge.status_conge, date, Demandeconge.motif_refus, Demandeconge.id_demande_conge], callback);
     },
 
+    //Fonction supprimant le congé en fonction de son identifiant
     deleteDemandeconge: function(Demandeconge, callback)
     {
         return db.query('DELETE from t_demande_conge WHERE id_demande_conge = ?', [Demandeconge.id_demande_conge], callback);
     },
 
+    //Fonction créant une demande de congé avec tous les paramètres 
     createDemandeconges: function (Demandeconge, callback) 
     {
         date_debut = new Date(Demandeconge.date_debut)

@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
 
+/**Le Service permet d'implémenter toutes les requêtes qui font un appel serveur */
+
 @Injectable({
     providedIn: 'root'
 }
@@ -13,14 +15,15 @@ export class DemandecongeService
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
   url = 'http://localhost:3000';
   
-  
+  /**Fonction retournant toutes les demandes d'un collaborateur dont l'id est passé en paramètres*/
   getDemandecongesFromIdCollab(data)
   {
     return this
       .http
       .get(`${this.url}/demandeconge/demandecongesid`, { params : data});
   }
-  
+
+  /**Fonction supprimant le congé en fonction de son identifiant */
   deleteDemandeconges(data)
   {
     return this
@@ -39,7 +42,7 @@ export class DemandecongeService
       );
   }
   
-
+  /**Fonction créant une demande de congé avec tous les paramètres  */
   createDemandeconges(data)
   {
     return this

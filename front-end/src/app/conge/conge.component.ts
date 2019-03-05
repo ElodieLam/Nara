@@ -8,7 +8,10 @@ import { MatDialog } from '@angular/material';
 import { CreateDemandecongeComponent } from '../create-demandeconge/create-demandeconge.component';
 
 
-
+/**Component contenant uniquement le tableau où sont inscrites les informations sur les congés du collaborateur
+ * Il sert aussi à héberger le component contenant le calendrier avec les différentes demandes de congés
+ * 
+ */
 
 @Component({
   selector: 'app-conge',
@@ -18,12 +21,12 @@ import { CreateDemandecongeComponent } from '../create-demandeconge/create-deman
 export class CongeComponent implements OnInit 
 {
   infoConges : IConge[]
-  test: IConge = {id_collab: 6, rtt_restant: null, rtt_pris: null, cp_pris: null, cp_restant: null, css_pris: null}
   user = 0;
   isCds = false;
-  transmettre = [this.user, this.isCds]
+  transmettre = [this.user, this.isCds] //sert à transmettre les informations sur l'utilisateur et s'il est CdS au component create-demande
   dataSource;
 
+  /**Dans le constructeur on récupère l'id du collaborateur et s'il est CdS depuis le component de login */
   constructor(private congeService: CongeService , private router: Router, private login: LoginComponent,  public dialog: MatDialog) 
   { 
     this.user = this.login.user.id_collab;
@@ -31,10 +34,12 @@ export class CongeComponent implements OnInit
     this.transmettre = [this.user, this.isCds]
   }
 
+  /**fonction servant à ouvrir le dialog permettant la creation d'une nouvelle demande */
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateDemandecongeComponent, {data: this.transmettre});
   }
 
+  /**À l'initialisation on récupère uniquement les informations sur congés du collaborateur connecté */
   ngOnInit() 
   {
     this.congeService

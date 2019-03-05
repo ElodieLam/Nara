@@ -1,3 +1,4 @@
+/**Interface d'une information congé qui suit celle de la base de données */
 export interface IConge
 {
     id_collab: number;

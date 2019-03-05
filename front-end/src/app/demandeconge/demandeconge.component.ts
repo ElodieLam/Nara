@@ -4,9 +4,7 @@ import {Router} from "@angular/router";
 import { IDemandeconge } from './demandeconge.interface';
 import { CalendarEvent, CalendarDateFormatter, DAYS_OF_WEEK, CalendarView } from 'angular-calendar';
 import {MatSort, MatTableDataSource, MatDialog} from '@angular/material';
-
 import { CustomDateFormatter } from './custom-date-formatter.provider';
-
 import {
   startOfDay,
   endOfDay,
@@ -37,7 +35,7 @@ const colors: any = {
     secondary: '#B0E6A6'
   }
 };
-
+/**Component contenant toutes les deamndes d'un collaborateur dans un gros calendrier */
 @Component({
   selector: 'app-demandeconge',
   templateUrl: './demandeconge.component.html',
@@ -61,12 +59,11 @@ export class DemandecongeComponent implements OnInit
 
   listeDemande : IDemandeconge[];
   user = "0";
-  test: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: null, date_fin: null, motif_refus: null, debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: null};
-  test2: IDemandeconge = {id_collab: 6, id_demande_conge: null, date_debut: new Date(), date_fin: new Date(), motif_refus: "", debut_matin: true, duree: 2, fin_aprem: true, type_demande_conge: "rtt", status_conge: "attCds"};
   dataSource;
 
   @ViewChild(MatSort) sort: MatSort;
 
+  /**Fonction permettant d'afficher les demandes d'un jour s'il y en a en cliquant dessus */
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void 
   {
     if (isSameMonth(date, this.viewDate)) {
@@ -82,12 +79,15 @@ export class DemandecongeComponent implements OnInit
     }
   }
 
+  /** Gère le fait de cliquer sur une demande et redirige vers l'historique des demandes si c'est le cas */
   eventClicked(event: CalendarEvent): void 
   {
-    //todo, rediriger vers la demande de congé en question, à voir.
     this.router.navigateByUrl('/historiqueconge')
   }
 
+  /** Fonction qui permet de remplir les évenements du calendrier avec les demandes et de set la couleur et le titre adéquat
+   * en fonction des attributs de la demande
+   */
   fillEvent()
   {
     var typedem: string;
@@ -154,11 +154,13 @@ export class DemandecongeComponent implements OnInit
       
     }
   }
+  /** Dans le constructeur on récupère uniquement l'id à partir du component du login */
   constructor(private demandecongeService: DemandecongeService , private router: Router, private login : LoginComponent) 
   {
     this.user = login.user.id_collab.toString();
   }
-
+  /** À l'initialisation on récupère uniquement la liste des demandes du collaborateur
+   */
   ngOnInit() 
   
   {
@@ -169,7 +171,6 @@ export class DemandecongeComponent implements OnInit
       this.dataSource = new MatTableDataSource(this.listeDemande); 
       this.dataSource.sort = this.sort;
       this.fillEvent();
-      console.log(this.events);
     }); 
   }
 
