@@ -196,18 +196,18 @@ export class GestioncongeComponent implements OnInit
       //console.log(this.dataSource);
 
       //console.log(this.events);
+      this.gestioncongeService
+      .getCollabs()
+        .subscribe((data : ICollaborateur[]) => {
+        this.listeCollab = data;
+        console.log(this.listeCollab)  
+        this.fillEvent();
+      });
     }); 
     
-    this.gestioncongeService
-    .getCollabs()
-      .subscribe((data : ICollaborateur[]) => {
-      this.listeCollab = data;
-      console.log(this.listeCollab)  
-  });
-  this.delay(500).then(any => {
-    this.fillEvent();
+  // this.delay(500).then(any => {
   
-  });
+  // });
   
 
 

@@ -29,6 +29,13 @@ export class GestioncongeService
       .get(`${this.url}/collaborateur/collab`);
   }
 
+  getInfoCollab(data)
+  {
+    return this
+      .http
+      .get(`${this.url}/collaborateur/infocollab`, { params : data});
+  }
+
   updateService(data)
   {
     return this

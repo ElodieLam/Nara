@@ -3,12 +3,14 @@ import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
 import { NotifService } from '../notif/notif.service';
 import { INotifService, INotifServiceDisplay} from '../notif/notif.interface';
 import { LoginComponent } from '../login/login.component';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
   selector: 'app-notif-service',
   templateUrl: './notif-service.component.html',
-  styleUrls: ['./notif-service.component.css']
+  styleUrls: ['./notif-service.component.css'],
+  providers: [DatePipe]
 })
 export class Notif_ServiceComponent{
 
@@ -26,7 +28,8 @@ export class Notif_ServiceComponent{
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private notifService: NotifService, private login: LoginComponent) {
+  constructor(private notifService: NotifService, private login: LoginComponent,
+    private datePipe : DatePipe) {
     this.mobileVersion = this.login.mobileVersion 
     }
 
@@ -35,7 +38,8 @@ export class Notif_ServiceComponent{
     //Récupération des notifs "Demande de congé"
     this.notifService
     .getNotifFromIdCollabAndIdService({
-      id_cds : this.login.user.id_collab, id_service : this.login.user.id_service
+      id_cds : this.login.user.id_collab, id_service : this.login.user.id_service,
+      isCds : this.login.user.isCDS 
     })
     .subscribe( (data : INotifService[]) => {
       this.lNotifService = data;
@@ -44,6 +48,7 @@ export class Notif_ServiceComponent{
           if(element.ndfforcds == true) {
             this.lNotifDisplay.push({ 
               'ndfforcds' : element.ndfforcds,
+              'congeforcds' : null,
               'service' : "",
               'id' : element.id_ndf,
               'id_collab' : element.id_collab,
@@ -59,6 +64,7 @@ export class Notif_ServiceComponent{
           else if(element.ndfforcds == false) {
             this.lNotifDisplay.push({ 
               'ndfforcds' : element.ndfforcds,
+              'congeforcds' : null,
               'service' : element.nom_service,
               'id' : element.id_ndf,
               'id_collab' : element.id_collab,
@@ -72,16 +78,40 @@ export class Notif_ServiceComponent{
             })
           }
           else if(element.ndfforcds == null) {
-            /*this.lNotifDisplay.push(
-            { 
-              'ndf' : false,
-              'id' : element.id_dem,
-              'date_notif' : new Date(),
-              'date' : element.dateD.substring(0, 10) + " au " + element.dateF.substring(0, 10),
-              'type' : element.dem ? "Demande de congé" : "Modification de congé", 
-              'statut' : "Statut: " + this.transformStatus(element.statut),
-              'color': 'cyan', 
-              })*/
+            if(element.congeforcds == true) {
+              this.lNotifDisplay.push(
+                { 
+                  'ndfforcds' : null,
+                  'congeforcds' : element.congeforcds,
+                  'service' : element.nom_service,
+                  'id' : element.id_dem,
+                  'id_collab' : element.id_collab,
+                  'nom' : element.nom_collab,
+                  'prenom' : element.prenom_collab,
+                  'date_notif' : new Date(element.date.toString()),
+                  'date' : 'du' + this.transformDate(element.dateD) + " au " + this.transformDate(element.dateF),
+                  'type' : "Demande de congé", 
+                  'statut' : "En attente de du chef de service",
+                  'color': 'cyan', 
+                })
+            }
+            else if(element.congeforcds == false) {
+              this.lNotifDisplay.push(
+              { 
+                'ndfforcds' : null,
+                  'congeforcds' : element.congeforcds,
+                  'service' : element.nom_service,
+                  'id' : element.id_dem,
+                  'id_collab' : element.id_collab,
+                  'nom' : element.nom_collab,
+                  'prenom' : element.prenom_collab,
+                  'date_notif' : new Date(element.date.toString()),
+                  'date' : 'du' + this.transformDate(element.dateD) + " au " + this.transformDate(element.dateF),
+                  'type' : "Demande de congé", 
+                  'statut' : "En attente du service RH",
+                  'color': 'cyan', 
+              })
+            }
           }
 
               //Affiche les éléments dans le tableau
@@ -93,5 +123,13 @@ export class Notif_ServiceComponent{
         this.dataSource.paginator = this.paginator;
   }
   })
+  }
+
+  listemois : string[] = ['null', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+  transformDate(date : String) : string {
+
+    var str = this.datePipe.transform(new Date(date.toString()), 'yyyy-MM-dd').split("-",3);
+    return str[2] + ' ' + this.listemois[+str[1]] + ' ' + str[0];
   }
 }

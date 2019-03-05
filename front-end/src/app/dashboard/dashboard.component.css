@@ -36,7 +36,9 @@ hr {
 }
 
 .row-sidenav-content {
-  display: contents;
+  /* display: contents; */
   margin-left: 10px;
   margin-right: 10px;
+  position: relative;
+  top: 5px;
 }

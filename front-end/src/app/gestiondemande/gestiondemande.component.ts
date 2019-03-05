@@ -7,6 +7,7 @@ import {MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA} from '@a
 import { ICollaborateur } from '../gestionconge/collaborateur.interface';
 import { IConge } from '../conge/conge.interface';
 import { DemandeRefuseeComponent } from '../create-demandeconge/create-demandeconge.component';
+import { IInfoConge } from '../gestionconge/gestionconge.interface';
 
 @Component({
   selector: 'app-gestiondemande',
@@ -17,8 +18,18 @@ import { DemandeRefuseeComponent } from '../create-demandeconge/create-demandeco
 export class GestiondemandeComponent implements OnInit {
 
   demande: IDemandeconge;
-  listeCollab: ICollaborateur[];
-  infoConges : IConge[]
+  infoConges : IInfoConge[];
+  infoCollab : IInfoConge = {
+    id_collab : 0,
+    nom_collab : '',
+    prenom_collab : '',
+    nom_service : '',
+    cp_pris : 0,
+    cp_restant : 0,
+    css_pris : 0,
+    rtt_pris : 0,
+    rtt_restant : 0
+  };
   async delay(ms: number) {
     await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>( {} ));
   }
@@ -106,18 +117,23 @@ export class GestiondemandeComponent implements OnInit {
   ngOnInit() 
   {
     this.gestioncongeService
-    .getCollabs()
-      .subscribe((data : ICollaborateur[]) => {
-      this.listeCollab = data;
-    });
-
-    this.congeService
-    .getCongesFromIdCollab({id: this.demande.id_collab})
-      .subscribe( (data : IConge[]) => {
-      this.infoConges = data;
-    });
-
-
+      .getInfoCollab({id : this.demande.id_collab})
+      .subscribe( (data : IInfoConge[]) => {
+        this.infoConges = data;
+        console.log(data)
+        if(this.infoConges.length > 0)
+        this.infoCollab = this.infoConges[0];
+      })
+    // this.gestioncongeService
+    // .getCollabs()
+    //   .subscribe((data : ICollaborateur[]) => {
+    //   this.listeCollab = data;
+    //   this.congeService
+    //   .getCongesFromIdCollab({id: this.demande.id_collab})
+    //     .subscribe( (data : IConge[]) => {
+    //     this.infoConges = data;
+    //   });
+    // });
   }
 
 }

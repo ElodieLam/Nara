@@ -31,15 +31,13 @@ var Demandeconge =
         [Demandeconge.status_conge, date, Demandeconge.motif_refus, Demandeconge.id_demande_conge], callback);
     },
 
-
-
-    
-
     createDemandeconges: function (Demandeconge, callback) 
     {
+        date_debut = new Date(Demandeconge.date_debut)
+        date_fin = new Date(Demandeconge.date_fin)
         date = new Date();
         return db.query('Insert into t_demande_conge(id_collab, date_demande, type_demande_conge, date_debut, debut_matin, date_fin, fin_aprem, status_conge, motif_refus, duree) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [Demandeconge.id_collab, date, Demandeconge.type_demande_conge, Demandeconge.date_debut, Demandeconge.debut_matin, Demandeconge.date_fin, Demandeconge.fin_aprem, Demandeconge.status_conge, Demandeconge.motif_refus, Demandeconge.duree], callback);
+        [Demandeconge.id_collab, date, Demandeconge.type_demande_conge, date_debut, Demandeconge.debut_matin, date_fin, Demandeconge.fin_aprem, Demandeconge.status_conge, Demandeconge.motif_refus, Demandeconge.duree], callback);
     },
 
 }

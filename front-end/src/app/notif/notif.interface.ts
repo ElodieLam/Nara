@@ -1,6 +1,7 @@
 // Notif service
 export interface INotifService {
   ndfforcds : Boolean;
+  congeforcds: Boolean;
   id_collab: Number;
   nom_collab: String;
   prenom_collab: String;
@@ -21,6 +22,7 @@ export interface INotifService {
 
 export interface INotifServiceDisplay {
   ndfforcds: Boolean;
+  congeforcds: Boolean;
   id: Number;
   id_collab: Number;
   service: String;
