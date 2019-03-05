@@ -15,10 +15,10 @@
         <td *ngIf = "demande.type_demande_conge === 'rtt'"> RTT</td>
         <td *ngIf = "demande.type_demande_conge === 'cp'"> Congé Payé</td>
         <td *ngIf = "demande.type_demande_conge === 'css'"> Congé Sans Solde</td>
-        <td *ngIf = "demande.debut_matin == 0"> {{demande.date_debut | date : 'dd/MM/yyyy'}} : après-midi </td>
-        <td *ngIf = "demande.debut_matin == 1"> {{demande.date_debut | date : 'dd/MM/yyyy'}} : matin </td>
-        <td *ngIf = "demande.fin_aprem == 0"> {{demande.date_fin | date : 'dd/MM/yyyy'}} : matin </td>
-        <td *ngIf = "demande.fin_aprem == 1"> {{demande.date_fin | date : 'dd/MM/yyyy'}} : après-midi </td>
+        <td *ngIf = "!demande.debut_matin"> {{demande.date_debut | date : 'dd/MM/yyyy'}} : après-midi </td>
+        <td *ngIf = "demande.debut_matin"> {{demande.date_debut | date : 'dd/MM/yyyy'}} : matin </td>
+        <td *ngIf = "!demande.fin_aprem"> {{demande.date_fin | date : 'dd/MM/yyyy'}} : matin </td>
+        <td *ngIf = "demande.fin_aprem"> {{demande.date_fin | date : 'dd/MM/yyyy'}} : après-midi </td>
         <td>{{demande.duree}} demi-journées</td>
       </tr>
       </tbody>
