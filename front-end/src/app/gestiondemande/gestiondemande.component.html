@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Gérer Demande de congé</h1>
 <div mat-dialog-content>
-  <h3 *ngIf = "listeCollab.length >0">{{listeCollab[demande.id_collab - 1].nom_collab}} {{listeCollab[demande.id_collab - 1].prenom_collab}}</h3>
+  <h3>{{infoCollab.nom_collab}} {{infoCollab.prenom_collab}} - {{infoCollab.nom_service}}</h3>
   <table class="table table-striped">
       <thead>
       <tr>
@@ -37,23 +37,26 @@
         <tbody>
         <tr>
           <td>RTT</td>
-          <td>{{infoConges[0].rtt_pris}}</td>
-          <td>{{infoConges[0].rtt_restant}}</td>
+          <td>{{infoCollab.rtt_pris}}</td>
+          <td>{{infoCollab.rtt_restant}}</td>
         </tr>
         <tr>
             <td>Congé Payé</td>
-            <td>{{infoConges[0].cp_pris}}</td>
-            <td>{{infoConges[0].cp_restant}}</td>
+            <td>{{infoCollab.cp_pris}}</td>
+            <td>{{infoCollab.cp_restant}}</td>
         </tr>
         <tr>
             <td>Congé Sans Solde</td>
-            <td>{{infoConges[0].css_pris}}</td>
-            <td>/</td>
+            <td>{{infoCollab.css_pris}}</td>
+            <td>–</td>
         </tr>
         </tbody>
       </table>
     </section>
+</div>
+<div mat-dialog-actions>
   <aside><button class="margin-right btn btn-success" (click) = "onClick(1)">Accepter</button>
   <button class="margin-right btn btn-danger" (click) = "onClick(0)">Refuser</button></aside>
   <button mat-button (click)="onCancel()">Annuler</button>
 </div>
+    

@@ -19,5 +19,20 @@ router.get('/collab', function (req, res)
     });
 });
 
+router.get('/infocollab', function (req, res) 
+{
+    Collab.getInfoCollab(req.query, function(err, rows)
+    {
+        if(err) 
+        {
+            res.status(400).json(err);
+        }
+        else
+        {
+            res.json(rows);
+        }
+    });
+});
+
 
 module.exports = router;

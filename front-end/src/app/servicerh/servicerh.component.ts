@@ -189,19 +189,19 @@ export class ServicerhComponent implements OnInit {
       setTimeout(() => this.dataSource.paginator = this.paginator);
       //console.log(this.dataSource);
 
+      this.serviceRHservice
+      .getCollabs()
+        .subscribe((data : ICollaborateur[]) => {
+        this.listeCollab = data;
+        console.log(this.listeCollab)  
+        this.fillEvent();
+      });
       //console.log(this.events);
     }); 
     
-    this.serviceRHservice
-    .getCollabs()
-      .subscribe((data : ICollaborateur[]) => {
-      this.listeCollab = data;
-      console.log(this.listeCollab)  
-  });
-  this.delay(500).then(any => {
-    this.fillEvent();
+  // this.delay(500).then(any => {
   
-  });
+  // });
   
 
 

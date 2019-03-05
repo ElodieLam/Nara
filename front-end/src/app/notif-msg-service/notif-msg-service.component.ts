@@ -12,8 +12,9 @@ export class NotifMsgServiceComponent implements OnInit {
 
   private sub : any;
   @Input() ndfforcds;
+  @Input() congeforcds;
   @Input() service;
-  @Input() ndf;
+  @Input() id_notif;
   @Input() id;
   @Input() type;
   @Input() date;
@@ -24,8 +25,8 @@ export class NotifMsgServiceComponent implements OnInit {
 
 
   componentData : any = {
-    ndfforcds : false,
-    ndf : false,
+    type_notif : 0,
+    id_notif : 0,
     id: 0,
     type : "",
     date : "",
@@ -47,16 +48,16 @@ export class NotifMsgServiceComponent implements OnInit {
  
   ngOnInit() {
       //infos à afficher dans le tableau
-      this.componentData.ndfforcds = (this.ndfforcds == 1) ? true : false;
-      this.componentData.ndf = (this.ndf == 'true') ? true : false;
+      if(this.ndfforcds != '')
+        this.componentData.type_notif = (this.ndfforcds == 1) ? 1 : 2;
+      if(this.congeforcds != '')
+        this.componentData.type_notif = (this.congeforcds == 1) ? 3 : 4;
+      this.componentData.id_notif = this.id_notif;
       this.componentData.id = this.id;
       this.componentData.type = this.type;
       this.componentData.date = this.date;
       this.componentData.statut = this.statut;
       this.componentData.color = this.color;
-  }
-
-  goToConge() {
   }
 
   getTrColor(type){
@@ -72,7 +73,7 @@ export class NotifMsgServiceComponent implements OnInit {
 
   goToNdfCDS () {
     var str = this.date.split(" ", 2);
-    var hiddenParam = this.ndf + '-' + this.prenom + '-' + this.nom + '-' 
+    var hiddenParam = this.id_notif + '-' + this.prenom + '-' + this.nom + '-' 
       + str[0] + '-' + str[1] + '-' + this.id;
     var encrypted = this.encrypt(hiddenParam, this.key);
     this.router.navigate(['/gestionnotedefrais', encrypted.toString()]);
@@ -80,10 +81,17 @@ export class NotifMsgServiceComponent implements OnInit {
 
   goToNdfCompta () {
     var str = this.date.split(" ", 2);
-    var hiddenParam = this.ndf + '-' + this.service + '-' + this.prenom + 
+    var hiddenParam = this.id_notif + '-' + this.service + '-' + this.prenom + 
       '-' + this.nom + '-' + str[0] + '-' + str[1];
     var encrypted = this.encrypt(hiddenParam, this.key);
     this.router.navigate(['/servicecompta',  encrypted.toString()  ]);
+  }
+  
+  goToCongeCDS () {
+    this.router.navigate(['/gestionconge']);  
+  }
+  goToCongeRH () {
+    this.router.navigate(['/servicerh']);
   }
 
   encrypt (msg, key) {

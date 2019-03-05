@@ -20,8 +20,9 @@
       <mat-cell *matCellDef="let element"> 
         <app-notif-msg-service  
         ndfforcds="{{element.ndfforcds}}"
+        congeforcds="{{element.congeforcds}}"
         service="{{element.service}}"
-        ndf="{{element.id}}" 
+        id_notif="{{element.id}}" 
         id="{{element.id_collab}}" 
         type="{{element.type}}" 
         date="{{element.date}}" 
@@ -47,9 +48,11 @@
           {{element.prenom}} {{element.nom}} 
         </td>
         <td>
-          <app-notif-msg-service  ndfforcds="{{element.ndfforcds}}"
+          <app-notif-msg-service  
+          ndfforcds="{{element.ndfforcds}}"
+          congeforcds="{{element.congeforcds}}"
           service="{{element.service}}"
-          ndf="{{element.id}}" 
+          id_notif="{{element.id}}" 
           id="{{element.id_collab}}" 
           type="{{element.type}}" 
           date="{{element.date}}" 

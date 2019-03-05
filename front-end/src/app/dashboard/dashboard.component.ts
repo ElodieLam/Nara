@@ -91,6 +91,18 @@ export class DashboardComponent implements OnInit{
     this.router.navigate(['/servicecompta']); 
   }
 
+  serviceToString() {
+    var str = ''
+    if(this.isCDS)
+      str += 'CDS '
+    if(this.service == 'Ressources humaines')
+      str += 'RH'
+    else if(this.service == 'Comptabilite')
+      str += 'Compta'
+    else 
+      str += this.service
+    return str
+  }
   logout(){
     console.log("logged out");
     this.isOn = false;

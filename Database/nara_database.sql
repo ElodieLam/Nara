@@ -4,7 +4,7 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 
--- Base de données :  `bd_projet`
+-- Base de données :  `nara_database`
 
 -- table t_service
 
@@ -118,6 +118,11 @@ ALTER TABLE `t_conge`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
 INSERT INTO `t_conge` (`id_collab`, `rtt_restant`, `rtt_pris`, `cp_restant`, `cp_pris`, `css_pris`) VALUES
+(1, 10, 10, 10, 10, 10),
+(2, 10, 10, 10, 10, 10),
+(3, 10, 10, 10, 10, 10),
+(4, 10, 10, 10, 10, 10),
+(5, 10, 10, 10, 10, 10),
 (6, 10, 10, 10, 10, 10);
 
 -- table t_demande_conge
@@ -204,11 +209,6 @@ ALTER TABLE `t_note_de_frais`
 ALTER TABLE `t_note_de_frais`
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
 
-INSERT INTO `t_note_de_frais` (`id_ndf`, `id_collab`, `total`, `mois`, `annee`) VALUES
-(1, 6, 145.67 , 11, 2018),
-(2, 6, 589.43 , 12, 2018),
-(3, 6, 500.56 , 01, 2019);
-
 -- table t_ligne_de_frais
 
 CREATE TABLE `t_ligne_de_frais` (
@@ -232,27 +232,6 @@ ALTER TABLE `t_ligne_de_frais`
 
 ALTER TABLE `t_ligne_de_frais`
   ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
-
-
-INSERT INTO `t_ligne_de_frais` (`id_ldf`, `id_ndf`, `id_mission`, `montant_ldf`, `libelle_ldf`, `date_ldf`,`id_statut`, `commentaire_ldf`,`motif_refus`, `justif_ldf`) VALUES
-(1, 1, 1, 14.55, 'taxi', '2019-01-15', 6, '', '', NULL),
-(2, 1, 1, 22.00, 'restaurant', '2019-01-15', 6, 'midi', '', NULL),
-(3, 1, 1, 35.99, 'restaurant', '2019-01-15', 6, 'soir', '', NULL),
-(4, 1, 2, 18.55, 'taxi', '2019-01-18', 11, '', '', NULL),
-(5, 1, 2, 44.99, 'restaurant', '2019-01-15', 7, '', 'pas de restaurant le soir', NULL),
-(16, 1, 2, 44.99, 'restaurant', '2019-01-15', 7, '', '', NULL),
-(6, 2, 1, 14.55, 'taxi', '2019-01-15', 8, '', '', NULL),
-(7, 2, 1, 22.00, 'restaurant', '2019-01-15', 7, 'midi', '', NULL),
-(8, 2, 1, 35.99, 'restaurant', '2019-01-15', 6, 'soir', '', NULL),
-(9, 2, 2, 18.55, 'taxi', '2019-01-18', 11, '', '', NULL),
-(10, 2, 2, 44.99, 'restaurant', '2019-01-15', 10, '', 'pas de restaurant le soir', NULL),
-(17, 2, 2, 44.99, 'restaurant', '2019-01-15', 9, '', '', NULL),
-(11, 2, 1, 14.55, 'taxi', '2019-01-15', 9, '', '', NULL),
-(12, 2, 1, 22.00, 'restaurant', '2019-01-15', 8, 'midi', '', NULL),
-(13, 2, 1, 35.99, 'restaurant', '2019-01-15', 9, 'soir', '', NULL),
-(14, 2, 2, 18.55, 'taxi', '2019-01-18', 11, '', '', NULL),
-(15, 2, 2, 44.99, 'restaurant', '2019-01-15', 7, '', '', NULL),
-(18, 2, 2, 44.99, 'restaurant', '2019-01-15', 6, '', 'pas de restaurant le soir', NULL);
 
 -- table t_avance
 
@@ -284,8 +263,6 @@ ALTER TABLE `t_ligne_de_frais_avance`
 ALTER TABLE `t_ligne_de_frais_avance`
   ADD FOREIGN KEY (`id_statut`) REFERENCES t_statut(`id_statut`);
 
-
-
 -- table t_admin
 
 CREATE TABLE `t_admin` (
@@ -294,24 +271,6 @@ CREATE TABLE `t_admin` (
   `password_admin` varchar(64) NOT NULL,
   PRIMARY KEY (`id_admin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- table t_log
-
-CREATE TABLE `t_log` (
-  `id_log` int(11) NOT NULL AUTO_INCREMENT,
-  `id_user` int(11) NOT NULL,
-  `id_admin` int(11) NOT NULL,
-  `date_log` DATE NOT NULL,
-  `operation` varchar(128) NOT NULL,
-  PRIMARY KEY (`id_log`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `t_log`
-  ADD FOREIGN KEY (`id_user`) REFERENCES t_collaborateur(`id_collab`);
-ALTER TABLE `t_log`
-  ADD FOREIGN KEY (`id_admin`) REFERENCES t_admin(`id_admin`);
-
--- table t_notif_dem_conge
 
 -- table t_notif_mod_conge
 

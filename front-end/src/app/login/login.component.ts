@@ -62,9 +62,10 @@ export class LoginComponent implements OnInit {
 
   //Save user infos and go to dashboard
   saveIdentity(){
-    if(this.user.id_collab == this.user.id_chefDeService) {
+    if(this.user.id_collab == this.user.id_chefDeService) 
       this.user.isCDS = true;
-    }
+    else 
+      this.user.isCDS = false;
     console.log("User logged in ! ");
    
     this.goToDashboard();

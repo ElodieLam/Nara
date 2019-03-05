@@ -4,21 +4,37 @@
     <br>
     {{componentData.statut}} 
   </p>
-  <button mat-stroked-button *ngIf="componentData.ndfforcds" (click)="goToNdfCDS()" class="btnVoir ">
-    Gestion CDS
+  <button mat-stroked-button *ngIf="componentData.type_notif == 1" (click)="goToNdfCDS()" class="btnVoir ">
+    Gestion Ndf CDS
   </button>
-  <button mat-stroked-button *ngIf="!componentData.ndfforcds" color="warn" (click)="goToNdfCompta()" class="btnVoir ">
+  <button mat-stroked-button *ngIf="componentData.type_notif == 2" color="warn" (click)="goToNdfCompta()" class="btnVoir ">
     Gestion Compta
+  </button>
+  <button mat-stroked-button *ngIf="componentData.type_notif == 3" (click)="goToCongeCDS()" class="btnVoir ">
+    Gestion Congé CDS
+  </button>
+  <button mat-stroked-button *ngIf="componentData.type_notif == 4" color="warn" (click)="goToCongeRH()" class="btnVoir ">
+    Gestion RH
   </button>
   <br>
 </div>
 <div *ngIf="mobileVersion" class="mobile">
-  <button mat-flat-button *ngIf="componentData.ndfforcds" (click)="goToNdfCDS()" class="mat-elevation-z8">
+  <button mat-flat-button *ngIf="componentData.type_notif == 1" (click)="goToNdfCDS()" class="mat-elevation-z8">
       <strong>{{componentData.type}}</strong><br>
       {{componentData.date}}<br>
       {{componentData.statut}} 
   </button>
-  <button mat-flat-button *ngIf="!componentData.ndfforcds" (click)="goToNdfCompta()" class="mat-elevation-z8">
+  <button mat-flat-button *ngIf="componentData.type_notif == 2" (click)="goToNdfCompta()" class="mat-elevation-z8">
+      <strong>{{componentData.type}}</strong><br>
+      {{componentData.date}}<br>
+      {{componentData.statut}} 
+  </button>
+  <button mat-flat-button *ngIf="componentData.type_notif == 3" (click)="goToCongeCDS()" class="mat-elevation-z8">
+      <strong>{{componentData.type}}</strong><br>
+      {{componentData.date}}<br>
+      {{componentData.statut}} 
+  </button>
+  <button mat-flat-button *ngIf="componentData.type_notif == 4" (click)="goToCongeRH()" class="mat-elevation-z8">
       <strong>{{componentData.type}}</strong><br>
       {{componentData.date}}<br>
       {{componentData.statut}} 
