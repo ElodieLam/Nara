@@ -31,6 +31,11 @@ var Demandeconge =
         [Demandeconge.status_conge, date, Demandeconge.motif_refus, Demandeconge.id_demande_conge], callback);
     },
 
+    deleteDemandeconge: function(Demandeconge, callback)
+    {
+        return db.query('DELETE from t_demande_conge WHERE id_demande_conge = ?', [Demandeconge.id_demande_conge], callback);
+    },
+
     createDemandeconges: function (Demandeconge, callback) 
     {
         date_debut = new Date(Demandeconge.date_debut)

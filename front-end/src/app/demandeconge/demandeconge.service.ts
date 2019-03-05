@@ -20,6 +20,25 @@ export class DemandecongeService
       .http
       .get(`${this.url}/demandeconge/demandecongesid`, { params : data});
   }
+  
+  deleteDemandeconges(data)
+  {
+    return this
+      .http
+      .post(`${this.url}/demandeconge/deletedemande`, data)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastr.success('Demande supprimée.', 'Success');
+          this.router.navigateByUrl('/conge');
+        },
+        err => {
+          console.log('Error occured:' , err);
+          this.toastr.error(err.message, 'Error occured');
+        }
+      );
+  }
+  
 
   createDemandeconges(data)
   {

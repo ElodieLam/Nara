@@ -324,8 +324,8 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
 
       }
 
-      data.date_debut.setDate(data.date_debut.getDate()+1);
-      data.date_fin.setDate(data.date_fin.getDate()+1);
+      data.date_debut.setDate(data.date_debut.getDate());
+      data.date_fin.setDate(data.date_fin.getDate());
       data.date_debut.setHours(0,0,0,0);
       data.date_fin.setHours(0,0,0,0);
       if(this.isCds)

@@ -82,7 +82,8 @@ import { LignedefraisavanceComponent } from './lignedefraisavance/lignedefraisav
 import { GestionavanceComponent } from './gestionavance/gestionavance.component';
 import { ServicecomptaavanceComponent } from './servicecomptaavance/servicecomptaavance.component';
 import { DialogAccepterAvanceCompta } from './servicecomptandf/dialog-accepter-avance.component';
-import { NotedefraishistoriqueComponent } from './notedefraishistorique/notedefraishistorique.component'
+import { NotedefraishistoriqueComponent } from './notedefraishistorique/notedefraishistorique.component';
+import { RefreshComponent } from './refresh/refresh.component'
  
 
 const appRoutes: Routes = [
@@ -103,6 +104,7 @@ const appRoutes: Routes = [
     {path: 'historiqueconge', component: HistoriquecongeComponent},
     {path: 'gestionconge', component: GestioncongeComponent},
     {path: 'servicerh', component: ServicerhComponent},
+    {path: 'refresh', component: RefreshComponent},
     {path: 'create-demandeconge', component: CreateDemandecongeComponent}
 ];
 
@@ -148,6 +150,7 @@ const appRoutes: Routes = [
     GestionavanceComponent,
     ServicecomptaavanceComponent,
     NotedefraishistoriqueComponent,
+    RefreshComponent,
   ],
   imports: [
     BrowserModule,

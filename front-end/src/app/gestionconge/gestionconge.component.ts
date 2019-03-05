@@ -189,7 +189,7 @@ export class GestioncongeComponent implements OnInit
     .getDemandecongesFromIdCdS({id : this.user})
       .subscribe( (data : IDemandeconge[]) => {
       this.listeDemande = data;
-      this.dataSource = new MatTableDataSource(this.listeDemande); 
+      this.dataSource = new MatTableDataSource<IDemandeconge>(this.listeDemande); 
       this.dataSource.sort = this.sort;
       setTimeout(() => this.dataSource.paginator = this.paginator);
       //console.log(this.dataSource);
@@ -208,8 +208,6 @@ export class GestioncongeComponent implements OnInit
   
   // });
   
-
-
 
 
   }
