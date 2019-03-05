@@ -3,11 +3,13 @@ import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
 import { NotifService } from './notif.service';
 import { INotifDisplay, INotif} from './notif.interface';
 import { LoginComponent } from '../login/login.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-notif',
   templateUrl: './notif.component.html',
-  styleUrls: ['../notif-service/notif-service.component.css']
+  styleUrls: ['../notif-service/notif-service.component.css'],
+  providers : [DatePipe]
 })
 export class NotifComponent{
 
@@ -28,7 +30,8 @@ export class NotifComponent{
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private notifService: NotifService, private login: LoginComponent) { 
+  constructor(private notifService: NotifService, private login: LoginComponent,
+    private datePipe : DatePipe) { 
     this.mobileVersion = this.login.mobileVersion;
     }
 
@@ -38,6 +41,7 @@ export class NotifComponent{
     this.notifService
     .getNotifCollab({id : this.login.user.id_collab})
     .subscribe( (data : INotif[]) => {
+      console.log(data);
       this.lNotif = data;
       if(this.lNotif.length > 0) {
         this.lNotif.forEach( element => {
@@ -57,14 +61,13 @@ export class NotifComponent{
             { 
               'ndf' : false,
               'id' : element.id_dem,
-              'date_notif' : new Date(),
-              'date' : element.dateD.substring(0, 10) + " au " + element.dateF.substring(0, 10),
-              'type' : element.dem ? "Demande de congé" : "Modification de congé", 
-              'statut' : "Statut: " + this.transformStatus(element.statut),
+              'date_notif' : new Date(element.date.toString()),
+              'date' : 'du' + this.transformDate(element.dateD) + " au " + this.transformDate(element.dateF),
+              'type' : 'Demande de congé', 
+              'statut' : "Statut : " + this.transformStatusConge(element.statut),
               'color': 'cyan', 
               })
           }
-
         });
         this.lNotifDisplay.sort((a, b) => {
           return a.date_notif < b.date_notif ? 1 : -1
@@ -83,6 +86,23 @@ export class NotifComponent{
         return this.status[i].value;
     }
     return 'statut undefined'
+  }
+
+  transformStatusConge(statut : String) : String {
+    if(statut == 'noCds')
+      return 'refus Chef de service'
+    else if(statut == 'noRh')
+      return 'refus service RH'
+    else if(statut == 'validee')
+      return 'validée'
+  }
+
+  listemois : string[] = ['null', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+  transformDate(date : String) : string {
+
+    var str = this.datePipe.transform(new Date(date.toString()), 'yyyy-MM-dd').split("-",3);
+    return str[2] + ' ' + this.listemois[+str[1]] + ' ' + str[0];
   }
 
 }

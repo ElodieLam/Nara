@@ -28,9 +28,7 @@
 </div>
 
 <div *ngIf="!mobileVersion" class="mat-elevation-z8">
-  <!-- <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher dans les lignes de frais">
-  </mat-form-field> -->
+
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" style="min-width: fit-content;">
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
@@ -57,7 +55,6 @@
       <td mat-cell *matCellDef="let element">
         <div *ngIf="isAvance(element)">
           <mat-icon>check</mat-icon>
-          <!-- {{element.montant_avance}} -->
         </div>
       </td>
     </ng-container>

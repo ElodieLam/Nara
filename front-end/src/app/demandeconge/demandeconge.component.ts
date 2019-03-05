@@ -168,7 +168,6 @@ export class DemandecongeComponent implements OnInit
       this.listeDemande = data;
       this.dataSource = new MatTableDataSource(this.listeDemande); 
       this.dataSource.sort = this.sort;
-      console.log(this.dataSource);
       this.fillEvent();
       console.log(this.events);
     }); 
