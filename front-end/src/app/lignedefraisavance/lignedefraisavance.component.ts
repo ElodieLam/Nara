@@ -9,8 +9,12 @@ import { LoginComponent } from '../login/login.component';
   templateUrl: './lignedefraisavance.component.html',
   styleUrls: ['./lignedefraisavance.component.css']
 })
-
-
+/**
+ * Responsable : Alban Descottes
+ * Component qui représente toutes les avances d'une note de frais 
+ * Accessible pour tous les collaboratteus
+ * Version mobile et ordinateur
+ */
 export class LignedefraisavanceComponent implements OnInit, OnChanges {
   @Input() listavance : ILignedefrais[];
   private _listavance: ILignedefrais[];
@@ -93,9 +97,4 @@ export class LignedefraisavanceComponent implements OnInit, OnChanges {
   supprLignedefrais(element : ILignedefrais) {
     this.lignedefrais.supprLignedefrais(element);
   }
-
-  openInformation(element : ILignedefrais) {
-    this.lignedefrais.openDialogInformation(element, true);
-  }
-
 }

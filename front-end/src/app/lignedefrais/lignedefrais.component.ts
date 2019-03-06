@@ -1,16 +1,14 @@
-import { Component, OnInit, SimpleChange, SimpleChanges, OnChanges, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatSnackBar, MAT_SNACK_BAR_DATA} from '@angular/material';
 import { LignedefraisService } from './lignedefrais.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ILignedefraisFull, ILignedefrais, IAvance, ILignedefraisShort, IAvanceShort } from './lignedefrais.interface';
+import { ILignedefraisFull, ILignedefrais, ILignedefraisShort, IAvanceShort } from './lignedefrais.interface';
 import { DatePipe } from '@angular/common';
-
 import { DialogEnvoyerAvance } from './dialog-envoyer-avance.component';
 import { DialogEnvoyerLignes } from './dialog-envoyer-lignes.component';
 import { DialogModifierAvance } from './dialog-modifier-avance.component';
 import { DialogModifierLignedefrais } from './dialog-modifier-lignedefrais.component';
 import { DialogNouvelleLignedefrais } from './dialog-nouvelle-lignedefrais.component';
-import { DialogInformation } from './dialog-information.component';
 import { LoginComponent } from '../login/login.component'
 import * as CryptoJS from 'crypto-js'; 
 import { DialogNouvelleAvance } from './dialog-nouvelle-avance.component';
@@ -21,7 +19,13 @@ import { DialogNouvelleAvance } from './dialog-nouvelle-avance.component';
   styleUrls: ['./lignedefrais.component.css'],
   providers: [DatePipe]
 })
-export class LignedefraisComponent implements OnInit, OnChanges {
+/**
+ * Responsable : Alban Descottes
+ * Component qui représente la gestion des lignes de frais et avance d'une note de frais
+ * Accessible pour tous les collaboratteus
+ * Version mobile et ordinateur
+ */
+export class LignedefraisComponent implements OnInit {
  
   status : any[] = [
     {key: 'avnoSent', value : 'Avance non envoyée'},
@@ -67,11 +71,11 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   listlignedefrais : ILignedefrais[] = [];
   listavance : ILignedefrais[] = [];
   currentNdf:boolean = false;
+  
+  // variables pour les tableaux
   dataSource;
   displayedColumns: string[] = ['status', 'mission', 'date',
   'libelle', 'avance', 'montant', 'commentaire', 'justificatif', 'modifier', 'supprimer'];
-  // dataSourceMobile;
-  // displayedColumnsMobile: string[] = ['statut', 'mission', 'information', 'modifier', 'supprimer'];
   dataSourceMobile;
   displayedColumnsMobile: string[] = ['ldf'];
   
@@ -100,20 +104,21 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       this.id_collab = this.login.user.id_collab;
       this.mobileVersion = this.login.mobileVersion;
      }
-  
+
+  /**
+   * @description initialisation du component lignedefrais
+   */
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
 
+      // on récupère les données passés en paramètres dans l'URL
       var decrypted = this.decrypt(params['id'], this.key);
-      console.log("Param decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
       var str = decrypted.toString(CryptoJS.enc.Utf8).split("-",3);
       
       this.id_ndf = +str[0]
       this.annee = +str[1];
       this.mois = +str[2];
       var stri = this.datePipe.transform(new Date(), 'yyyy-MM-dd').split("-",2);
-      console.log(this.annee + ' ' + this.mois)
-      console.log(+stri[0] + ' ' + +stri[1])
       if(+stri[0] == this.annee && +stri[1] == this.mois) {
         this.currentNdf = true;
       }
@@ -123,12 +128,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     this.refreshLignesdefrais();
   }
 
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  
-  
+  /**
+   * @description exécute la requête sql pour récupérer toutes les lignes de frais et avance
+   */
   refreshLignesdefrais(){
     this.montantTotalLdf = 0;
     this.cntLdf = 0;
@@ -143,7 +145,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
       .getLignesdefraisFromIdNdf({id : this.id_ndf.toString()})
       .subscribe( (data : ILignedefraisFull[]) => {
         this.listlignedefraisfull = data;
-        console.log(data)
         // transformation de la liste pour afficher les informations dans le tableau
         this.listlignedefraisfull.forEach( ldf => {
           // cela permet de savoir si la note de frais peut être envoyée,
@@ -191,7 +192,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
             ldf.statut_ldf == 'avnoF' ) {
               // décalage pour obtenir les vraies dates
               // car on ne peut pas envoyer la note de frais 
-              // TODO fix feature
               if(this.isOkToSend){
                 var date = new Date(ldf.date_mission.toString())
                 date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
@@ -257,8 +257,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
             }
           }
         });
-        console.log(this.listlignedefrais)
-        console.log(this.listavance)
         // creation du tableau avec les options sort et paginator
         if(this.mobileVersion) {
           this.dataSourceMobile = new MatTableDataSource<ILignedefrais>(this.listlignedefrais);
@@ -274,8 +272,10 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     
   }
 
+  /**
+   * @description change le statut des lignes de frais 
+   */
   annulerEnvoi() {
-    //impossible
     if(this.isVoidable) {
       if(this.isVoidableCDS) {
         this.lignedefraisService
@@ -294,11 +294,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const id: SimpleChange = changes.id_ndf;
-    this._id_ndf = id.currentValue.toUpperCase();
-  }
-
   isAvance(ldf: ILignedefrais) {
     return ldf.avance;
   }
@@ -309,15 +304,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return false;
   }
 
-  openDialogInformation(element : ILignedefrais, avance: boolean) {
-    const dialogRef = this.dialog.open(DialogInformation, {
-      data: { element : element , avance : avance } 
-    });
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
-
-  }
+  /**
+   * @description ouvre le dialog pour ajouter une ligne de frais
+   */
   openDialogNouvelleLignedefrais() {
     this.componentData.id_ldf = 0;
     this.componentData.id_mission = '';
@@ -344,6 +333,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * @description ouvre le dialog pour créer une nouvelle avance
+   */
   openDialogNouvelleAvance() {
     this.componentData.id_ldf = 0;
     this.componentData.id_mission = '';
@@ -370,6 +362,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * @description ouvre le dialog pour modifier une ligne de frais
+   */
   openDialogModifierLignedefrais(element : ILignedefrais) {
     this.componentData.id_ldf = element.id_ldf;
     this.componentData.id_mission = element.id_mission;
@@ -399,6 +394,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * @description ouvre le dialog pour modifier une avance
+   */
   openDialogModifierAvance(element : ILignedefrais) {
     this.componentData.id_ldf = element.id_ldf;
     this.componentData.id_mission = element.id_mission;
@@ -431,10 +429,11 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 
 
+  /**
+   * @description ouvre le dialog pour envoyer les avances
+   */
   openDialogEnvoyerAvance() {
     var listAvance : IAvanceShort[] = [];
-    console.log('envoyer avance')
-    console.log(this.listavance)
     this.listavance.forEach(element => {
       if(element.status == 'Avance non envoyée') {
         listAvance.push({
@@ -467,6 +466,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * @description ouvre le dialog pour envoyer les lignes de frais
+   */
   openDialogEnvoyerLignes() {
     var listLdf : ILignedefraisShort[] = [];
     this.listlignedefrais.forEach( ligne => {
@@ -497,7 +499,6 @@ export class LignedefraisComponent implements OnInit, OnChanges {
             })
         
     });
-    console.log(listLdf);
     if(listLdf.length == this.listlignedefrais.length) {
       
       if(listLdf.length > 0) {
@@ -523,6 +524,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     }
   }
   
+  /**
+   * @description supprime la ligne de frais ou l'avance
+   */
   supprLignedefrais(ldf : ILignedefrais) {
     this.isDisabled = true;
     if(ldf.avance) {
@@ -545,6 +549,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * @description retourne vrai si la ligne peut être modifié
+   */
   modifPossible(ldf : ILignedefrais) : boolean {
     if( (!ldf.avance &&
       ldf.status == 'Attente Compta' ||
@@ -558,6 +565,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return true;
   }
 
+  /**
+   * @description retourne vrai si la ligne peut être supprimé
+   */
   supprPossible(ldf : ILignedefrais) : boolean{
     if( (!ldf.avance &&
       (ldf.status == 'Validée' || ldf.status == 'Attente Compta') ) ||
@@ -573,6 +583,9 @@ export class LignedefraisComponent implements OnInit, OnChanges {
     return true;
   }
 
+  /**
+   * @description routeur pour l'historique des notes de frais
+   */
   goBack() {
     this.router.navigate(['/notedefraishistorique']);
   }
@@ -594,7 +607,7 @@ export class LignedefraisComponent implements OnInit, OnChanges {
   }
 
   openSnackBar(msg: string, duration : number) {
-    console.log('snack')
+
     this.snackBar.openFromComponent(SnackBarComponent, {
       duration: duration,
       data : msg

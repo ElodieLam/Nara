@@ -18,9 +18,6 @@
 </div>
 
 <div *ngIf="!mobileVersion" class="mat-elevation-z8">
-    <!-- <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher dans les demandes d'avance">
-    </mat-form-field> -->
       <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" style="min-width: fit-content;">
     
         <ng-container matColumnDef="status">
@@ -89,51 +86,6 @@
     </div>
 
 <!-- Mobile Version -->
-<!-- <div *ngIf="mobileVersion" class="mat-elevation-z8">
-      <table mat-table [dataSource]="dataSourceMobile" matSort class="mat-elevation-z8" style="min-width: fit-content;">
-    
-        <ng-container matColumnDef="statut">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
-          <td mat-cell class="mobile" *matCellDef="let element"> {{ element.status }} </td>
-        </ng-container>
-    
-        <ng-container matColumnDef="mission">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Mission </th>
-          <td mat-cell class="mobile" *matCellDef="let element"> {{element.mission}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="information">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell class="mobile" *matCellDef="let element"> 
-              <button mat-flat-button (click)="openInformation(element)">
-                <mat-icon color="primary">more_horiz</mat-icon>
-              </button> 
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="modifier">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element"> 
-              <button mat-flat-button *ngIf="modifPossible(element) && element.avance" (click)="openDialogModifierAvance(element)">
-                <mat-icon color="accent">create</mat-icon>
-              </button> 
-            </td>
-        </ng-container>
-        
-        <ng-container matColumnDef="supprimer">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-              <button mat-flat-button *ngIf="supprPossible(element)" (click)="supprLignedefrais(element)">
-                  <mat-icon color="warn">delete_outline</mat-icon>
-              </button>  
-            </td>
-        </ng-container>
-    
-        <tr mat-header-row class="mobile" *matHeaderRowDef="displayedColumnsMobile"></tr>
-        <tr mat-row class="mobile" *matRowDef="let row; columns: displayedColumnsMobile;"></tr>
-      </table>
-      <mat-paginator [pageSizeOptions]="[3]" ></mat-paginator>
-    </div> -->
 <div *ngIf="mobileVersion" >
   <table mat-table [dataSource]="dataSourceMobile">
     <ng-container matColumnDef="ldf">

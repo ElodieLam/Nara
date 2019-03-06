@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NotedefraisService } from './notedefrais.service';
 import { INotedefrais } from './notedefrais.interface';
-import { ILignedefrais } from '../lignedefrais/lignedefrais.interface';
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router} from "@angular/router";
 import { DatePipe } from '@angular/common';
-import { isoStringToDate } from '@angular/common/src/i18n/format_date';
 import * as CryptoJS from 'crypto-js'; 
 import { LoginComponent } from '../login/login.component';
 
@@ -14,6 +12,11 @@ import { LoginComponent } from '../login/login.component';
   styleUrls: ['./notedefrais.component.css'],
   providers: [DatePipe]
 })
+/**
+ * Responsable : Alban Descottes
+ * Component qui affiche la page de gestion des notes de frais pour un collaborateur
+ * Accessible pour tous les collaborateurs
+ */
 export class NotedefraisComponent implements OnInit {
 
   private sub : any;
@@ -52,79 +55,77 @@ export class NotedefraisComponent implements OnInit {
     .subscribe( (data : INotedefrais[]) => {
       // récupération des données de la query
       this.lnotedefrais = data;
-      // trie la liste de la plus récente à la plus ancienne
       this.dataS = this.datePipe.transform(this.date, 'yyyy-MM-dd');
       this.str = this.dataS.split("-",2);
       if(this.lnotedefrais.length != 0){
-            this.lnotedefrais.sort((a, b) => {   
-              return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
-            });
-            // vérifie s'il existe une ndf pour le mois courrant
-            this.lnotedefrais.forEach( ndf => {
-              if(+this.str[0] == ndf.annee && +this.str[1] == ndf.mois){
-                this.currentMissing = false;
-              }
-            })
+        // trie la liste de la plus récente à la plus ancienne
+        this.lnotedefrais.sort((a, b) => {   
+          return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
+        });
+        // vérifie s'il existe une ndf pour le mois courrant
+        this.lnotedefrais.forEach( ndf => {
+          if(+this.str[0] == ndf.annee && +this.str[1] == ndf.mois){
+            this.currentMissing = false;
+          }
+        })
 
-            if(this.lnotedefrais.length == 1 && this.currentMissing)
-            {
-              this.topthreeNdf[0] = "miss";
-              this.topthreeMonth[0] = "miss";
-              this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
-              this.count = 2;
-            }
-            else if(this.lnotedefrais.length == 1)
-            {
-              this.topthreeNdf[0] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[0] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
-              this.count = 1;
-            }
-            else if(this.lnotedefrais.length == 2 && this.currentMissing)
-            {
-              this.topthreeNdf[0] = "miss";
-              this.topthreeMonth[0] = "miss";
-              this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
-              this.topthreeNdf[2] = this.lnotedefrais[1].id_ndf.toString();
-              this.topthreeMonth[2] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
-              this.count = 3;
-            }
-            else if(this.lnotedefrais.length == 2)
-            {
-              this.topthreeNdf[0] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[0] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
-              this.topthreeNdf[1] = this.lnotedefrais[1].id_ndf.toString();
-              this.topthreeMonth[1] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
-              this.count = 2;
-            }
-            else if(this.lnotedefrais.length > 2 && this.currentMissing)         
-            {
-              this.topthreeNdf[0] = "miss";
-              this.topthreeMonth[0] = "miss";
-              this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
-              this.topthreeNdf[2] = this.lnotedefrais[1].id_ndf.toString();
-              this.topthreeMonth[2] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
-              this.count = 3;
-            }
-            else         
-            {
-              this.topthreeNdf[0] = this.lnotedefrais[0].id_ndf.toString();
-              this.topthreeMonth[0] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
-              this.topthreeNdf[1] = this.lnotedefrais[1].id_ndf.toString();
-              this.topthreeMonth[1] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
-              this.topthreeNdf[2] = this.lnotedefrais[2].id_ndf.toString();
-              this.topthreeMonth[2] = this.lnotedefrais[2].mois + "-" + this.lnotedefrais[2].annee;
-              this.count = 3;
-            }
+        if(this.lnotedefrais.length == 1 && this.currentMissing)
+        {
+          this.topthreeNdf[0] = "miss";
+          this.topthreeMonth[0] = "miss";
+          this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
+          this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
+          this.count = 2;
         }
+        else if(this.lnotedefrais.length == 1)
+        {
+          this.topthreeNdf[0] = this.lnotedefrais[0].id_ndf.toString();
+          this.topthreeMonth[0] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
+          this.count = 1;
+        }
+        else if(this.lnotedefrais.length == 2 && this.currentMissing)
+        {
+          this.topthreeNdf[0] = "miss";
+          this.topthreeMonth[0] = "miss";
+          this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
+          this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
+          this.topthreeNdf[2] = this.lnotedefrais[1].id_ndf.toString();
+          this.topthreeMonth[2] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
+          this.count = 3;
+        }
+        else if(this.lnotedefrais.length == 2)
+        {
+          this.topthreeNdf[0] = this.lnotedefrais[0].id_ndf.toString();
+          this.topthreeMonth[0] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
+          this.topthreeNdf[1] = this.lnotedefrais[1].id_ndf.toString();
+          this.topthreeMonth[1] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
+          this.count = 2;
+        }
+        else if(this.lnotedefrais.length > 2 && this.currentMissing)         
+        {
+          this.topthreeNdf[0] = "miss";
+          this.topthreeMonth[0] = "miss";
+          this.topthreeNdf[1] = this.lnotedefrais[0].id_ndf.toString();
+          this.topthreeMonth[1] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
+          this.topthreeNdf[2] = this.lnotedefrais[1].id_ndf.toString();
+          this.topthreeMonth[2] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
+          this.count = 3;
+        }
+        else         
+        {
+          this.topthreeNdf[0] = this.lnotedefrais[0].id_ndf.toString();
+          this.topthreeMonth[0] = this.lnotedefrais[0].mois + "-" + this.lnotedefrais[0].annee;
+          this.topthreeNdf[1] = this.lnotedefrais[1].id_ndf.toString();
+          this.topthreeMonth[1] = this.lnotedefrais[1].mois + "-" + this.lnotedefrais[1].annee;
+          this.topthreeNdf[2] = this.lnotedefrais[2].id_ndf.toString();
+          this.topthreeMonth[2] = this.lnotedefrais[2].mois + "-" + this.lnotedefrais[2].annee;
+          this.count = 3;
+        }
+      }
     }); 
   }
   
   goToNotedefrais () {
-        //Param we want to encrypt
-        //var hiddenParam = this.user.toString();
         this.spinner = true;
         this.notedefraisService.createNotedefrais({
           id_collab : this.user, annee : this.str[0], mois : this.str[1]
@@ -136,7 +137,6 @@ export class NotedefraisComponent implements OnInit {
           .subscribe( (data : any) => {
             var temp = data;
             var hiddenParam = temp[0].id_ndf + "-" + this.str[0] + "-" + this.str[1];
-            //Encrypt-Decrypt
             var encrypted = this.encrypt(hiddenParam, this.key);
             this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
           });
@@ -162,25 +162,6 @@ export class NotedefraisComponent implements OnInit {
     });
     var transitmessage = salt.toString()+ iv.toString() + encrypted.toString();
     return transitmessage;
-  }
-
-
-  decrypt (transitmessage, key) {
-    var salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32));
-    var iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
-    var encrypted = transitmessage.substring(64);
-
-    var key = CryptoJS.PBKDF2(key, salt, {
-      keySize: this.keySize/32,
-      iterations: this.iterations
-    });
-
-    var decrypted = CryptoJS.AES.decrypt(encrypted, key, { 
-      iv: iv, 
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC  
-    })
-    return decrypted;
   }
 
   async delay(ms: number) {

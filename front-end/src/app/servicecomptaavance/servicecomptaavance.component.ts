@@ -10,6 +10,13 @@ import { LoginComponent } from '../login/login.component';
   templateUrl: './servicecomptaavance.component.html',
   styleUrls: ['./servicecomptaavance.component.css']
 })
+
+/**
+ * Responsable : Alban Descottes
+ * Component qui affiche les demandes d'avances d'une note de frais pour le service compta
+ * Accessible pour le service compta
+ * Version mobile et oridinateur
+ */
 export class ServicecomptaavanceComponent implements OnInit, OnChanges {
   @Input() listavance : ILignedefrais[];
   private _listavance: ILignedefrais[];

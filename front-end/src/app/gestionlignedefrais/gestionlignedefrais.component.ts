@@ -13,6 +13,12 @@ import { SnackBarComponent } from '../lignedefrais/lignedefrais.component';
   templateUrl: './gestionlignedefrais.component.html',
   styleUrls: ['./gestionlignedefrais.component.css']
 })
+/**
+ * Responsable : Alban Descottes
+ * Component qui permet à un chef de service de gérer une note de frais d'un collaborateur 
+ * Accessible pour tous les chefs de service
+ * Version mobile et ordinateur
+ */
 export class GestionlignedefraisComponent implements OnInit {
 
   id_cds:number;
@@ -227,7 +233,6 @@ export class GestionlignedefraisComponent implements OnInit {
   }
 
   openSnackBar(msg: string, duration : number) {
-    console.log('snack')
     this.snackBar.openFromComponent(SnackBarComponent, {
       duration: duration,
       data : msg

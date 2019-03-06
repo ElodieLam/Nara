@@ -9,6 +9,12 @@ import { LoginComponent } from '../login/login.component';
   templateUrl: './gestionavance.component.html',
   styleUrls: ['./gestionavance.component.css']
 })
+/**
+ * Responsable : Alban Descottes
+ * Component qui représente les demandes d'avances de la note de frais visualisée
+ * Accessible pour tous les chefs de service
+ * Version mobile et ordinateur
+ */
 export class GestionavanceComponent implements OnInit, OnChanges {
   @Input() listavance : ILignedefraisListe[];
   private _listavance: ILignedefraisListe[];

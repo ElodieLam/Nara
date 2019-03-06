@@ -23,6 +23,11 @@ export interface MissionInterface {
   styleUrls: ['./missions.component.css']
 })
 
+/**
+ * Responsable : Djenna Zitouni
+ * Component qui représente la gestion des missions pour les chefs de service
+ * Accessible pour les chef de service
+ */
 export class MissionsComponent implements OnInit {
 
   
@@ -46,7 +51,6 @@ refresh() {
   this.missionService
   .getMissions({ ouverte : true , id : this.login.user.id_collab })
   .subscribe( (data : MissionInterface[]) => {
-    console.log(data)
     this.infoMissions = data;
     this.infoMissions.forEach( miss => {
       miss.cnt ==  null ? miss.cnt = 0 : {};
@@ -78,16 +82,14 @@ switchMissions(month) : void
   this.missionService
   .getMissionsByMonth({ mois : month })
     .subscribe( (data : MissionInterface[]) => {
-      console.log(data);
       this.infoMissions = data;
-    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions);
+      this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions);
 
   });
 }
 
 supprimerMission(idMission) : void
 {
-  console.log(idMission);
   this.missionService
   .supprimerMission({id : idMission});
   this.delay(1500).then(any => {
@@ -98,7 +100,6 @@ supprimerMission(idMission) : void
 
 cloreMission(idMission) : void
 {
-  console.log(idMission);
   this.missionService
   .cloreMission({id : idMission});
   this.delay(1500).then(any => {
@@ -109,7 +110,6 @@ cloreMission(idMission) : void
 
 ouvrirMission(idMission) : void
 {
-  console.log(idMission);
   this.missionService
   .ouvrirMission({id : idMission});
   this.delay(1500).then(any => {
@@ -124,7 +124,6 @@ async delay(ms: number) {
 
 
 openSnackBar(msg: string, duration : number) {
-  console.log('snack')
   this.snackBar.openFromComponent(SnackBarComponent, {
     duration: duration,
     data : msg

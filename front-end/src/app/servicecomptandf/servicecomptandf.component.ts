@@ -17,7 +17,12 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./servicecomptandf.component.css'],
   providers: [DatePipe]
 })
-
+/**
+ * Responsable : Alban Descottes
+ * Component qui affiche la gestion d'une note de frais d'un collaborateur
+ * Accessible pour le service compta
+ * Version mobile et oridinateur
+ */
 export class ServicecomptandfComponent implements OnInit {
   
     id_cds:number;
@@ -91,7 +96,6 @@ export class ServicecomptandfComponent implements OnInit {
         .getLignesdefraisFromIdNdf({ id_ndf : this.id_ndf })
         .subscribe( (data : ILignedefrais[]) => {
           this.listNotedefrais = data;
-          console.log(this.listNotedefrais)
           this.listNotedefrais.forEach(element => {
             if(element.statut_ldf != 'avnoSent' && element.statut_ldf != 'avattCds' &&
             element.statut_ldf != 'avattF' && element.statut_ldf != 'avnoCds' &&
@@ -282,7 +286,6 @@ export class ServicecomptandfComponent implements OnInit {
     }
 
     openSnackBar(msg: string, duration : number) {
-      console.log('snack')
       this.snackBar.openFromComponent(SnackBarComponent, {
         duration: duration,
         data : msg

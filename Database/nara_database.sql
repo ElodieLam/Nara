@@ -49,6 +49,7 @@ INSERT INTO `t_collaborateur` (`id_collab`, `id_serviceCollab`, `nom_collab`, `p
 (4, 2, 'Martin', 'Carole', SHA2('password', 256)),
 (5, 3, 'Duflo', 'Gabriel', SHA2('password', 256)),
 (6, 3, 'Travis', 'Scott', SHA2('password', 256));
+(7, 3, 'Ef', 'Camille', SHA2('password', 256));
 
 
 -- Création du lien entre le service et les collaborateurs
@@ -80,10 +81,6 @@ CREATE TABLE `t_mission` (
 ALTER TABLE `t_mission`
   ADD FOREIGN KEY (`id_chef`) REFERENCES t_collaborateur(`id_collab`);
 
-INSERT INTO `t_mission` (`id_mission`, `id_chef`, `nom_mission`, `date_mission`, `ouverte`) VALUES
-(1, 5, 'mission Thales', '2019-01-28', TRUE),
-(2, 5, 'mission Amazon', '2019-01-28', TRUE);
-
 -- table de jointure mission-collaborateur
 
 CREATE TABLE `t_missionCollab` (
@@ -95,12 +92,6 @@ ALTER TABLE `t_missionCollab`
   ADD FOREIGN KEY (`id_mission`) REFERENCES t_mission(`id_mission`);
 ALTER TABLE `t_missionCollab`  
   ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
-
-INSERT INTO `t_missionCollab` (`id_mission`, `id_collab`) VALUES
-(1, 5),
-(1, 6),
-(2, 5),
-(2, 6);
 
 -- table t_conge
 
@@ -123,7 +114,8 @@ INSERT INTO `t_conge` (`id_collab`, `rtt_restant`, `rtt_pris`, `cp_restant`, `cp
 (3, 10, 10, 10, 10, 10),
 (4, 10, 10, 10, 10, 10),
 (5, 10, 10, 10, 10, 10),
-(6, 10, 10, 10, 10, 10);
+(6, 10, 10, 10, 10, 10),
+(7, 10, 10, 10, 10, 10);
 
 -- table t_demande_conge
 
@@ -272,19 +264,6 @@ CREATE TABLE `t_admin` (
   PRIMARY KEY (`id_admin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- table t_notif_mod_conge
-
-CREATE TABLE `t_notif_mod_conge` (
-  `id_modif_conge` int(11) NOT NULL,
-  `id_collab` int(11) NOT NULL,
-  PRIMARY KEY (`id_modif_conge`, `id_collab`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `t_notif_mod_conge`
-  ADD FOREIGN KEY (`id_modif_conge`) REFERENCES t_modification_conge(`id_modif_conge`);
-ALTER TABLE `t_notif_mod_conge`
-  ADD FOREIGN KEY (`id_collab`) REFERENCES t_collaborateur(`id_collab`);
-
 -- table t_notif_ndf
 
 CREATE TABLE `t_notif_ndf` (
@@ -302,6 +281,8 @@ ALTER TABLE `t_notif_ndf`
 
   ADD FOREIGN KEY (`id_cds`) REFERENCES t_collaborateur(`id_collab`);
 
+-- table t_notif_ndf_to_compta
+
 CREATE TABLE `t_notif_ndf_to_compta` (
   `id_ndf` int(11) NOT NULL,
   `date` DATE NOT NULL,
@@ -312,6 +293,8 @@ CREATE TABLE `t_notif_ndf_to_compta` (
 
 ALTER TABLE `t_notif_ndf_to_compta`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
+
+-- table t_notif_ndf_from_compta
 
 CREATE TABLE `t_notif_ndf_from_compta` (
   `id_ndf` int(11) NOT NULL,
@@ -325,7 +308,4 @@ CREATE TABLE `t_notif_ndf_from_compta` (
 ALTER TABLE `t_notif_ndf_from_compta`
   ADD FOREIGN KEY (`id_ndf`) REFERENCES t_note_de_frais(`id_ndf`);
 
-
-
 COMMIT;
-
