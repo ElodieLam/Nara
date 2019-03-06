@@ -8,7 +8,9 @@ import { MatDialog } from '@angular/material';
 import { CreateDemandecongeComponent } from '../create-demandeconge/create-demandeconge.component';
 
 
-/**Component contenant uniquement le tableau où sont inscrites les informations sur les congés du collaborateur
+/**
+ * Responsable : Mohamed Beldi, accessible à tous les collaborateurs
+ * Component contenant uniquement le tableau où sont inscrites les informations sur les congés du collaborateur
  * Il sert aussi à héberger le component contenant le calendrier avec les différentes demandes de congés
  * 
  */

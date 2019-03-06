@@ -8,7 +8,10 @@ import { CongeService } from '../conge/conge.service';
 import { IConge } from '../conge/conge.interface';
 import { DemandeRefuseeComponent } from '../create-demandeconge/create-demandeconge.component';
 
-/** Component contenant toutes les demandes de congés du collaborateur, il peut entre autre en supprimer une en attente CdS */
+/**Responsable Mohamed Beldi, accessible pour tous les collaborateurs 
+ * 
+ * Component contenant toutes les demandes de congés du collaborateur, il peut entre autre en supprimer une en attente CdS ou Rh s'il est CdS 
+ * */
 
 @Component({
   selector: 'app-historiqueconge',
@@ -76,7 +79,10 @@ export class HistoriquecongeComponent implements OnInit
 
   }
 
-  /**permet simplement d'ouvrir un snackbar avertissant l'utilisateur de son changement */
+  /**
+   * permet simplement d'ouvrir un snackbar avertissant l'utilisateur de son changement 
+   * 
+   * */
   openSnackBar(msg: string) {
     this.snackBar.openFromComponent(DemandeRefuseeComponent, {
       duration: 1000,
@@ -93,7 +99,6 @@ export class HistoriquecongeComponent implements OnInit
       this.dataSource = new MatTableDataSource<IDemandeconge>(this.listeDemande); 
       this.dataSource.sort = this.sort;
       setTimeout(() => this.dataSource.paginator = this.paginator);
-      console.log(this.dataSource);
     });  
 
     this.congeService

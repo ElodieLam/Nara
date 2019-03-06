@@ -35,7 +35,11 @@ const colors: any = {
     secondary: '#B0E6A6'
   }
 };
-/**Component contenant toutes les deamndes d'un collaborateur dans un gros calendrier */
+/**
+ * Responsable : Mohamed Beldi, accessible à tous les collaborateurs
+ * 
+ * Component contenant toutes les deamndes d'un collaborateur dans un gros calendrier 
+ * */
 @Component({
   selector: 'app-demandeconge',
   templateUrl: './demandeconge.component.html',
@@ -85,7 +89,8 @@ export class DemandecongeComponent implements OnInit
     this.router.navigateByUrl('/historiqueconge')
   }
 
-  /** Fonction qui permet de remplir les évenements du calendrier avec les demandes et de set la couleur et le titre adéquat
+  /** 
+   * Fonction qui permet de remplir les évenements du calendrier avec les demandes et de set la couleur et le titre adéquat
    * en fonction des attributs de la demande
    */
   fillEvent()
@@ -118,9 +123,6 @@ export class DemandecongeComponent implements OnInit
         }
 
       }
-      
-      
-      
       switch(demande.type_demande_conge)
       {
         case "rtt":

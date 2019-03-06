@@ -5,7 +5,13 @@ import {Router} from "@angular/router";
 import { IDemandeconge } from '../demandeconge/demandeconge.interface';
 import { CongeService } from '../conge/conge.service';
 import { IConge } from '../conge/conge.interface';
-
+/**
+ * Responsable : Mohamed Beldi, accessible à tous
+ * 
+ * Component qui pop sous forme de dialogue au moment où le collaborateur veut créer un congé,
+ * il lui permet donc de créer un congé
+ * 
+ */
 @Component({
   selector: 'app-create-demandeconge',
   templateUrl: './create-demandeconge.component.html',
@@ -14,7 +20,6 @@ import { IConge } from '../conge/conge.interface';
 export class CreateDemandecongeComponent implements OnInit, OnChanges 
 {
   newDemande: IDemandeconge = {id_collab: 0, id_demande_conge: null, date_debut: new Date(), date_fin: null, motif_refus: "", debut_matin: null, duree: null, fin_aprem: null, type_demande_conge: null, status_conge: 'attCds'};
-  //test: IConge = {id_collab: 6, rtt_restant: null, rtt_pris: null, cp_pris: null, cp_restant: null, css_pris: null}
   listeDemande: IDemandeconge [] = [];
   infoConge : IConge [] = [];
   isFilled = {type: false, start: false, am: false, end: false, pm: false}
@@ -30,7 +35,11 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
 
 
   
-
+  /**
+   * Fonction permettant de calculer la date maximale du congé à partir de la date début et du nombre de congé restant
+   * selon le type de congé selectionné
+   * 
+   */
   calculateDateMax(type)
   {
     var dateMax = new Date(this.newDemande.date_debut);
@@ -54,7 +63,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
     {
       if (congerestants == 2 && Number(this.newDemande.debut_matin) || congerestants == 1)
       {
-        //console.log("maispqçamarchyepas")
         dateMax.setDate(this.newDemande.date_debut.getDate());
       }
       
@@ -62,7 +70,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       else if (congerestants % 2 == 0)
       {
         addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, congerestants/2);
-        //console.log(addweekend)
         dateMax = addweekend;
       }
       else
@@ -75,16 +82,19 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
         {
           addweekend = this.getEntreDatesWithoutWeekend(this.newDemande.date_debut, Math.floor((congerestants)/2)+1);
         }
-        
-        //console.log(addweekend)
+      
         dateMax = addweekend;
-        //dateMax.setDate(this.newDemande.date_debut.getDate()+addweekend);
+    
       }
     }
 
     return dateMax;
   }
   
+  /**
+   * Fonction permettant de reset les différents champs de la demande afin de faciliter
+   * 
+   */
   resetDemande(into)
   {
     switch(into)
@@ -162,7 +172,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       {
         this.isFilled.am = true;
         this.dateMaxi = this.calculateDateMax(this.newDemande.type_demande_conge);
-        console.log(this.dateMaxi)
         this.resetDemande(into);
         break;
       }
@@ -183,7 +192,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       case 4:
       {
         this.isFilled.pm = true;
-        console.log(this.checkDemande())
         break;
       }
     }
@@ -217,8 +225,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
     {
       tempdebut = new Date(demande.date_debut);
       tempfin = new Date(demande.date_fin)
-      console.log(datefin)
-      console.log(tempdebut)
       if(demande.status_conge === "noCds" || demande.status_conge === "noRh")
       {
         continue;
@@ -227,28 +233,20 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       {
         if ((datedebut >tempdebut &&  datedebut < tempfin) || (datefin > tempdebut && datefin < tempfin))
         {
-          console.log("caz 1")
           possible = false;
         }
 
         if ((tempdebut > datedebut &&  tempdebut < datefin) || (tempfin > datedebut && tempfin < datefin))
         {
-          console.log("caz 2")
           possible = false;
         }
 
         
         if (tempdebut.getTime() === datefin.getTime())
         {
-          console.log("c'est étrange")
-          console.log(demande.debut_matin)
-
-          console.log(finaprem)
-
           if (!demande.debut_matin && !finaprem)
           {
             //rien c'est ok
-            console.log("c'est ok pour moi")
           }
           else if(tempdebut.getTime() === tempfin.getTime())
           {
@@ -267,7 +265,7 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
           
           if (!demande.fin_aprem && !debutmatin)
           {
-            console.log("c'est ok pour moi aussi")
+            //rien c'est ok
           }
           else if(tempdebut.getTime() === tempfin.getTime())
           {
@@ -289,7 +287,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
 
   createDemande(data)
   {
-    console.log("présent");
     data.duree  = this.calculDuree(data);
     var canCreate = false;
 
@@ -301,10 +298,8 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       {
         case "rtt":
         {
-          console.log(this.infoConge[0])
           this.infoConge[0].rtt_restant = this.infoConge[0].rtt_restant - data.duree;
           this.infoConge[0].rtt_pris = this.infoConge[0].rtt_pris + data.duree;
-          console.log(this.infoConge[0])
           break;
         }
 
@@ -434,31 +429,9 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
       
       
     }
-    console.log(dateActuelle)
     return dateActuelle;
-
-
-    /*var datefin = new Date(datedebut);
-    var dates = []
-    datefin.setDate(dateActuelle.getDate()+(nbjours));
-    console.log(datefin)
-    dates = this.getEntreDates(dateActuelle, datefin);
-    var compteur = 0;
-    for(var date of dates)
-    {
-      if (date.getDay() == 0 || date.getDay() == 6)
-      {
-        compteur ++;
-      }
-      else
-      {
-        
-      }
-    }
-    return compteur + (nbjours-1);*/
-
-
   }
+
   getEntreDates(datedebut, datefin)
   {
     var dates = [];
@@ -491,7 +464,6 @@ export class CreateDemandecongeComponent implements OnInit, OnChanges
     {
       
       this.user = data[0];
-      console.log(this.user)
       this.isCds = data[1];
     }
 
