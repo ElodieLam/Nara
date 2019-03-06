@@ -48,7 +48,7 @@ INSERT INTO `t_collaborateur` (`id_collab`, `id_serviceCollab`, `nom_collab`, `p
 (3, 2, 'Jean', 'Rene', SHA2('password', 256)),
 (4, 2, 'Martin', 'Carole', SHA2('password', 256)),
 (5, 3, 'Duflo', 'Gabriel', SHA2('password', 256)),
-(6, 3, 'Travis', 'Scott', SHA2('password', 256));
+(6, 3, 'Travis', 'Scott', SHA2('password', 256)),
 (7, 3, 'Ef', 'Camille', SHA2('password', 256));
 
 

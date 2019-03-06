@@ -23,6 +23,13 @@ export class DemandecongeService
       .get(`${this.url}/demandeconge/demandecongesid`, { params : data});
   }
 
+  /**Fonction retournant toutes les demandes d'un service à partir du collaborateur dont l'id est passé en paramètres*/
+  getDemandecongesServiceFromIdCollab(data) {
+    return this
+      .http
+      .get(`${this.url}/demandeconge/demandecollab`, { params: data });
+  }
+
   /**Fonction supprimant le congé en fonction de son identifiant */
   deleteDemandeconges(data)
   {
