@@ -3,6 +3,11 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { LoginComponent } from '../login/login.component';
 
+/**
+ * Responsable: E.LAM, A.Descottes
+ * Component à l'intérieur de la page des notifications qui affiche les informations d'une notification d'un chef de service 
+ */
+
 @Component({
   selector: 'app-notif-msg-service',
   templateUrl: './notif-msg-service.component.html',
@@ -60,6 +65,10 @@ export class NotifMsgServiceComponent implements OnInit {
       this.componentData.color = this.color;
   }
 
+  /**
+   * Méthode changeant la couleur en fonction de la notification
+   * @param type 
+   */
   getTrColor(type){
     if (type == "Demande de congé") {
       this.color = "orange";
@@ -71,6 +80,9 @@ export class NotifMsgServiceComponent implements OnInit {
     }
   }
 
+  /**
+   * Méthode routant à la note de frais CDS correspondante
+   */
   goToNdfCDS () {
     var str = this.date.split(" ", 2);
     var hiddenParam = this.id_notif + '-' + this.prenom + '-' + this.nom + '-' 
@@ -79,6 +91,9 @@ export class NotifMsgServiceComponent implements OnInit {
     this.router.navigate(['/gestionnotedefrais', encrypted.toString()]);
   }
 
+  /**
+   * Méthode routant à la note de frais compta correspondante
+   */
   goToNdfCompta () {
     var str = this.date.split(" ", 2);
     var hiddenParam = this.id_notif + '-' + this.service + '-' + this.prenom + 
@@ -87,13 +102,25 @@ export class NotifMsgServiceComponent implements OnInit {
     this.router.navigate(['/servicecompta',  encrypted.toString()  ]);
   }
   
+  /**
+   * Méthode routant à la demande de conge CDS correspondante
+   */
   goToCongeCDS () {
     this.router.navigate(['/gestionconge']);  
   }
+
+    /**
+   * Méthode routant à la demande de conge RH correspondante
+   */
   goToCongeRH () {
     this.router.navigate(['/servicerh']);
   }
 
+  /**
+   * Méthode pour encrypter un string
+   * @param msg 
+   * @param key 
+   */
   encrypt (msg, key) {
     var salt = CryptoJS.lib.WordArray.random(128/8);
     var key = CryptoJS.PBKDF2(key, salt, {

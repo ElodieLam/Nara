@@ -1,4 +1,10 @@
-// Notif service
+/**
+ * Responsable: E.LAM, A. Descottes
+ */
+
+ /**
+  * Interface d'une notification d'un chef de service
+  */
 export interface INotifService {
   ndfforcds : Boolean;
   congeforcds: Boolean;
@@ -20,6 +26,9 @@ export interface INotifService {
   annee: String; 
 }
 
+/**
+  * Interface d'une notification d'un chef de service à afficher
+  */
 export interface INotifServiceDisplay {
   ndfforcds: Boolean;
   congeforcds: Boolean;
@@ -35,8 +44,9 @@ export interface INotifServiceDisplay {
   color: string;
 }
 
-//Notif simple
-
+/**
+  * Interface d'une notification d'un collaborateur simple à afficher
+  */
 export interface INotifDisplay {
   ndf: Boolean;
   id: Number;
@@ -47,6 +57,9 @@ export interface INotifDisplay {
   color: string;
 }
 
+/**
+  * Interface d'une notification d'un collaborateur simple
+  */
 export interface INotif {
   ndf: Boolean;
   id_collab: Number;

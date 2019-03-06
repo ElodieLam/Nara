@@ -5,6 +5,10 @@ import { INotifService, INotifServiceDisplay} from '../notif/notif.interface';
 import { LoginComponent } from '../login/login.component';
 import { DatePipe } from '@angular/common';
 
+/**
+ * Responsable: E.LAM, A.Descottes
+ * Component contenant la page des notifications d'un chef de service
+ */
 
 @Component({
   selector: 'app-notif-service',
@@ -127,8 +131,11 @@ export class Notif_ServiceComponent{
 
   listemois : string[] = ['null', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre'];
 
+  /**
+   * Méthode transformant la date en date lisible pour l'affichage
+   * @param date 
+   */
   transformDate(date : String) : string {
-
     var str = this.datePipe.transform(new Date(date.toString()), 'yyyy-MM-dd').split("-",3);
     return str[2] + ' ' + this.listemois[+str[1]] + ' ' + str[0];
   }

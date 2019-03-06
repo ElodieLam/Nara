@@ -3,7 +3,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
 
-
+/**
+ * Responsable: E.LAM
+ * Service implémentant les requêtes qui récupèrent les données de l'utilisateur lors de la connexion
+ */
 @Injectable({
   providedIn: 'root'
 })

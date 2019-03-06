@@ -1,3 +1,8 @@
+/**
+ * Responsable: E.LAM
+ * Interface d'un collaborateur
+ */
+
 export interface Collaborateur
 {
     id_collab: number;
