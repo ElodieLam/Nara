@@ -13,6 +13,12 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./notedefraishistorique.component.css'],
   providers: [DatePipe]
 })
+/**
+ * Responsable : Alban Descottes
+ * Component qui affiche l'historique des notes de frais d'un collaborateur
+ * Accessible pour tous les collaborateurs
+ * Version mobile et ordinateur
+ */
 export class NotedefraishistoriqueComponent implements OnInit {
 
   sub: any;
@@ -49,8 +55,6 @@ export class NotedefraishistoriqueComponent implements OnInit {
       this.listnotedefrais.sort((a, b) => {   
         return b.annee.valueOf() - a.annee.valueOf() || b.mois.valueOf() - a.mois.valueOf();
       });
-      console.log(this.listnotedefrais)
-
       this.listnotedefrais.forEach(ndf => {
         ndf.moisWord = this.listemois[+ndf.mois];
         if(ndf.wait == null)
@@ -87,7 +91,6 @@ export class NotedefraishistoriqueComponent implements OnInit {
 
   goToNotedefrais (element : INotedefraisHistorique) {
     var hiddenParam = element.id_ndf + "-" + element.annee + "-" + element.mois;
-    //Encrypt-Decrypt
     var encrypted = this.encrypt(hiddenParam, this.key);
     this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
     
@@ -104,7 +107,6 @@ export class NotedefraishistoriqueComponent implements OnInit {
       .subscribe( (data : any) => {
         var temp = data;
         var hiddenParam = temp[0].id_ndf + "-" + element.annee + "-" + element.mois;
-        //Encrypt-Decrypt
         var encrypted = this.encrypt(hiddenParam, this.key);
         this.router.navigate(['/lignedefrais',  encrypted.toString()  ]);
       });

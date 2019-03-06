@@ -11,6 +11,11 @@ import * as CryptoJS from 'crypto-js';
   templateUrl: './notedefraisresume.component.html',
   styleUrls: ['./notedefraisresume.component.css']
 })
+/**
+ * Responsable : Alban Descottes
+ * Component affiche le resumé d'une note de frais
+ * Accessible pour tous les collaborateurs
+ */
 export class NotedefraisresumeComponent implements OnInit, OnChanges {
   // input du component
   @Input() id_notedefrais = 0;

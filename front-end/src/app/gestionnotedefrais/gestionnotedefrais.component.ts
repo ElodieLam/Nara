@@ -11,6 +11,12 @@ import * as CryptoJS from 'crypto-js';
   templateUrl: './gestionnotedefrais.component.html',
   styleUrls: ['./gestionnotedefrais.component.css']
 })
+/**
+ * Responsable : Alban Descottes
+ * Component qui représente toutes les notes de frais qui sont visualisable par un chef de service 
+ * Accessible pour tous les chefs de service
+ * Version mobile et ordinateur
+ */
 export class GestionnotedefraisComponent implements OnInit {
 
   id_cds:number;

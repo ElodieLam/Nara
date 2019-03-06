@@ -25,10 +25,8 @@ export class DialogEnvoyerLignes implements OnInit{
     }
     
   ngOnInit() {
-    console.log(this.mobileVersion)
     this.size = this.data.liste.length;
     if(this.mobileVersion) {
-      console.log(this.data.liste)
       this.dataSourceMobile = new MatTableDataSource<ILignedefrais>(this.data.liste);
       this.dataSourceMobile.paginator = this.paginator;
     }

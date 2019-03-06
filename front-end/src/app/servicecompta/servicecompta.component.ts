@@ -12,6 +12,12 @@ import * as CryptoJS from 'crypto-js';
   templateUrl: './servicecompta.component.html',
   styleUrls: ['./servicecompta.component.css']
 })
+/**
+ * Responsable : Alban Descottes
+ * Component qui affiche la page de gestion du service compta
+ * Accessible pour le service compta
+ * Version mobile et oridinateur
+ */
 export class ServicecomptaComponent implements OnInit {
 
   id_cds:number;
@@ -51,7 +57,6 @@ export class ServicecomptaComponent implements OnInit {
       .getNotedefraisToCompta({ id : this.login.user.id_collab, isCds : this.login.user.isCDS ? true : false })
       .subscribe( (data : INotedefrais[]) => {
         this.listNotedefrais = data;
-        console.log(this.listNotedefrais)
         this.listCollab = this.listNotedefrais.reduce(function (a,b) {
           if (a.indexOf(b.prenom_collab + ' ' + b.nom_collab) == -1) {
             a.push(b.prenom_collab + ' ' + b.nom_collab)
@@ -113,7 +118,6 @@ export class ServicecomptaComponent implements OnInit {
 
     var hiddenParam = element.id_ndf + '-' +element.nom_service + '-' + element.prenom_collab + 
       '-' + element.nom_collab + '-' + this.listemois[element.mois] + '-' + element.annee;
-    //Encrypt-Decrypt
     var encrypted = this.encrypt(hiddenParam, this.key);
     this.router.navigate(['/servicecompta',  encrypted.toString()  ]);
   }

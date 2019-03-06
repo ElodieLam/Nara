@@ -49,7 +49,6 @@ import { DialogModifierLignedefrais } from './lignedefrais/dialog-modifier-ligne
 import { DialogNouvelleLignedefrais } from './lignedefrais/dialog-nouvelle-lignedefrais.component';
 import { DialogNouvelleAvance } from './lignedefrais/dialog-nouvelle-avance.component';
 import { DialogEnvoyerLignes } from './lignedefrais/dialog-envoyer-lignes.component';
-import { DialogInformation } from './lignedefrais/dialog-information.component';
 import { CongeComponent } from './conge/conge.component';
 
 import { NotifComponent } from './notif/notif.component';
@@ -123,7 +122,6 @@ const appRoutes: Routes = [
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
     DialogAccepterAvanceCompta,
-    DialogInformation,
     SnackBarComponent,
     CongeComponent,
     DemandecongeComponent,
@@ -208,7 +206,6 @@ const appRoutes: Routes = [
     DialogRefuserLigne,
     DialogRefuserLigneCompta,
     DialogAccepterAvanceCompta,
-    DialogInformation,
     SnackBarComponent
   ],
   providers: [

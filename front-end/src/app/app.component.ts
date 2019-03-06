@@ -14,7 +14,7 @@ export class AppComponent implements OnInit
 
   }
   ngOnInit() {
-    console.log('init')
+    console.log('Initialisation ... Nara')
     this.appservice
       .updateApp();
   }
