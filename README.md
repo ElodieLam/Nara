@@ -18,7 +18,7 @@ Télécharger XAMPP v. 5.6.40 / PHP 5.6.40 :
 Installer XAMPP.
 
 #### Etape 3
-Lancer le module MySQL ("Start" dans XAMPP).
+Lancer les modules Apache et MySQL ("Start" dans XAMPP).
 
 #### Etape 4
 Dans C:\xampp\phpMyAdmin\config.inc.php, modifier :
