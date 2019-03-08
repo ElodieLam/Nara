@@ -120,20 +120,9 @@ export class GestiondemandeComponent implements OnInit {
       .getInfoCollab({id : this.demande.id_collab})
       .subscribe( (data : IInfoConge[]) => {
         this.infoConges = data;
-        console.log(data)
         if(this.infoConges.length > 0)
         this.infoCollab = this.infoConges[0];
       })
-    // this.gestioncongeService
-    // .getCollabs()
-    //   .subscribe((data : ICollaborateur[]) => {
-    //   this.listeCollab = data;
-    //   this.congeService
-    //   .getCongesFromIdCollab({id: this.demande.id_collab})
-    //     .subscribe( (data : IConge[]) => {
-    //     this.infoConges = data;
-    //   });
-    // });
-  }
+ }
 
 }

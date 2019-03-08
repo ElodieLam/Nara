@@ -86,7 +86,6 @@ export class ServicerhComponent implements OnInit {
 
   eventClicked(event: CalendarEvent): void 
   {
-    //todo, rediriger vers la demande de congé en question, à voir.
     if(this.listeDemande[this.events.indexOf(event)].status_conge === "attRh")
     {
       this.openDialog(this.listeDemande[this.events.indexOf(event)])
@@ -176,10 +175,7 @@ export class ServicerhComponent implements OnInit {
   }
 
   ngOnInit() 
-  
   {
-
-
     this.serviceRHservice
     .getDemandecongesFromIdRH({id : this.user})
       .subscribe( (data : IDemandeconge[]) => {
@@ -187,26 +183,14 @@ export class ServicerhComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.listeDemande); 
       this.dataSource.sort = this.sort;
       setTimeout(() => this.dataSource.paginator = this.paginator);
-      //console.log(this.dataSource);
-
+     
       this.serviceRHservice
       .getCollabs()
         .subscribe((data : ICollaborateur[]) => {
         this.listeCollab = data;
-        console.log(this.listeCollab)  
         this.fillEvent();
       });
-      //console.log(this.events);
     }); 
-    
-  // this.delay(500).then(any => {
-  
-  // });
-  
-
-
-
-
   }
 
 }

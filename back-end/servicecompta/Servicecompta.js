@@ -73,7 +73,6 @@ var Servicecompta = {
             [data.motif, data.id_ndf, data.motif, data.id_ndf, data.id_ndf, data.id_ndf, date], callback);
     },
     accepterAvance:function(data, callback) {
-        console.log(data)
         var date = new Date()
         if(data.newNdf) {
             return db.query('\

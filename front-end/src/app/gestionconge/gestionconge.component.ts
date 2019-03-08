@@ -92,7 +92,6 @@ export class GestioncongeComponent implements OnInit
 
   eventClicked(event: CalendarEvent): void 
   {
-    //todo, rediriger vers la demande de congé en question, à voir.
     if(this.listeDemande[this.events.indexOf(event)].status_conge === "attCds")
     {
       this.openDialog(this.listeDemande[this.events.indexOf(event)])
@@ -192,24 +191,13 @@ export class GestioncongeComponent implements OnInit
       this.dataSource = new MatTableDataSource<IDemandeconge>(this.listeDemande); 
       this.dataSource.sort = this.sort;
       setTimeout(() => this.dataSource.paginator = this.paginator);
-      //console.log(this.dataSource);
-
-      //console.log(this.events);
       this.gestioncongeService
       .getCollabs()
         .subscribe((data : ICollaborateur[]) => {
         this.listeCollab = data;
-        console.log(this.listeCollab)  
         this.fillEvent();
       });
     }); 
-    
-  // this.delay(500).then(any => {
-  
-  // });
-  
-
-
   }
 
 }

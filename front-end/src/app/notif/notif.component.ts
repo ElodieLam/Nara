@@ -49,7 +49,6 @@ export class NotifComponent{
     this.notifService
     .getNotifCollab({id : this.login.user.id_collab})
     .subscribe( (data : INotif[]) => {
-      console.log(data);
       this.lNotif = data;
       if(this.lNotif.length > 0) {
         this.lNotif.forEach( element => {

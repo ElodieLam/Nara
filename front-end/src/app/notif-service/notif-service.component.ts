@@ -22,7 +22,7 @@ export class Notif_ServiceComponent{
 
   private sub : any;
   displayedColumns = ['date_heure', 'collaborateur', 'notif'];
-  dataSource; //= new MatTableDataSource(this.ELEMENT_DATA);
+  dataSource;
   lNotifService : INotifService[] = [];
   lNotifDisplay: INotifServiceDisplay[];
   mois : string[] = ['null', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
