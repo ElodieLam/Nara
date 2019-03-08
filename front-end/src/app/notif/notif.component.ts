@@ -5,12 +5,20 @@ import { INotifDisplay, INotif} from './notif.interface';
 import { LoginComponent } from '../login/login.component';
 import { DatePipe } from '@angular/common';
 
+/**
+ * Responsable: E.LAM, A.Descottes
+ * Component contenant la page des notifications d'un collaborateur simple
+ */
 @Component({
   selector: 'app-notif',
   templateUrl: './notif.component.html',
   styleUrls: ['../notif-service/notif-service.component.css'],
   providers : [DatePipe]
 })
+
+/**
+ * Cette classe récupère la liste des notifications correspondant au collaborateur puis crée un component pour chaque notification
+ */
 export class NotifComponent{
 
   private sub : any;
@@ -79,7 +87,10 @@ export class NotifComponent{
     })
   }
 
-
+/**
+ * Méthode permettant de transformer le statut de la demande en string pour l'afficher
+ * @param status 
+ */
   transformStatus(status : String) : String {
     for(var i = 0; i < this.status.length ; i ++){
       if(this.status[i].key == status)
@@ -88,6 +99,10 @@ export class NotifComponent{
     return 'statut undefined'
   }
 
+  /**
+ * Méthode permettant de transformer le statut de la demande de congé en string pour l'afficher
+ * @param status 
+ */
   transformStatusConge(statut : String) : String {
     if(statut == 'noCds')
       return 'refus Chef de service'
@@ -99,6 +114,10 @@ export class NotifComponent{
 
   listemois : string[] = ['null', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre'];
 
+  /**
+ * Méthode permettant de transformer la date de la notification en date lisible pour l'affichage
+ * @param status 
+ */
   transformDate(date : String) : string {
 
     var str = this.datePipe.transform(new Date(date.toString()), 'yyyy-MM-dd').split("-",3);

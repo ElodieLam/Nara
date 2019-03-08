@@ -3,6 +3,11 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js'; 
 import { LoginComponent } from '../login/login.component';
 
+/**
+ * Responsable: E.LAM, A.Descottes
+ * Component contenant les informations à afficher d'une notification d'un collaborateur simple
+ */
+
 @Component({
   selector: 'app-notif-msg',
   templateUrl: './notif-msg.component.html',

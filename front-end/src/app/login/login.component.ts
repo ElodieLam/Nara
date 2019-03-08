@@ -3,6 +3,11 @@ import { LoginService } from './login.service';
 import { Router } from "@angular/router";
 import {Collaborateur} from './login.interface';
 
+/**
+ * Responsable: E. Lam
+ * Component de la page de login
+ */
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -77,6 +82,9 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/notifications']); 
   }
 
+  /**
+   * Méthode remettant à null tous les champs lorsque l'utilisateur se déconnecte
+   */
   setUserNull(){
     this.user.id_collab = null;
     this.user.id_service = null;
