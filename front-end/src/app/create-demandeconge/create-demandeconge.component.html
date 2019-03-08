@@ -27,7 +27,7 @@
 
           <mat-form-field>
               <mat-label>Début Congé</mat-label>
-              <mat-select [(value)]="newDemande.debut_matin" (selectionChange) = "fill(2)">
+              <mat-select [(value)]="newDemande.debut_matin" (selectionChange) = "fill(2)" [disabled] = "!isFilled.type">
                 <mat-option value=1>Matin</mat-option>
                 <mat-option value=0>Après-Midi</mat-option>
               </mat-select>
