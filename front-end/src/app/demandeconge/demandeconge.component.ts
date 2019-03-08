@@ -100,29 +100,36 @@ export class DemandecongeComponent implements OnInit
 
     for(var demande of this.listeDemande)
     {
-      switch(demande.status_conge)
+      if(demande.id_collab.toString() != this.user)
       {
-        case "attCds":
-        case "attRh" : 
-        {
-          couleur = colors.yellow;
-          break;
-        }
-
-        case "noCds":
-        case "noRh":
-        {
-          couleur = colors.red;
-          break;
-        }
-
-        case "validee":
-        {
-          couleur = colors.green;
-          break;
-        }
-
+        couleur = colors.blue;
       }
+      else
+      {
+        switch (demande.status_conge) {
+          case "attCds":
+          case "attRh":
+            {
+              couleur = colors.yellow;
+              break;
+            }
+
+          case "noCds":
+          case "noRh":
+            {
+              couleur = colors.red;
+              break;
+            }
+
+          case "validee":
+            {
+              couleur = colors.green;
+              break;
+            }
+
+        }
+      }
+      
       switch(demande.type_demande_conge)
       {
         case "rtt":
@@ -167,7 +174,7 @@ export class DemandecongeComponent implements OnInit
   
   {
     this.demandecongeService
-    .getDemandecongesFromIdCollab({id : this.user})
+    .getDemandecongesServiceFromIdCollab({id : this.user})
       .subscribe( (data : IDemandeconge[]) => {
       this.listeDemande = data;
       this.dataSource = new MatTableDataSource(this.listeDemande); 

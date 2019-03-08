@@ -34,6 +34,17 @@ router.get('/demandeservice', function (req, res)
     });
 });
 
+router.get('/demandecollab', function (req, res) {
+    Demandeconge.getDemandeServiceFromCollab(req.query, function (err, rows) {
+        if (err) {
+            res.status(400).json(err);
+        }
+        else {
+            res.json(rows);
+        }
+    });
+});
+
 router.get('/demanderh', function (req, res) 
 {
     Demandeconge.getDemandeRH(req.query, function(err, rows)

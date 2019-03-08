@@ -8,6 +8,11 @@ var Demandeconge =
         return db.query('SELECT * from t_demande_conge WHERE id_collab = ?', [data.id], callback);
     },
 
+    /** Fonction retournant toutes les demandes des collaborateurs d'un service*/
+    getDemandeServiceFromCollab: function (data, callback) {
+        return db.query('SELECT * FROM t_demande_conge WHERE id_collab IN (SELECT id_collab FROM t_collaborateur WHERE id_serviceCollab = (SELECT id_serviceCollab FROM t_collaborateur WHERE id_collab = ?))', [data.id], callback)
+    },
+
     /** Fonction retournant toutes les demandes des collaborateurs d'un service en excluant le chef de service*/
     getDemandeService: function(data, callback)
     {

@@ -31,7 +31,8 @@ export interface MissionInterface {
 export class MissionsComponent implements OnInit {
 
   
-infoMissions : MissionInterface[]
+infoMissions : MissionInterface[] = []
+infoMissions2: MissionInterface[] = []
 listeMissions;
 listeCollaborateurs;
 displayedColumns: string[] = ['nom_mission', 'date_mission', 'voirButton', 'modifierButton','cloreButton', 'supprimerButton'];
@@ -47,7 +48,8 @@ ngOnInit()
 }
 
 refresh() {
-
+  this.infoMissions = []
+  this.infoMissions2 = []
   this.missionService
   .getMissions({ ouverte : true , id : this.login.user.id_collab })
   .subscribe( (data : MissionInterface[]) => {
@@ -55,7 +57,11 @@ refresh() {
     this.infoMissions.forEach( miss => {
       miss.cnt ==  null ? miss.cnt = 0 : {};
     })
-    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions); 
+    this.infoMissions.forEach(miss => {
+      if(miss.id_chef == this.login.user.id_collab)
+        this.infoMissions2.push(miss);
+    })
+    this.listeMissions = new MatTableDataSource<MissionInterface>(this.infoMissions2); 
     this.listeMissions.paginator = this.paginator;  
   });
 }
