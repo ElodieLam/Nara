@@ -131,7 +131,6 @@ export class GestionlignedefraisComponent implements OnInit {
             }
           }
         });
-        //this.listNotedefrais.length == 0 ? this.noLine = true : {} ;
         if(this.mobileVersion) {
           this.dataSourceMobile = new MatTableDataSource<ILignedefraisListe>(this.listlignedefrais);
           this.dataSourceMobile.paginator = this.paginator;

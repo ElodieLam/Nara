@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     if(window.innerWidth < 400)
       this.mobileVersion = true;
-    console.log("Start loginService");  
   }
 
   //Récupère le user input
@@ -89,7 +88,6 @@ export class LoginComponent implements OnInit {
     this.user.id_collab = null;
     this.user.id_service = null;
     this.user.nom_collab = null;
-    //this.user.password = null;
     this.user.prenom_collab = null;
   }
 

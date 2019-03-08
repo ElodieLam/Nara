@@ -20,7 +20,6 @@ export class DashboardComponent implements OnInit{
   isCompta: boolean = false;
   isRH: boolean = false;
   mobileVersion:boolean = false;
-  //param: string;
   isOn: boolean = false;
   date: Date
 
@@ -34,10 +33,6 @@ export class DashboardComponent implements OnInit{
     this.mobileVersion = this.login.mobileVersion;
     this.isOn = true;
     this.date = new Date();
-    //Récupère les paramètres passés dans l'URL
-    this.activatedRoute.queryParams.subscribe(params => {
-      //this.param = params['param'];
-    });
     this.firstname = login.user.prenom_collab;
     this.lastname = login.user.nom_collab;
     this.isCDS = login.user.isCDS;
@@ -48,7 +43,6 @@ export class DashboardComponent implements OnInit{
   }
 
   ngOnInit(){
-    console.log("userId in dashboard: " + this.login.getUserId());
   }
 
   goToNotif(){

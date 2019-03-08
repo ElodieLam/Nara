@@ -195,24 +195,6 @@ var Lignedefrais = {
                         ON DUPLICATE KEY UPDATE \
                         nb_lignes = VALUES(nb_lignes), \
                         date = VALUES(date) ; '
-                /*'INSERT INTO t_notif_ndf_to_compta(id_ndf, date, avance, nb_lignes) \
-                    VALUES( ' + id_ndf + ', \'' + date + '\', 1, ( \
-                    SELECT COUNT(*) as nb \
-                    FROM t_ligne_de_frais_avance as ldf \
-                    WHERE id_ndf_ldf = ' + id_ndf + ' \
-                    AND (ldf.id_statut = 8 OR ldf.id_statut = 2) ) ) \
-                    ON DUPLICATE KEY UPDATE \
-                    nb_lignes = VALUES(nb_lignes), \
-                    date = VALUES(date) ; \
-                    \
-                    INSERT INTO t_notif_ndf_to_compta(id_ndf, date, avance, nb_lignes) \
-                    VALUES( ' + id_ndf + ', \'' + date + '\', 0, ( \
-                    SELECT COUNT(*) as nb \
-                    FROM t_ligne_de_frais as ldf \
-                    WHERE  ldf.id_statut = 8 AND id_ndf = ' + id_ndf + ') ) \
-                    ON DUPLICATE KEY UPDATE \
-                    nb_lignes = VALUES(nb_lignes), \
-                    date = VALUES(date) ;'*/
             }
         }
         return db.query(sql, callback);

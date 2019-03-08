@@ -30,9 +30,7 @@ export class NotedefraisresumeComponent implements OnInit, OnChanges {
   mois : number = 0;
   annee : number = 0;
   dateVerbose : string;
-  // pour la pagination
   displayedColumns: string[] = ['nom_mission', 'libelle_ldf', 'avance', 'statut_ldf'];
-  //dataSource = new MatTableDataSource<INotedefraisresume>(this.listLignedefrais);
   dataSource;
   values:boolean = true;
   lignesValid:number = 0;
